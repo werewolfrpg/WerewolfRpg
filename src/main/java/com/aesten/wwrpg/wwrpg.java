@@ -20,8 +20,8 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Permission(name = "test.*", desc = "Wildcard permission", children = {@ChildPermission(name ="test.foo")})
 public final class wwrpg extends JavaPlugin {
     private static org.bukkit.plugin.Plugin plugin;
-    private static final ChatColor COLOR = ChatColor.GOLD;
-    private static final String LOG = "[wwrpg]: ";
+    public static final ChatColor COLOR = ChatColor.GOLD;
+    public static final String LOG = "[wwrpg]: ";
 
 
     @Override
