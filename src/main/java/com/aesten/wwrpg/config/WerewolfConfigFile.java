@@ -6,53 +6,38 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class WerewolfConfigFile {
-    private final File file;
-    private FileConfiguration customFile;
+    private FileConfiguration configFile;
 
-    WerewolfConfigFile(String fileName) {
-        file = new File(wwrpg.getPlugin().getDataFolder(), fileName + ".yml");
+    WerewolfConfigFile() {
+        File file = new File(wwrpg.getPlugin().getDataFolder(), "config.yml");
 
         if (!file.exists()) {
             try{
-                file.createNewFile();
+                InputStream defaultConfigContent = getClass().getClassLoader().getResourceAsStream("config-default.yml");
+                assert defaultConfigContent != null;
+                Files.copy(defaultConfigContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                configFile = YamlConfiguration.loadConfiguration(file);
             }catch (IOException ignored) {}
         }
-        customFile = YamlConfiguration.loadConfiguration(file);
+        else {
+            configFile = wwrpg.getPlugin().getConfig();
+        }
     }
 
-    public FileConfiguration getCustomConfig() {
-        return customFile;
+    public FileConfiguration getConfig() {
+        return configFile;
     }
 
-    public static FileConfiguration getConfig() {
-        return wwrpg.getPlugin().getConfig();
-    }
-
-    public static void saveConfig() {
+    public void saveConfig() {
         wwrpg.getPlugin().saveConfig();
     }
 
-    public static void reloadConfig() {
+    public void reloadConfig() {
         wwrpg.getPlugin().reloadConfig();
-    }
-
-    public void save() {
-        try{
-            customFile.save(file);
-        }catch (IOException e) {
-            System.out.println("File could not be saved");
-        }
-    }
-
-    public void reload() {
-        customFile = YamlConfiguration.loadConfiguration(file);
-    }
-
-    public static void init() {
-        if (!wwrpg.getPlugin().getDataFolder().exists()) {
-            wwrpg.getPlugin().getDataFolder().mkdirs();
-        }
     }
 }
