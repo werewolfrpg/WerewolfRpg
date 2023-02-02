@@ -1,4 +1,4 @@
-package com.aesten.wwrpg.items;
+package net.aesten.wwrpg.items;
 
 import org.bukkit.Color;
 import org.bukkit.Material;

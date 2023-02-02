@@ -1,6 +1,6 @@
-package com.aesten.wwrpg.config;
+package net.aesten.wwrpg.config;
 
-import com.aesten.wwrpg.wwrpg;
+import net.aesten.wwrpg.wwrpg;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

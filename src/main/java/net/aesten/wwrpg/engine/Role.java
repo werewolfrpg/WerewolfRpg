@@ -1,4 +1,4 @@
-package com.aesten.wwrpg.engine;
+package net.aesten.wwrpg.engine;
 
 import org.bukkit.ChatColor;
 
@@ -16,5 +16,26 @@ public enum Role {
     Role(String name, ChatColor color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Role apparentRole() {
+        if (this == POSSESSED) {
+            return VILLAGER;
+        }
+        else {
+            return this;
+        }
+    }
+
+    public Role divinationRole() {
+        if (this == TRAITOR) {
+            return VILLAGER;
+        }
+        else if (this == POSSESSED) {
+            return WEREWOLF;
+        }
+        else {
+            return this;
+        }
     }
 }

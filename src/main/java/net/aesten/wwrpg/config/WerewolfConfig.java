@@ -1,4 +1,4 @@
-package com.aesten.wwrpg.config;
+package net.aesten.wwrpg.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

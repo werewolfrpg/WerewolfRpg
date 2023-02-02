@@ -1,6 +1,6 @@
-package com.aesten.wwrpg.items;
+package net.aesten.wwrpg.items;
 
-import com.aesten.wwrpg.wwrpg;
+import net.aesten.wwrpg.wwrpg;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;

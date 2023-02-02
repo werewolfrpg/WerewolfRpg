@@ -1,4 +1,4 @@
-package com.aesten.wwrpg.config;
+package net.aesten.wwrpg.config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

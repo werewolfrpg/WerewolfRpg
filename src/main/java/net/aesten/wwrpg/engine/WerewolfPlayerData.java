@@ -1,16 +1,11 @@
-package com.aesten.wwrpg.engine;
+package net.aesten.wwrpg.engine;
 
-import org.bukkit.entity.Player;
-
+import java.util.Map;
 import java.util.UUID;
 
-public class WerewolfPlayer {
-    private final UUID id;
-    private Player player;
-    private String playerName;
+public class WerewolfPlayerData {
+    public static Map<UUID, WerewolfPlayerData> dataMap;
     private Role role;
-    private boolean isPlaying;
-
     private boolean isDead;
     private boolean isCursed;
     private boolean isStunned;
@@ -21,10 +16,7 @@ public class WerewolfPlayer {
     private boolean hasBeenDivinated;
     private int remainingDivinations;
 
-    public WerewolfPlayer(Player player) {
-        this.player = player;
-        this.id = player.getUniqueId();
-        this.playerName = player.getName();
+    public WerewolfPlayerData() {
         this.isDead = false;
         this.isCursed = false;
         this.isStunned = false;
@@ -36,24 +28,22 @@ public class WerewolfPlayer {
         this.remainingDivinations = 0;
     }
 
-    public Player getPlayer() {
-        return player;
+    public static void resetTemporaryValues() {
+        for (WerewolfPlayerData data : dataMap.values()) {
+            data.hasActiveSneakNotice = false;
+            data.hasActiveProtection = false;
+            data.hasAlreadyUsedProtection = false;
+            data.hasAlreadyUsedDivination = false;
+            data.hasBeenDivinated = false;
+        }
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public static WerewolfPlayerData getData(UUID id) {
+        return dataMap.get(id);
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public static Map<UUID, WerewolfPlayerData> getDataMap() {
+        return dataMap;
     }
 
     public Role getRole() {
@@ -64,13 +54,6 @@ public class WerewolfPlayer {
         this.role = role;
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        isPlaying = playing;
-    }
 
     public boolean isDead() {
         return isDead;
@@ -96,15 +79,15 @@ public class WerewolfPlayer {
         isStunned = stunned;
     }
 
-    public boolean isHasActiveSneakNotice() {
+    public boolean hasActiveSneakNotice() {
         return hasActiveSneakNotice;
     }
 
-    public void setHasActiveSneakNotice(boolean hasActiveSneakNotice) {
+    public void hasActiveSneakNotice(boolean hasActiveSneakNotice) {
         this.hasActiveSneakNotice = hasActiveSneakNotice;
     }
 
-    public boolean isHasActiveProtection() {
+    public boolean hasActiveProtection() {
         return hasActiveProtection;
     }
 
@@ -112,7 +95,7 @@ public class WerewolfPlayer {
         this.hasActiveProtection = hasActiveProtection;
     }
 
-    public boolean isHasAlreadyUsedProtection() {
+    public boolean hasAlreadyUsedProtection() {
         return hasAlreadyUsedProtection;
     }
 
@@ -120,7 +103,7 @@ public class WerewolfPlayer {
         this.hasAlreadyUsedProtection = hasAlreadyUsedProtection;
     }
 
-    public boolean isHasAlreadyUsedDivination() {
+    public boolean hasAlreadyUsedDivination() {
         return hasAlreadyUsedDivination;
     }
 
@@ -128,7 +111,7 @@ public class WerewolfPlayer {
         this.hasAlreadyUsedDivination = hasAlreadyUsedDivination;
     }
 
-    public boolean isHasBeenDivinated() {
+    public boolean hasBeenDivinated() {
         return hasBeenDivinated;
     }
 
