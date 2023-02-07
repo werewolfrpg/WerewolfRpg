@@ -204,7 +204,10 @@ public class WerewolfItem implements Listener {
         public WerewolfItem build(String id) {
             meta.setLore(lore);
             itemStack.setItemMeta(meta);
-            return new WerewolfItem(itemStack, id, defaultCost, shopType, shopSlot, onPlayerInteract, onEntityDamageEntity, onProjectileHit, onPlayerMove);
+            WerewolfItem item = new WerewolfItem(itemStack, id, defaultCost, shopType, shopSlot,
+                    onPlayerInteract, onEntityDamageEntity, onProjectileHit, onPlayerMove);
+            ItemRegistry.getRegistry().put(id, item);
+            return item;
         }
     }
 }

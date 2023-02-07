@@ -1,9 +1,8 @@
 package net.aesten.wwrpg.items;
 
-import net.aesten.wwrpg.WerewolfRpg;
-import net.aesten.wwrpg.core.Role;
+import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.core.WerewolfPlayerData;
+import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -12,11 +11,17 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashMap;
+
 public class ItemRegistry {
+    private static final HashMap<String, WerewolfItem> registry = new HashMap<>();
+
+    public static HashMap<String, WerewolfItem> getRegistry() {
+        return registry;
+    }
     public static final WerewolfItem SKELETON_PUNISHER = WerewolfItem.create(Material.STICK, 1)
             .addName("§6Skeleton Punisher")
             .addLore("§9A stick to break 'em bones!")
@@ -28,6 +33,8 @@ public class ItemRegistry {
             .addName("§6Exquisite Meat")
             .addLore("§9Your only food source")
             .setCost(1)
+            .setShopType("basic")
+            .setShopSlot(0)
             .build("exquisite_meat");
 
     public static final WerewolfItem HUNTERS_BOW = WerewolfItem.create(Material.BOW, 1)
@@ -36,12 +43,16 @@ public class ItemRegistry {
             .addFlags(ItemFlag.HIDE_ATTRIBUTES)
             .addDamage(384)
             .setCost(2)
+            .setShopType("basic")
+            .setShopSlot(2)
             .build("hunters_bow");
     
     public static final WerewolfItem SHARP_ARROW = WerewolfItem.create(Material.ARROW, 1)
             .addName("§6Sharp Arrow")
             .addLore("§9One-time use arrow")
             .setCost(2)
+            .setShopType("basic")
+            .setShopSlot(3)
             .onProjectileHit((event) -> {
                 WerewolfGame game = WerewolfGame.getInstance();
                 if (!game.isPlaying()) return;
@@ -49,17 +60,22 @@ public class ItemRegistry {
                 if ((projectile instanceof Arrow)) {
                     if (event.getHitEntity() instanceof Player player) {
                         WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
+                        Player shooter = (Player) projectile.getShooter();
                         if (game.isNight() && data.getRole() == Role.VAMPIRE) {
                             event.setCancelled(true);
+                            //todo history: save event
                         }
                         else if (game.isNight() && data.hasActiveProtection()) {
                             event.setCancelled(true);
                             data.setHasActiveProtection(false);
                             player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                             WerewolfUtil.sendPluginText(player, "Protection was activated", ChatColor.GREEN);
+                            //todo history: save event
                         }
                         else {
                             player.setHealth(0);
+                            //todo history: save event
+                            //todo data: player death cause
                         }
                     }
                     projectile.remove();
@@ -72,6 +88,8 @@ public class ItemRegistry {
             .addLore("§9Stuns target for 5 seconds")
             .addLore("§7Only on direct hit")
             .setCost(2)
+            .setShopType("basic")
+            .setShopSlot(4)
             .build("stun_grenade");
 
     public static final WerewolfItem WEREWOLF_AXE = WerewolfItem.create(Material.NETHERITE_AXE, 1)
@@ -80,6 +98,8 @@ public class ItemRegistry {
             .addFlags(ItemFlag.HIDE_ATTRIBUTES)
             .addDamage(2031)
             .setCost(3)
+            .setShopType("basic")
+            .setShopSlot(5)
             .build("werewolf_axe");
 
     public static final WerewolfItem SKELETON_SLICER = WerewolfItem.create(Material.WOODEN_SWORD, 1)
@@ -89,6 +109,8 @@ public class ItemRegistry {
             .addFlags(ItemFlag.HIDE_ENCHANTS)
             .addDamage(19)
             .setCost(4)
+            .setShopType("basic")
+            .setShopSlot(1)
             .build("skeleton_slicer");
 
     public static final WerewolfItem INVISIBILITY_POTION = WerewolfItem.create(Material.POTION, 1)
@@ -99,6 +121,8 @@ public class ItemRegistry {
             .setPotionColor(Color.AQUA)
             .addFlags(ItemFlag.HIDE_POTION_EFFECTS)
             .setCost(4)
+            .setShopType("special")
+            .setShopSlot(4)
             .build("invisibility_potion");
 
     public static final WerewolfItem SWIFTNESS_POTION = WerewolfItem.create(Material.POTION, 1)
@@ -108,6 +132,8 @@ public class ItemRegistry {
             .setPotionColor(Color.GRAY)
             .addFlags(ItemFlag.HIDE_POTION_EFFECTS)
             .setCost(2)
+            .setShopType("special")
+            .setShopSlot(3)
             .build("swiftness_potion");
 
     public static final WerewolfItem LIGHT_OF_REVELATION = WerewolfItem.create(Material.SUNFLOWER, 1)
@@ -116,6 +142,8 @@ public class ItemRegistry {
             .addLore("§9Light up all players")
             .addLore("§7Active for 30 seconds")
             .setCost(3)
+            .setShopType("special")
+            .setShopSlot(1)
             .build("light_of_revelation");
 
     public static final WerewolfItem PROTECTION = WerewolfItem.create(Material.ARMOR_STAND, 1)
@@ -126,6 +154,8 @@ public class ItemRegistry {
             .addLore("§7Non-stackable")
             .addLore("§7Villager-only item")
             .setCost(4)
+            .setShopType("special")
+            .setShopSlot(2)
             .build("protection");
 
     public static final WerewolfItem DIVINATION = WerewolfItem.create(Material.HEART_OF_THE_SEA, 1)
@@ -136,6 +166,8 @@ public class ItemRegistry {
             .addEnchantment(Enchantment.LUCK, 1)
             .addFlags(ItemFlag.HIDE_ENCHANTS)
             .setCost(6)
+            .setShopType("special")
+            .setShopSlot(0)
             .build("divination");
 
     public static final WerewolfItem TRAITORS_GUIDE = WerewolfItem.create(Material.BOOK, 1)
@@ -147,6 +179,8 @@ public class ItemRegistry {
             .addEnchantment(Enchantment.LUCK, 1)
             .addFlags(ItemFlag.HIDE_ENCHANTS)
             .setCost(4)
+            .setShopType("special")
+            .setShopSlot(8)
             .build("traitors_guide");
 
     public static final WerewolfItem HOLY_STAR = WerewolfItem.create(Material.NETHER_STAR, 1)
@@ -155,6 +189,8 @@ public class ItemRegistry {
             .addLore("§9Can kill a vampire during night time")
             .addLore("§7When used on non-vampire item is lost")
             .setCost(2)
+            .setShopType("special")
+            .setShopSlot(6)
             .build("holy_star");
 
     public static final WerewolfItem SNEAK_NOTICE = WerewolfItem.create(Material.GLOBE_BANNER_PATTERN, 1)
@@ -165,6 +201,8 @@ public class ItemRegistry {
             .addEnchantment(Enchantment.LUCK, 1)
             .addFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS)
             .setCost(2)
+            .setShopType("special")
+            .setShopSlot(7)
             .build("sneak_notice");
 
     public static final WerewolfItem ASH_OF_THE_DEAD = WerewolfItem.create(Material.GUNPOWDER, 1)
@@ -174,6 +212,8 @@ public class ItemRegistry {
             .addEnchantment(Enchantment.LUCK, 1)
             .addFlags(ItemFlag.HIDE_ENCHANTS)
             .setCost(3)
+            .setShopType("special")
+            .setShopSlot(5)
             .build("ash_of_the_dead");
 
     public static final WerewolfItem CURSE_SPEAR = WerewolfItem.create(Material.TRIDENT, 1)
@@ -185,5 +225,7 @@ public class ItemRegistry {
             .addLore("§7Breaks on usage")
             .addDamage(250)
             .setCost(3)
+            .setShopType("basic")
+            .setShopSlot(6)
             .build("curse_spear");
 }
