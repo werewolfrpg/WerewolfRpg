@@ -1,10 +1,17 @@
 package net.aesten.wwrpg.items;
 
+import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.core.Role;
+import net.aesten.wwrpg.core.WerewolfGame;
+import net.aesten.wwrpg.core.WerewolfPlayerData;
+import net.aesten.wwrpg.utilities.WerewolfUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.potion.PotionEffectType;
@@ -35,25 +42,27 @@ public class ItemRegistry {
             .addName("§6Sharp Arrow")
             .addLore("§9One-time use arrow")
             .setCost(2)
-            .onEventCall((event) -> {
-                //if game not running skip
-                if (event instanceof ProjectileHitEvent projectileHitEvent) {
-                    if (projectileHitEvent.getEntity() instanceof Arrow arrow) {
-                        arrow.remove();
-                        if (projectileHitEvent.getHitEntity() instanceof Player player) {
-                            if (NIGHT) {
-                                if (PLAYER IS VAMPIRE) {
-                                    projectileHitEvent.setCancelled(true);
-                                }
-                                else if (PROTECTION) {
-                                    projectileHitEvent.setCancelled(true);
-                                    //remove protection
-                                    //send message protection activated
-                                    player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-                                }
-                            }
+            .onProjectileHit((event) -> {
+                WerewolfGame game = WerewolfGame.getInstance();
+                if (!game.isPlaying()) return;
+                Projectile projectile = event.getEntity();
+                if ((projectile instanceof Arrow)) {
+                    if (event.getHitEntity() instanceof Player player) {
+                        WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
+                        if (game.isNight() && data.getRole() == Role.VAMPIRE) {
+                            event.setCancelled(true);
+                        }
+                        else if (game.isNight() && data.hasActiveProtection()) {
+                            event.setCancelled(true);
+                            data.setHasActiveProtection(false);
+                            player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+                            WerewolfUtil.sendPluginText(player, "Protection was activated", ChatColor.GREEN);
+                        }
+                        else {
+                            player.setHealth(0);
                         }
                     }
+                    projectile.remove();
                 }
             })
             .build("sharp_arrow");

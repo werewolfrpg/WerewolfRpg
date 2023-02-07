@@ -1,13 +1,12 @@
 package net.aesten.wwrpg.items;
 
-import net.aesten.wwrpg.wwrpg;
+import net.aesten.wwrpg.WerewolfRpg;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
-//import org.bukkit.attribute.Attribute;
-//import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -31,14 +30,32 @@ public class WerewolfItem implements Listener {
     private final ItemStack itemStack;
     private final String id;
     private final int defaultCost;
-    private final Consumer<Event> onEventCall;
+    private final String shopType; //todo shop type
+    private final int shopSlot; //todo shop slot
+    private final Consumer<PlayerInteractEvent> onPlayerInteract;
+    private final Consumer<EntityDamageByEntityEvent> onEntityDamageEntity;
+    private final Consumer<ProjectileHitEvent> onProjectileHit;
+    private final Consumer<PlayerMoveEvent> onPlayerMove;
 
-    public WerewolfItem(ItemStack itemStack, String id, int defaultCost, Consumer<Event> onEventCall) {
+    public WerewolfItem(ItemStack itemStack,
+                        String id,
+                        int defaultCost,
+                        String shopType,
+                        int shopSlot,
+                        Consumer<PlayerInteractEvent> onPlayerInteract,
+                        Consumer<EntityDamageByEntityEvent> onEntityDamageEntity,
+                        Consumer<ProjectileHitEvent> onProjectileHit,
+                        Consumer<PlayerMoveEvent> onPlayerMove) {
         this.itemStack = itemStack;
         this.id = id;
         this.defaultCost = defaultCost;
-        this.onEventCall = onEventCall;
-        Bukkit.getPluginManager().registerEvents(this, wwrpg.getPlugin());
+        this.shopType = shopType;
+        this.shopSlot = shopSlot;
+        this.onPlayerInteract = onPlayerInteract;
+        this.onEntityDamageEntity = onEntityDamageEntity;
+        this.onProjectileHit = onProjectileHit;
+        this.onPlayerMove = onPlayerMove;
+        Bukkit.getPluginManager().registerEvents(this, WerewolfRpg.getPlugin());
     }
 
     public ItemStack getItemStack() {
@@ -53,12 +70,32 @@ public class WerewolfItem implements Listener {
         return defaultCost;
     }
 
+    public String getShopType() {
+        return shopType;
+    }
+
+    public int getShopSlot() {
+        return shopSlot;
+    }
+
     @EventHandler
-    public final void onEventCall(Event event) {
-        if (event instanceof PlayerInteractEvent || event instanceof PlayerMoveEvent ||
-                event instanceof ProjectileHitEvent || event instanceof EntityDamageByEntityEvent) {
-            onEventCall.accept(event);
-        }
+    public final void onPlayerInteract(PlayerInteractEvent event) {
+        onPlayerInteract.accept(event);
+    }
+
+    @EventHandler
+    public final void onEntityDamageEntity(EntityDamageByEntityEvent event) {
+        onEntityDamageEntity.accept(event);
+    }
+
+    @EventHandler
+    public final void onProjectileHit(ProjectileHitEvent event) {
+        onProjectileHit.accept(event);
+    }
+
+    @EventHandler
+    public final void onPlayerMove(PlayerMoveEvent event) {
+        onPlayerMove.accept(event);
     }
 
     public static Builder create(Material material, int amount) {
@@ -71,7 +108,12 @@ public class WerewolfItem implements Listener {
         private final ItemMeta meta;
         private final List<String> lore;
         private int defaultCost;
-        private Consumer<Event> onEventCall = event -> {};
+        private String shopType;
+        private int shopSlot;
+        private Consumer<PlayerInteractEvent> onPlayerInteract = event -> {};
+        private Consumer<EntityDamageByEntityEvent> onEntityDamageEntity = event -> {};
+        private Consumer<ProjectileHitEvent> onProjectileHit = event -> {};
+        private Consumer<PlayerMoveEvent> onPlayerMove = event -> {};
 
         private Builder(Material material, int amount) {
             itemStack = new ItemStack(material, amount);
@@ -99,10 +141,10 @@ public class WerewolfItem implements Listener {
             return this;
         }
 
-//        public Builder addAttributeModifier(Attribute attribute, AttributeModifier attributeModifier) {
-//            meta.addAttributeModifier(attribute, attributeModifier);
-//            return this;
-//        }
+        public Builder addAttributeModifier(Attribute attribute, AttributeModifier attributeModifier) {
+            meta.addAttributeModifier(attribute, attributeModifier);
+            return this;
+        }
 
         public Builder addPotionEffect(PotionEffectType effectType, int duration, int amplifier, boolean ambient, boolean particles, boolean icon) {
             ((PotionMeta) meta).addCustomEffect(new PotionEffect(effectType, duration, amplifier, ambient, particles, icon), true);
@@ -114,18 +156,43 @@ public class WerewolfItem implements Listener {
             return this;
         }
 
-//        public Builder unbreakable() {
-//            meta.setUnbreakable(true);
-//            return this;
-//        }
+        public Builder setUnbreakable() {
+            meta.setUnbreakable(true);
+            return this;
+        }
 
-        public Builder onEventCall(Consumer<Event> onEventCall) {
-            this.onEventCall = onEventCall;
+        public Builder onPlayerInteract(Consumer<PlayerInteractEvent> onPlayerInteract) {
+            this.onPlayerInteract = onPlayerInteract;
+            return this;
+        }
+
+        public Builder onEntityDamageEntity(Consumer<EntityDamageByEntityEvent> onEntityDamageEntity) {
+            this.onEntityDamageEntity = onEntityDamageEntity;
+            return this;
+        }
+
+        public Builder onProjectileHit(Consumer<ProjectileHitEvent> onProjectileHit) {
+            this.onProjectileHit = onProjectileHit;
+            return this;
+        }
+
+        public Builder onPlayerMove(Consumer<PlayerMoveEvent> onPlayerMove) {
+            this.onPlayerMove = onPlayerMove;
             return this;
         }
 
         public Builder setCost(int defaultCost) {
             this.defaultCost = defaultCost;
+            return this;
+        }
+
+        public Builder setShopType(String shopType) {
+            this.shopType = shopType;
+            return this;
+        }
+
+        public Builder setShopSlot(int shopSlot) {
+            this.shopSlot= shopSlot;
             return this;
         }
 
@@ -137,7 +204,7 @@ public class WerewolfItem implements Listener {
         public WerewolfItem build(String id) {
             meta.setLore(lore);
             itemStack.setItemMeta(meta);
-            return new WerewolfItem(itemStack, id, defaultCost, onEventCall);
+            return new WerewolfItem(itemStack, id, defaultCost, shopType, shopSlot, onPlayerInteract, onEntityDamageEntity, onProjectileHit, onPlayerMove);
         }
     }
 }
