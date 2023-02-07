@@ -1,8 +1,8 @@
 package net.aesten.wwrpg.utilities;
 
 import net.aesten.wwrpg.WerewolfRpg;
-import net.aesten.wwrpg.core.Role;
-import net.aesten.wwrpg.core.WerewolfTeams;
+import net.aesten.wwrpg.data.Role;
+import net.aesten.wwrpg.data.WerewolfTeams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;

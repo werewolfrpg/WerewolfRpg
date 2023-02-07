@@ -12,6 +12,8 @@ public class WerewolfMap {
     private final World world;
     private final List<Vector> signPostLocations;
     private final List<Vector> skeletonSpawnLocations;
+    private final List<Location> basicShopLocations;
+    private final List<Location> specialShopLocations;
     private Location mapSpawn;
     private Location borderCenter;
     private Double borderSize;
@@ -21,6 +23,8 @@ public class WerewolfMap {
         this.world = world;
         this.signPostLocations = new ArrayList<>();
         this.skeletonSpawnLocations = new ArrayList<>();
+        this.basicShopLocations = new ArrayList<>();
+        this.specialShopLocations = new ArrayList<>();
         this.mapSpawn = world.getSpawnLocation();
         this.borderCenter = world.getWorldBorder().getCenter();
         this.borderSize = world.getWorldBorder().getSize();
@@ -60,6 +64,14 @@ public class WerewolfMap {
 
     public List<Vector> getSkeletonSpawnLocations() {
         return skeletonSpawnLocations;
+    }
+
+    public List<Location> getBasicShopLocations() {
+        return basicShopLocations;
+    }
+
+    public List<Location> getSpecialShopLocations() {
+        return specialShopLocations;
     }
 
     public World getWorld() {

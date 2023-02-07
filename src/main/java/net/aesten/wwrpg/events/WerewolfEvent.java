@@ -2,7 +2,7 @@ package net.aesten.wwrpg.events;
 
 import net.aesten.wwrpg.core.WerewolfGame;
 import com.aesten.wwrpg.engine.WerewolfPlayer;
-import net.aesten.wwrpg.core.WerewolfPlayerData;
+import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.wwrpg;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

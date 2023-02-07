@@ -1,8 +1,11 @@
 package net.aesten.wwrpg.core;
 
 import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.data.Role;
+import net.aesten.wwrpg.data.WerewolfPlayerData;
+import net.aesten.wwrpg.data.WerewolfTeams;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
-import net.aesten.wwrpg.configurations.RolePool;
+import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.configurations.WerewolfMap;
 import net.aesten.wwrpg.items.ItemRegistry;
 import org.bukkit.Bukkit;
@@ -31,7 +34,7 @@ public class WerewolfGame {
         this.participants = new ArrayList<>();
         this.dataMap = new HashMap<>();
         this.teamsMap = new HashMap<>();
-        this.pool = new RolePool(0,0,0,0);
+        this.pool = new RolePool(1,0,0,0);
         this.ticker = new Ticker();
         this.isPlaying = false;
         this.isNight = false;

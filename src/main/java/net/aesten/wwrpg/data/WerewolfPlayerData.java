@@ -1,4 +1,4 @@
-package net.aesten.wwrpg.core;
+package net.aesten.wwrpg.data;
 
 public class WerewolfPlayerData {
     private Role role;

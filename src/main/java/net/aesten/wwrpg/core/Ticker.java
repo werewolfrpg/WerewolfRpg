@@ -1,6 +1,8 @@
 package net.aesten.wwrpg.core;
 
 import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.data.Role;
+import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.items.ItemRegistry;
 import net.md_5.bungee.api.ChatMessageType;
