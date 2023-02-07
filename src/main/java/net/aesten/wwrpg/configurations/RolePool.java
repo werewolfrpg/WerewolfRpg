@@ -1,6 +1,6 @@
-package net.aesten.wwrpg.config;
+package net.aesten.wwrpg.configurations;
 
-import net.aesten.wwrpg.engine.Role;
+import net.aesten.wwrpg.core.Role;
 
 import java.util.ArrayList;
 import java.util.Collections;

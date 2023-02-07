@@ -1,4 +1,4 @@
-package net.aesten.wwrpg.engine;
+package net.aesten.wwrpg.core;
 
 import org.bukkit.ChatColor;
 

@@ -2,6 +2,7 @@ package net.aesten.wwrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import net.aesten.wwrpg.events.WerewolfEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,7 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Command(name = "foo", desc = "Foo command", aliases = {"foobar", "fubar"}, permission = "test.foo", permissionMessage = "You do not have permission!", usage = "/<command> [test|stop]")
 @Permission(name = "test.foo", desc = "Allows foo command", defaultValue = PermissionDefault.OP)
 @Permission(name = "test.*", desc = "Wildcard permission", children = {@ChildPermission(name ="test.foo")})
-public final class wwrpg extends JavaPlugin {
+public final class WerewolfRpg extends JavaPlugin {
     private static org.bukkit.plugin.Plugin plugin;
     private static ProtocolManager protocolManager;
     public static final ChatColor COLOR = ChatColor.GOLD;

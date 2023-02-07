@@ -1,9 +1,10 @@
-package net.aesten.wwrpg.engine;
+package net.aesten.wwrpg.core;
 
-import net.aesten.wwrpg.WerewolfUtil;
-import net.aesten.wwrpg.config.RolePool;
+import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.utilities.WerewolfUtil;
+import net.aesten.wwrpg.configurations.RolePool;
+import net.aesten.wwrpg.configurations.WerewolfMap;
 import net.aesten.wwrpg.items.ItemRegistry;
-import net.aesten.wwrpg.wwrpg;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -26,13 +27,12 @@ public class WerewolfGame {
     private boolean isPlaying;
     private boolean isNight;
 
-    public WerewolfGame(WerewolfMap map) {
+    public WerewolfGame() {
         this.participants = new ArrayList<>();
         this.dataMap = new HashMap<>();
         this.teamsMap = new HashMap<>();
         this.pool = new RolePool(0,0,0,0);
         this.ticker = new Ticker();
-        this.map = map;
         this.isPlaying = false;
         this.isNight = false;
 
@@ -45,8 +45,8 @@ public class WerewolfGame {
 
     public WerewolfGame(WerewolfGame previousGame) {
         this.participants = previousGame.participants;
-        this.dataMap = previousGame.dataMap;
-        this.teamsMap = previousGame.teamsMap;
+        this.dataMap = new HashMap<>();
+        this.teamsMap = new HashMap<>();
         this.pool = previousGame.pool;
         this.ticker = new Ticker();
         this.map = previousGame.map;
@@ -70,6 +70,10 @@ public class WerewolfGame {
 
     public List<UUID> getFaction(Role role) {
         return teamsMap.get(role);
+    }
+
+    public Map<UUID, WerewolfPlayerData> getDataMap() {
+        return dataMap;
     }
 
     public boolean isNight() {
@@ -101,7 +105,7 @@ public class WerewolfGame {
     }
 
     public static void init() {
-        instance = new WerewolfGame(WerewolfMaps.getLobby); //todo
+        instance = new WerewolfGame();
     }
 
     public static boolean isReady() {
@@ -167,14 +171,14 @@ public class WerewolfGame {
 
                     //Add player to correct team and set roles
                     instance.teamsMap.get(role).add(player.getUniqueId());
-                    WerewolfPlayerData.getDataMap().put(player.getUniqueId(), new WerewolfPlayerData());
-                    WerewolfPlayerData.getData(player.getUniqueId()).setRole(role);
+                    instance.dataMap.put(player.getUniqueId(), new WerewolfPlayerData());
+                    instance.dataMap.get(player.getUniqueId()).setRole(role);
                     WerewolfTeams.getTeam(role).addEntry(player.getName());
 
                     //Send role message to player
                     player.sendTitle(role.apparentRole().color + role.apparentRole().name,
                             ChatColor.GOLD + "GAME START", 2, 2, 40);
-                    player.sendMessage(wwrpg.COLOR + wwrpg.LOG + ChatColor.RESET +
+                    player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.RESET +
                             "You are a " + role.apparentRole().color + role.apparentRole().name);
 
                     //Prepare player
@@ -182,13 +186,16 @@ public class WerewolfGame {
                     player.getInventory().addItem(ItemRegistry.SKELETON_PUNISHER.getItemStack());
                     player.getInventory().addItem(ItemRegistry.EXQUISITE_MEAT.getItemStack());
                 }
+                else {
+                    instance.teamsMap.get(Role.SPECTATOR).add(player.getUniqueId());
+                }
             }
         }
 
         if (WerewolfTeams.getTeam(Role.WEREWOLF).getSize() > 1) {
             String werewolves = String.join(", ", WerewolfTeams.getTeam(Role.WEREWOLF).getEntries());
             for (Player player : instance.teamsMap.get(Role.WEREWOLF).stream().map(Bukkit::getPlayer).toList()) {
-                player.sendMessage(wwrpg.COLOR + wwrpg.LOG + ChatColor.RESET +
+                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.RESET +
                         "The werewolves are " + Role.WEREWOLF.color + werewolves);
             }
         }
@@ -198,13 +205,13 @@ public class WerewolfGame {
 
     public static void endGame() {
         if (instance.getFaction(Role.VAMPIRE).size() != 0) {
-            stop(ChatColor.LIGHT_PURPLE + "Vampire Victory!");
+            stop(Role.VAMPIRE.color + "Vampire Victory!");
         }
         else if (instance.getFaction(Role.VILLAGER).size() == 0) {
-            stop(ChatColor.DARK_RED + "Werewolf Victory!");
+            stop(Role.WEREWOLF.color + "Werewolf Victory!");
         }
         else {
-            stop(ChatColor.GREEN + "Villager Victory!");
+            stop(Role.VILLAGER.color + "Villager Victory!");
         }
     }
 
@@ -214,22 +221,26 @@ public class WerewolfGame {
 
     private static void stop(String endReason) {
         //todo send data to database
-        WerewolfUtil.showMatchRoles();
         //todo erase sign posts
-        instance.isPlaying = false;
-        instance.isNight = false;
-        instance.dataMap.clear();
+
+        //show roles to players
+        WerewolfUtil.showMatchRoles();
+
+        //reset all values
+        instance = new WerewolfGame(instance);
         instance.map.getWorld().setTime(6000L);
         WerewolfTeams.clear();
 
+        //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {
             if (entity.getType().equals(EntityType.SKELETON) || entity.getType().equals(EntityType.DROPPED_ITEM)) {
                 entity.remove();
             }
             else if (entity instanceof Player player) {
                 player.getInventory().clear();
-                player.sendTitle(comment, ChatColor.GOLD + "GAME END", 2, 2, 40);
-                player.sendMessage(wwrpg.color + "[WWRPG]: " + comment);
+                player.sendTitle(endReason, ChatColor.GOLD + "GAME END", 2, 2, 40);
+                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + endReason);
+                player.teleport(instance.map.getMapSpawn());
             }
         }
 

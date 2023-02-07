@@ -1,4 +1,4 @@
-package net.aesten.wwrpg;
+package net.aesten.wwrpg.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

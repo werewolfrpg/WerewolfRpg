@@ -1,7 +1,8 @@
-package net.aesten.wwrpg;
+package net.aesten.wwrpg.utilities;
 
-import net.aesten.wwrpg.engine.Role;
-import net.aesten.wwrpg.engine.WerewolfTeams;
+import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.core.Role;
+import net.aesten.wwrpg.core.WerewolfTeams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -16,7 +17,7 @@ public class WerewolfUtil {
     }
 
     public static void sendPluginText(Player player, String message, ChatColor color) {
-        player.sendMessage(wwrpg.COLOR + wwrpg.LOG + color + message);
+        player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + color + message);
     }
 
     public static void sendTitle(Player player, String title, String subtitle) {

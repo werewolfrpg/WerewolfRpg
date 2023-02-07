@@ -1,8 +1,8 @@
-package net.aesten.wwrpg.engine;
+package net.aesten.wwrpg.core;
 
-import net.aesten.wwrpg.WerewolfUtil;
+import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.items.ItemRegistry;
-import net.aesten.wwrpg.wwrpg;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -64,7 +64,7 @@ public class Ticker {
                     progress = 1.0;
                 }
             }
-        }.runTaskTimer(wwrpg.getPlugin(), 0, 10);
+        }.runTaskTimer(WerewolfRpg.getPlugin(), 0, 10);
     }
 
     private void switchToNight(WerewolfGame game) {
@@ -76,13 +76,15 @@ public class Ticker {
 
         //todo summon skeletons
 
-        for (Player player : game.getParticipants()) {
-            WerewolfPlayerData data = WerewolfPlayerData.getData(player.getUniqueId());
-            if (data.getRole() == Role.VAMPIRE && !data.isDead()) {
-                player.addPotionEffect(
-                        new PotionEffect(
-                                PotionEffectType.DAMAGE_RESISTANCE,
-                                2400, 5,false, false, false));
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (game.getParticipants().contains(player)) {
+                WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
+                if (data.getRole() == Role.VAMPIRE && !data.isDead()) {
+                    player.addPotionEffect(
+                            new PotionEffect(
+                                    PotionEffectType.DAMAGE_RESISTANCE,
+                                    2400, 5,false, false, false));
+                }
             }
             WerewolfUtil.sendTitle(player, ChatColor.DARK_PURPLE + "NIGHT TIME", ChatColor.GOLD + "Night " + days);
         }
@@ -99,12 +101,14 @@ public class Ticker {
                 entity.remove();
             }
             else if (entity instanceof Player player) {
-                player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+                if (game.getParticipants().contains(player)) {
+                    WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
+                    player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+                    data.resetTemporaryValues();
+                }
                 WerewolfUtil.sendTitle(player, ChatColor.YELLOW + "DAY TIME", ChatColor.GOLD + "Day " + days);
             }
         }
-
-        WerewolfPlayerData.resetTemporaryValues();
     }
 
     private void tick(WerewolfGame game) {
@@ -115,7 +119,7 @@ public class Ticker {
         else {
             for (Player player : game.getParticipants()) {
                 Inventory inventory = player.getInventory();
-                WerewolfPlayerData data = WerewolfPlayerData.getData(player.getUniqueId());
+                WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
 
                 if (inventory.contains(ItemRegistry.DIVINATION.getItemStack().getType())) {
                     int div = 0;

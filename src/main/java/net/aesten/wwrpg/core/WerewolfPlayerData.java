@@ -1,10 +1,6 @@
-package net.aesten.wwrpg.engine;
-
-import java.util.Map;
-import java.util.UUID;
+package net.aesten.wwrpg.core;
 
 public class WerewolfPlayerData {
-    public static Map<UUID, WerewolfPlayerData> dataMap;
     private Role role;
     private boolean isDead;
     private boolean isCursed;
@@ -28,22 +24,12 @@ public class WerewolfPlayerData {
         this.remainingDivinations = 0;
     }
 
-    public static void resetTemporaryValues() {
-        for (WerewolfPlayerData data : dataMap.values()) {
-            data.hasActiveSneakNotice = false;
-            data.hasActiveProtection = false;
-            data.hasAlreadyUsedProtection = false;
-            data.hasAlreadyUsedDivination = false;
-            data.hasBeenDivinated = false;
-        }
-    }
-
-    public static WerewolfPlayerData getData(UUID id) {
-        return dataMap.get(id);
-    }
-
-    public static Map<UUID, WerewolfPlayerData> getDataMap() {
-        return dataMap;
+    public void resetTemporaryValues() {
+        this.hasActiveSneakNotice = false;
+        this.hasActiveProtection = false;
+        this.hasAlreadyUsedProtection = false;
+        this.hasAlreadyUsedDivination = false;
+        this.hasBeenDivinated = false;
     }
 
     public Role getRole() {

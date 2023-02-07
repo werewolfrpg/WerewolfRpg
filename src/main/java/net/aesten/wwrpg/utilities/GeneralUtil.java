@@ -1,4 +1,4 @@
-package net.aesten.wwrpg;
+package net.aesten.wwrpg.utilities;
 
 import java.util.Collection;
 
