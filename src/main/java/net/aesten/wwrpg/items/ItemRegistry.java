@@ -7,6 +7,7 @@ import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -204,6 +205,25 @@ public class ItemRegistry {
             .setCost(3)
             .setShopType("special")
             .setShopSlot(1)
+            .onPlayerInteract(event -> {
+                WerewolfGame game = WerewolfGame.getInstance();
+                if (!game.isPlaying()) return;
+                if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (event.getItem() != null && event.getItem().getType() == Material.SUNFLOWER) {
+                        Player user = event.getPlayer();
+                        for (Player player : game.getParticipants()) {
+                            if (!player.equals(user)) {
+                                if (game.getDataMap().get(player.getUniqueId()).isAlive()) {
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 600, 0, false, false, false));
+                                }
+                            }
+                        }
+                        user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
+                        game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.6f,1);
+                        WerewolfUtil.sendPluginText(user, "Players are revealed");
+                    }
+                }
+            })
             .build("light_of_revelation");
 
     public static final WerewolfItem PROTECTION = WerewolfItem.create(Material.ARMOR_STAND, 1)
@@ -216,6 +236,37 @@ public class ItemRegistry {
             .setCost(4)
             .setShopType("special")
             .setShopSlot(2)
+            .onPlayerInteract(event -> {
+                WerewolfGame game = WerewolfGame.getInstance();
+                if (!game.isPlaying()) return;
+                if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (event.getItem() != null && event.getItem().getType() == Material.ARMOR_STAND) {
+                        Player user = event.getPlayer();
+                        if (!game.isNight()) {
+                            WerewolfUtil.sendPluginText(user, "You cannot use this item during day time", ChatColor.RED);
+                            return;
+                        }
+                        WerewolfPlayerData data = game.getDataMap().get(user.getUniqueId());
+                        if (data.hasAlreadyUsedProtection()) {
+                            WerewolfUtil.sendPluginText(user, "You have already used one protection this night", ChatColor.RED);
+                        }
+                        else if (data.getRole() == Role.VILLAGER || data.getRole() == Role.POSSESSED) {
+                            data.setHasActiveProtection(true);
+                            data.setHasAlreadyUsedProtection(true);
+                            user.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 5, false, false, false));
+                            user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
+                            game.getMap().getWorld().playSound(user.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f,1);
+                            WerewolfUtil.sendPluginText(user, "Protection activated", ChatColor.GREEN);
+                        }
+                        else {
+                            data.setHasAlreadyUsedProtection(true);
+                            user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
+                            game.getMap().getWorld().playSound(user.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f,1);
+                            WerewolfUtil.sendPluginText(user, "Protection will have no effect", ChatColor.RED);
+                        }
+                    }
+                }
+            })
             .build("protection");
 
     public static final WerewolfItem DIVINATION = WerewolfItem.create(Material.HEART_OF_THE_SEA, 1)
@@ -241,6 +292,19 @@ public class ItemRegistry {
             .setCost(4)
             .setShopType("special")
             .setShopSlot(8)
+            .onPlayerInteract(event -> {
+                WerewolfGame game = WerewolfGame.getInstance();
+                if (!game.isPlaying()) return;
+                if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (event.getItem() != null && event.getItem().getType() == Material.BOOK) {
+                        Player user = event.getPlayer();
+
+                        user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
+                        game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_VILLAGER_WORK_LIBRARIAN, 0.8f,1);
+                        WerewolfUtil.sendPluginText(user, "Players are revealed");
+                    }
+                }
+            })
             .build("traitors_guide");
 
     public static final WerewolfItem HOLY_STAR = WerewolfItem.create(Material.NETHER_STAR, 1)

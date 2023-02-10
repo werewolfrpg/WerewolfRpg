@@ -82,7 +82,7 @@ public class Ticker {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (game.getParticipants().contains(player)) {
                 WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
-                if (data.getRole() == Role.VAMPIRE && !data.isDead()) {
+                if (data.getRole() == Role.VAMPIRE && data.isAlive()) {
                     player.addPotionEffect(
                             new PotionEffect(
                                     PotionEffectType.DAMAGE_RESISTANCE,

@@ -2,7 +2,7 @@ package net.aesten.wwrpg.data;
 
 public class WerewolfPlayerData {
     private Role role;
-    private boolean isDead;
+    private boolean isAlive;
     private boolean isCursed;
     private boolean isStunned;
     private boolean hasActiveSneakNotice;
@@ -13,7 +13,7 @@ public class WerewolfPlayerData {
     private int remainingDivinations;
 
     public WerewolfPlayerData() {
-        this.isDead = false;
+        this.isAlive = true;
         this.isCursed = false;
         this.isStunned = false;
         this.hasActiveSneakNotice = false;
@@ -41,12 +41,12 @@ public class WerewolfPlayerData {
     }
 
 
-    public boolean isDead() {
-        return isDead;
+    public boolean isAlive() {
+        return isAlive;
     }
 
-    public void setDead(boolean dead) {
-        isDead = dead;
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 
     public boolean isCursed() {
