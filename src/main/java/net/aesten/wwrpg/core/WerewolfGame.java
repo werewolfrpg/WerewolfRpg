@@ -11,10 +11,12 @@ import net.aesten.wwrpg.items.ItemRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -240,13 +242,21 @@ public class WerewolfGame {
                 entity.remove();
             }
             else if (entity instanceof Player player) {
+                WerewolfUtil.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
                 player.getInventory().clear();
                 player.sendTitle(endReason, ChatColor.GOLD + "GAME END", 2, 2, 40);
                 player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + endReason);
-                player.teleport(instance.map.getMapSpawn());
+                player.setGameMode(GameMode.SPECTATOR);
             }
         }
 
+        //gather players back to spawn
+        WerewolfUtil.runDelayedTask(100, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.teleport(instance.getMap().getMapSpawn());
+                player.setGameMode(GameMode.ADVENTURE);
+            }
+        });
     }
 
 

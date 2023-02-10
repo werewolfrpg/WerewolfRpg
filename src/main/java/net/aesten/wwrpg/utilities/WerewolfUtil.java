@@ -5,10 +5,12 @@ import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfTeams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class WerewolfUtil {
@@ -38,18 +40,25 @@ public class WerewolfUtil {
         }
     }
 
-    public static void removeAllPotionEffectsFromAllPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            removeAllPotionEffectsFromPlayer(player);
-        }
-    }
-
     public static void removeAllPotionEffectsFromPlayer(Player player) {
         for (PotionEffectType type : PotionEffectType.values()) {
             if (player.hasPotionEffect(type)) {
                 player.removePotionEffect(type);
             }
         }
+    }
+
+    public static void playSound(Player player, Sound sound) {
+        player.playSound(player.getLocation(), sound , 0.6f, 1);
+    }
+
+    public static void runDelayedTask(int delay, Runnable runnable) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        }.runTaskLater(WerewolfRpg.getPlugin(), delay);
     }
 
     public static void showMatchRoles() {

@@ -31,7 +31,7 @@ public class Ticker {
     private int days;
 
     public Ticker() {
-        this.bar = Bukkit.createBossBar("§eDay Time", BarColor.YELLOW, BarStyle.SEGMENTED_6);
+        this.bar = Bukkit.createBossBar(ChatColor.YELLOW + "Day Time", BarColor.YELLOW, BarStyle.SEGMENTED_6);
         this.bar.setVisible(true);
         this.days = 0;
     }
@@ -70,6 +70,7 @@ public class Ticker {
     }
 
     private void switchToNight(WerewolfGame game) {
+        //todo db event timeline
         days++;
         bar.setColor(BarColor.PURPLE);
         bar.setTitle(ChatColor.DARK_PURPLE + "Night Time");
@@ -93,6 +94,7 @@ public class Ticker {
     }
 
     private void switchToDay(WerewolfGame game) {
+        //todo db event timeline
         bar.setColor(BarColor.YELLOW);
         bar.setTitle(ChatColor.YELLOW + "Day Time");
         game.getMap().getWorld().setTime(6000L);
