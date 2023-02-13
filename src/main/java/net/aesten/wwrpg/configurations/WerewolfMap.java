@@ -1,5 +1,10 @@
 package net.aesten.wwrpg.configurations;
 
+import net.azalealibrary.configuration.Configurable;
+import net.azalealibrary.configuration.property.ConfigurableProperty;
+import net.azalealibrary.configuration.property.ListProperty;
+import net.azalealibrary.configuration.property.Property;
+import net.azalealibrary.configuration.property.PropertyType;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
@@ -7,103 +12,60 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WerewolfMap {
-    private String mapName;
-    private final World world;
-    private final List<Vector> signPostLocations;
-    private final List<Vector> skeletonSpawnLocations;
-    private final List<Location> basicShopLocations;
-    private final List<Location> specialShopLocations;
-    private Location mapSpawn;
-    private Location borderCenter;
-    private Double borderSize;
+public class WerewolfMap implements Configurable {
+    private final String mapName;
+    private final Property<World> world;
+    private final Property<Location> mapSpawn;
+    private final Property<Vector> borderCenter;
+    private final Property<Double> borderSize;
+    private final ListProperty<Vector> skullLocations;
+    private final ListProperty<Vector> skeletonSpawnLocations;
 
     public WerewolfMap(String mapName, World world) {
         this.mapName = mapName;
-        this.world = world;
-        this.signPostLocations = new ArrayList<>();
-        this.skeletonSpawnLocations = new ArrayList<>();
-        this.basicShopLocations = new ArrayList<>();
-        this.specialShopLocations = new ArrayList<>();
-        this.mapSpawn = world.getSpawnLocation();
-        this.borderCenter = world.getWorldBorder().getCenter();
-        this.borderSize = world.getWorldBorder().getSize();
-    }
-
-    public void addSkeletonSpawn(Vector vector) {
-        skeletonSpawnLocations.add(vector);
-    }
-
-    public void addSignPost(Vector vector) {
-        signPostLocations.add(vector);
-    }
-
-    public void removeSkeletonSpawn(Vector vector) {
-        skeletonSpawnLocations.remove(vector);
-    }
-
-    public void removeSignPost(Vector vector) {
-        signPostLocations.remove(vector);
-    }
-
-    public void wipeSkeletonSpawns() {
-        skeletonSpawnLocations.clear();
-    }
-
-    public void wipeSignPosts() {
-        signPostLocations.clear();
+        this.world = new Property<>(PropertyType.WORLD, () -> world, "world", "the world which contains the map", false);
+        this.mapSpawn = new Property<>(PropertyType.LOCATION, world::getSpawnLocation, "spawn", "the spawn point for this map", false);
+        this.borderCenter = new Property<>(PropertyType.VECTOR, () -> world.getWorldBorder().getCenter().toVector(), "border.center","the center point for the world border when playing this map",false);
+        this.borderSize = new Property<>(PropertyType.DOUBLE, () -> world.getWorldBorder().getSize(), "border.size", "the world border size when playing this map", false);
+        this.skullLocations = new ListProperty<>(PropertyType.VECTOR, ArrayList::new, "player_head_positions", "The coordinates of the player head blocks", false);
+        this.skeletonSpawnLocations = new ListProperty<>(PropertyType.VECTOR, ArrayList::new, "skeleton_spawn_locations", "The coordinates of skeleton spawn points", false);
     }
 
     public String getMapName() {
         return mapName;
     }
 
-    public List<Vector> getSignPostLocations() {
-        return signPostLocations;
+    public List<Vector> getSkullLocations() {
+        return skullLocations.get();
     }
 
     public List<Vector> getSkeletonSpawnLocations() {
-        return skeletonSpawnLocations;
-    }
-
-    public List<Location> getBasicShopLocations() {
-        return basicShopLocations;
-    }
-
-    public List<Location> getSpecialShopLocations() {
-        return specialShopLocations;
+        return skeletonSpawnLocations.get();
     }
 
     public World getWorld() {
-        return world;
+        return world.get();
     }
 
     public Location getMapSpawn() {
-        return mapSpawn;
+        return mapSpawn.get();
     }
 
-    public Location getBorderCenter() {
-        return borderCenter;
+    public Vector getBorderCenter() {
+        return borderCenter.get();
     }
 
     public Double getBorderSize() {
-        return borderSize;
+        return borderSize.get();
     }
 
-    public void setMapName(String mapName) {
-        this.mapName = mapName;
+    @Override
+    public String getName() {
+        return mapName;
     }
 
-    public void setMapSpawn(Location mapSpawn) {
-        this.mapSpawn = mapSpawn;
+    @Override
+    public List<ConfigurableProperty<?, ?>> getProperties() {
+        return List.of(world, mapSpawn, borderCenter, borderSize, skullLocations, skeletonSpawnLocations);
     }
-
-    public void setBorderCenter(Location borderCenter) {
-        this.borderCenter = borderCenter;
-    }
-
-    public void setBorderSize(Double borderSize) {
-        this.borderSize = borderSize;
-    }
-
 }

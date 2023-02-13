@@ -26,8 +26,6 @@ public final class WerewolfRpg extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;
     public static final String LOG = "[wwrpg]: ";
 
-
-
     @Override
     public void onLoad() {
         plugin = this;

@@ -16,7 +16,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -49,6 +48,7 @@ public class WerewolfGame {
     }
 
     public WerewolfGame(WerewolfGame previousGame) {
+        previousGame.participants.removeIf(p -> !Bukkit.getOnlinePlayers().contains(p));
         this.participants = previousGame.participants;
         this.dataMap = new HashMap<>();
         this.teamsMap = new HashMap<>();
@@ -79,6 +79,10 @@ public class WerewolfGame {
 
     public Map<UUID, WerewolfPlayerData> getDataMap() {
         return dataMap;
+    }
+
+    public RolePool getPool() {
+        return pool;
     }
 
     public boolean isNight() {
@@ -117,7 +121,7 @@ public class WerewolfGame {
         if (instance.participants.size() < 2) {
             statusMessage = "Not enough participants";
         }
-        else if (instance.participants.size() > instance.map.getSignPostLocations().size()) {
+        else if (instance.participants.size() > instance.map.getSkullLocations().size()) {
             statusMessage = "Too many players for selected map";
         }
         else if (Bukkit.getOnlinePlayers().containsAll(instance.participants)) {
@@ -167,9 +171,9 @@ public class WerewolfGame {
                         role = Role.VILLAGER;
                     }
 
-                    //Update sign post
+                    //Update sign post todo skulls
                     WerewolfUtil.updateSignPost(instance.map.getWorld(),
-                            instance.map.getSignPostLocations().get(count),
+                            instance.map.getSkullLocations().get(count),
                             ChatColor.GRAY + "Player:",
                             player.getName(),
                             ChatColor.GRAY + "Click to divinate");

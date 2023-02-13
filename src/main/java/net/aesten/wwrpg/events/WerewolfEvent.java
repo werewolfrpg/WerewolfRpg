@@ -1,9 +1,7 @@
 package net.aesten.wwrpg.events;
 
+import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.core.WerewolfGame;
-import com.aesten.wwrpg.engine.WerewolfPlayer;
-import net.aesten.wwrpg.data.WerewolfPlayerData;
-import net.aesten.wwrpg.wwrpg;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,11 +14,7 @@ public class WerewolfEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (!WerewolfGame.getInstance().isPlaying()) {
-            event.setJoinMessage(wwrpg.COLOR + "[Server]: " + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " joined the server!");
-        }
-
-        WerewolfPlayerData.getDataMap().put(player.getUniqueId(), new WerewolfPlayerData());
+        event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " joined the server!");
     }
 
     @EventHandler
@@ -30,12 +24,10 @@ public class WerewolfEvent implements Listener {
         if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
             event.setQuitMessage(null);
             //todo player stats (for database) will be saved and status disconnect instead of dead/alive
-            WerewolfGame.getInstance().getParticipants().removeIf(wp -> wp.getId() == player.getUniqueId());
+            WerewolfGame.getInstance().getDataMap().remove(player.getUniqueId());
         }
         else {
-            event.setQuitMessage(wwrpg.COLOR + wwrpg.LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " left the server!");
+            event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " left the server!");
         }
-
-        WerewolfPlayerData.getDataMap().remove(player.getUniqueId());
     }
 }

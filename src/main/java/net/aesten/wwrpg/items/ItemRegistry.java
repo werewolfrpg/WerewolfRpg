@@ -3,6 +3,7 @@ package net.aesten.wwrpg.items;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
+import net.aesten.wwrpg.data.WerewolfTeams;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -14,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class ItemRegistry {
     private static final HashMap<String, WerewolfItem> registry = new HashMap<>();
@@ -21,6 +23,7 @@ public class ItemRegistry {
     public static HashMap<String, WerewolfItem> getRegistry() {
         return registry;
     }
+
     public static final WerewolfItem SKELETON_PUNISHER = WerewolfItem.create(Material.STICK, 1)
             .addName(ChatColor.GOLD + "Skeleton Punisher")
             .addLore(ChatColor.BLUE + "A stick to break 'em bones!")
@@ -292,16 +295,17 @@ public class ItemRegistry {
             .setCost(4)
             .setShopType("special")
             .setShopSlot(8)
-            .onPlayerInteract(event -> {
+            .onPlayerInteract(event -> { //todo db
                 WerewolfGame game = WerewolfGame.getInstance();
                 if (!game.isPlaying()) return;
                 if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (event.getItem() != null && event.getItem().getType() == Material.BOOK) {
                         Player user = event.getPlayer();
-
                         user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
                         game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_VILLAGER_WORK_LIBRARIAN, 0.8f,1);
-                        WerewolfUtil.sendPluginText(user, "Players are revealed");
+                        String werewolf = WerewolfTeams.getTeam(Role.WEREWOLF).getEntries().stream().toList()
+                                .get(new Random().nextInt(game.getPool().getWerewolfNumber()));
+                        WerewolfUtil.sendPluginText(user, werewolf + " is a werewolf!", ChatColor.RED);
                     }
                 }
             })
