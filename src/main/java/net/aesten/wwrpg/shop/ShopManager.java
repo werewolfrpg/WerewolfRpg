@@ -1,7 +1,7 @@
 package net.aesten.wwrpg.shop;
 
 import net.aesten.wwrpg.items.models.WerewolfItem;
-import net.aesten.wwrpg.items.registry.ItemManager;
+import net.aesten.wwrpg.items.registry.Item;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,8 +22,8 @@ public class ShopManager {
     private static final List<WerewolfItem> specialShopItems = new ArrayList<>();
 
     public static void initShopLists() {
-        basicShopItems.addAll(ItemManager.getRegistry().values().stream().filter(item -> item.getShopType() == ShopType.BASIC).toList());
-        specialShopItems.addAll(ItemManager.getRegistry().values().stream().filter(item -> item.getShopType() == ShopType.SPECIAL).toList());
+        basicShopItems.addAll(Item.getRegistry().values().stream().filter(item -> item.getShopType() == ShopType.BASIC).toList());
+        specialShopItems.addAll(Item.getRegistry().values().stream().filter(item -> item.getShopType() == ShopType.SPECIAL).toList());
     }
 
     private static void setVillagerSetting(Villager villager) {

@@ -1,9 +1,11 @@
 package net.aesten.wwrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import net.aesten.wwrpg.commands.WerewolfCommand;
 import net.aesten.wwrpg.configurations.WerewolfConfig;
 import net.aesten.wwrpg.events.WerewolfEvent;
 import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
+import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
 import net.azalealibrary.configuration.FileConfiguration;
 import org.bukkit.ChatColor;
@@ -32,6 +34,7 @@ public final class WerewolfRpg extends JavaPlugin {
     @Override
     public void onLoad() {
         plugin = this;
+        AzaleaCommandApi.register(this, WerewolfCommand.class);
     }
 
     @Override

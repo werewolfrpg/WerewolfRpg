@@ -4,6 +4,7 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.data.WerewolfTeams;
+import net.aesten.wwrpg.items.registry.Item;
 import net.aesten.wwrpg.items.registry.ItemManager;
 import net.aesten.wwrpg.shop.ShopManager;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
@@ -15,7 +16,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -121,7 +121,6 @@ public class WerewolfGame {
     public static void init() {
         instance = new WerewolfGame();
         ShopManager.initShopLists();
-        ItemManager.initRegistry();
     }
 
     public static boolean isReady() {
@@ -131,7 +130,7 @@ public class WerewolfGame {
         else if (instance.participants.size() > instance.map.getSkullLocations().size()) {
             statusMessage = "Too many players for selected map";
         }
-        else if (Bukkit.getOnlinePlayers().containsAll(instance.participants)) {
+        else if (!Bukkit.getOnlinePlayers().containsAll(instance.participants)) {
             statusMessage = "Some participants are not online";
         }
         else if (instance.pool.getWerewolfNumber() == 0) {
@@ -157,8 +156,8 @@ public class WerewolfGame {
         List<Role> specialRoles = instance.pool.getRoles();
 
         for (Entity entity : instance.map.getWorld().getEntities()) {
-            if (entity instanceof Item item) {
-                item.remove();
+            if (entity.getType() == EntityType.DROPPED_ITEM) {
+                entity.remove();
             }
             else if (entity instanceof Player player) {
                 WerewolfUtil.removeAllPotionEffectsFromPlayer(player);
@@ -200,8 +199,8 @@ public class WerewolfGame {
 
                     //Prepare player
                     player.setGameMode(GameMode.ADVENTURE);
-                    player.getInventory().addItem(ItemManager.getItemFromId("skeleton_punisher").getItem());
-                    player.getInventory().addItem(ItemManager.getItemFromId("exquisite_meat").getItem());
+                    player.getInventory().addItem(Item.SKELETON_PUNISHER.werewolfItem.getItem());
+                    player.getInventory().addItem(Item.EXQUISITE_MEAT.werewolfItem.getItem());
                 }
                 else {
                     instance.teamsMap.get(Role.SPECTATOR).add(player.getUniqueId());
@@ -237,6 +236,9 @@ public class WerewolfGame {
     }
 
     private static void stop(String endReason) {
+        //stop ticker
+        instance.ticker.stop();
+
         //todo send data to database
         //todo erase sign posts
 
