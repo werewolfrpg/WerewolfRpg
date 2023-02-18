@@ -5,7 +5,7 @@ import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.items.models.EntityDamageItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-public class WerewolfAxe extends WerewolfItem implements EntityDamageItem {
+public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
     @Override
     public String getId() {
         return "werewolf_axe";

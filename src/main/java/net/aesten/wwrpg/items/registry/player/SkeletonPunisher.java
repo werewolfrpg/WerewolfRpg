@@ -2,7 +2,6 @@ package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
 import net.aesten.wwrpg.items.models.WerewolfItem;
-import net.aesten.wwrpg.shop.ShopType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -24,20 +23,5 @@ public class SkeletonPunisher extends WerewolfItem {
                 .addEnchantment(Enchantment.DAMAGE_UNDEAD, 1)
                 .addFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
                 .build();
-    }
-
-    @Override
-    public Integer getDefaultCost() {
-        return null;
-    }
-
-    @Override
-    public ShopType getShopType() {
-        return null;
-    }
-
-    @Override
-    public Integer getShopSlot() {
-        return null;
     }
 }

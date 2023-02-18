@@ -3,7 +3,7 @@ package net.aesten.wwrpg.items.registry.player;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.items.models.InteractItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
-public class AshOfTheDead extends WerewolfItem implements InteractItem {
+public class AshOfTheDead extends ShopWerewolfItem implements InteractItem {
     @Override
     public String getId() {
         return "ash_of_the_dead";

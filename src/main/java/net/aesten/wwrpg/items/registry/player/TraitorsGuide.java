@@ -5,7 +5,7 @@ import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfTeams;
 import net.aesten.wwrpg.items.models.InteractItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
-public class TraitorsGuide extends WerewolfItem implements InteractItem {
+public class TraitorsGuide extends ShopWerewolfItem implements InteractItem {
     @Override
     public String getId() {
         return "traitors_guide";

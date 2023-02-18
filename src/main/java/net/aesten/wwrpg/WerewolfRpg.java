@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.dependency.DependsOn;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
@@ -22,6 +23,7 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional RPG elements.")
 @Author("Aesten")
 @LogPrefix("WerewolfRPG")
+@ApiVersion(ApiVersion.Target.v1_17)
 @DependsOn(@Dependency("ProtocolLib"))
 public final class WerewolfRpg extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;

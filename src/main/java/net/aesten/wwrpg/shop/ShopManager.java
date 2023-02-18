@@ -1,5 +1,6 @@
 package net.aesten.wwrpg.shop;
 
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.items.models.WerewolfItem;
 import net.aesten.wwrpg.items.registry.Item;
 import org.bukkit.ChatColor;
@@ -14,16 +15,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 public class ShopManager {
-    private static final List<WerewolfItem> basicShopItems = new ArrayList<>();
-    private static final List<WerewolfItem> specialShopItems = new ArrayList<>();
+    private static final List<ShopWerewolfItem> basicShopItems = new ArrayList<>();
+    private static final List<ShopWerewolfItem> specialShopItems = new ArrayList<>();
+    private static final Comparator<ShopWerewolfItem> comparator = (o1, o2) -> {
+        if (o1.equals(o2)) return 0;
+        return o1.getShopSlot() > o2.getShopSlot() ? 1 : -1;
+    };
 
     public static void initShopLists() {
-        basicShopItems.addAll(Item.getRegistry().values().stream().filter(item -> item.getShopType() == ShopType.BASIC).toList());
-        specialShopItems.addAll(Item.getRegistry().values().stream().filter(item -> item.getShopType() == ShopType.SPECIAL).toList());
+        basicShopItems.addAll(Item.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.BASIC).sorted(comparator).toList());
+        specialShopItems.addAll(Item.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.SPECIAL).sorted(comparator).toList());
     }
 
     private static void setVillagerSetting(Villager villager) {
@@ -35,9 +41,9 @@ public class ShopManager {
         villager.setInvulnerable(true);
     }
 
-    private static MerchantRecipe createRecipe(WerewolfItem werewolfItem) {
-        MerchantRecipe recipe = new MerchantRecipe(werewolfItem.getItem(), 1000000);
-        recipe.addIngredient(new ItemStack(Material.EMERALD, werewolfItem.getCost().get()));
+    private static MerchantRecipe createRecipe(ShopWerewolfItem item) {
+        MerchantRecipe recipe = new MerchantRecipe(item.getItem(), 1000000);
+        recipe.addIngredient(new ItemStack(Material.EMERALD, item.getCost().get()));
         return recipe;
     }
 
@@ -69,4 +75,6 @@ public class ShopManager {
             }
         }
     }
+
+
 }

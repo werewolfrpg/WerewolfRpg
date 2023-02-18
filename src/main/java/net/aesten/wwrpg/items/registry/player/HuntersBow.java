@@ -1,14 +1,14 @@
 package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-public class HuntersBow extends WerewolfItem {
+public class HuntersBow extends ShopWerewolfItem {
     @Override
     public String getId() {
         return "hunters_bow";

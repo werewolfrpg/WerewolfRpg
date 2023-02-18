@@ -10,12 +10,10 @@
         <maven.compiler.target>17</maven.compiler.target>
         <mc.version>1.17.1</mc.version>                       <!-- default mc version -->
         <plugins.dir>${project.basedir}/out</plugins.dir>     <!-- default output dir -->
-        <plugins.groupId>net.aesten</plugins.groupId>
-        <plugins.artifactId>wwrpg</plugins.artifactId>
     </properties>
 
-    <groupId>${plugins.groupId}</groupId>
-    <artifactId>${plugins.artifactId}</artifactId>
+    <groupId>net.aesten</groupId>
+    <artifactId>wwrpg</artifactId>
     <version>2.0</version>
 
     <repositories>
@@ -59,39 +57,13 @@
             <groupId>net.azalealibrary</groupId>
             <artifactId>configuration</artifactId>
             <version>1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.azalealibrary</groupId>
             <artifactId>command</artifactId>
             <version>1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <finalName>${project.artifactId}-${mc.version}-${project.version}</finalName>
-        <directory>${plugins.dir}</directory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>net.azalealibrary:configuration</include>
-                                    <include>net.azalealibrary:command</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

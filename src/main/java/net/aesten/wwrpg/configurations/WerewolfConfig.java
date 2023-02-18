@@ -1,6 +1,6 @@
 package net.aesten.wwrpg.configurations;
 
-import net.aesten.wwrpg.items.models.ShopItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.items.registry.Item;
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.ConfigurableProperty;
@@ -22,7 +22,9 @@ public class WerewolfConfig implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        List<ConfigurableProperty<?, ?>> properties = new ArrayList<>(Item.getRegistry().values().stream().map(ShopItem::getCost).toList());
+        List<ConfigurableProperty<?, ?>> properties = new ArrayList<>(
+                Item.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(item -> ((ShopWerewolfItem) item).getCost()).toList()
+        );
         properties.add(skeletonSpawnNumberPerPlayer);
         properties.add(skeletonDamage);
         properties.add(skeletonHealth);

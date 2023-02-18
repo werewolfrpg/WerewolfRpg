@@ -4,7 +4,7 @@ import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.items.models.EntityDamageItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class HolyStar extends WerewolfItem implements EntityDamageItem {
+public class HolyStar extends ShopWerewolfItem implements EntityDamageItem {
     @Override
     public String getId() {
         return "holy_star";

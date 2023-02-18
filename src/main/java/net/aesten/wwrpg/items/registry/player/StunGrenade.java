@@ -1,10 +1,7 @@
 package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.PlayerMoveItem;
-import net.aesten.wwrpg.items.models.ProjectileItem;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.*;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.*;
@@ -16,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class StunGrenade extends WerewolfItem implements ProjectileItem, PlayerMoveItem {
+public class StunGrenade extends ShopWerewolfItem implements ProjectileItem, PlayerMoveItem {
     @Override
     public String getId() {
         return "stun_grenade";

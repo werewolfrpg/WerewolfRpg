@@ -3,10 +3,7 @@ package net.aesten.wwrpg.items.registry.player;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
-import net.aesten.wwrpg.items.models.EntityDamageItem;
-import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.ProjectileItem;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.*;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -20,7 +17,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-public class CurseSpear extends WerewolfItem implements EntityDamageItem, ProjectileItem {
+public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, ProjectileItem {
     @Override
     public String getId() {
         return "curse_spear";

@@ -5,6 +5,7 @@ import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.items.models.InteractItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.items.models.WerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Protection extends WerewolfItem implements InteractItem {
+public class Protection extends ShopWerewolfItem implements InteractItem {
     @Override
     public String getId() {
         return "protection";

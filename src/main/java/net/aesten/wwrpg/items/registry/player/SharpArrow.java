@@ -5,7 +5,7 @@ import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
 import net.aesten.wwrpg.items.models.ProjectileItem;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.models.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-public class SharpArrow extends WerewolfItem implements ProjectileItem {
+public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
     @Override
     public String getId() {
         return "sharp_arrow";
