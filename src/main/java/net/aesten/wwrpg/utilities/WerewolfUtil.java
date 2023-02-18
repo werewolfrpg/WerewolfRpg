@@ -19,7 +19,7 @@ public class WerewolfUtil {
     }
 
     public static void sendPluginText(Player player, String message, ChatColor color) {
-        player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + color + message);
+        player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + color + message);
     }
 
     public static void sendTitle(Player player, String title, String subtitle) {

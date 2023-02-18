@@ -4,10 +4,11 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.data.WerewolfTeams;
+import net.aesten.wwrpg.items.registry.ItemManager;
+import net.aesten.wwrpg.shop.ShopManager;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.configurations.WerewolfMap;
-import net.aesten.wwrpg.items.ItemRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -16,12 +17,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
 import java.util.*;
 
 public class WerewolfGame {
     private static WerewolfGame instance;
     private static String statusMessage;
+    private static Listener listener;
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Map<Role, List<UUID>> teamsMap;
@@ -44,6 +48,7 @@ public class WerewolfGame {
             this.teamsMap.put(role, new ArrayList<>());
         }
 
+        listener = new ItemManager();
         instance = this;
     }
 
@@ -115,6 +120,8 @@ public class WerewolfGame {
 
     public static void init() {
         instance = new WerewolfGame();
+        ShopManager.initShopLists();
+        ItemManager.initRegistry();
     }
 
     public static boolean isReady() {
@@ -144,6 +151,7 @@ public class WerewolfGame {
     public static void start() {
         instance.isPlaying = true;
         instance.map.getWorld().setTime(6000L);
+        Bukkit.getPluginManager().registerEvents(listener, WerewolfRpg.getPlugin());
 
         int count = 0;
         List<Role> specialRoles = instance.pool.getRoles();
@@ -187,13 +195,13 @@ public class WerewolfGame {
                     //Send role message to player
                     player.sendTitle(role.apparentRole().color + role.apparentRole().name,
                             ChatColor.GOLD + "GAME START", 2, 2, 40);
-                    player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.RESET +
+                    player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RESET +
                             "You are a " + role.apparentRole().color + role.apparentRole().name);
 
                     //Prepare player
                     player.setGameMode(GameMode.ADVENTURE);
-                    player.getInventory().addItem(ItemRegistry.SKELETON_PUNISHER.getItemStack());
-                    player.getInventory().addItem(ItemRegistry.EXQUISITE_MEAT.getItemStack());
+                    player.getInventory().addItem(ItemManager.getItemFromId("skeleton_punisher").getItem());
+                    player.getInventory().addItem(ItemManager.getItemFromId("exquisite_meat").getItem());
                 }
                 else {
                     instance.teamsMap.get(Role.SPECTATOR).add(player.getUniqueId());
@@ -204,7 +212,7 @@ public class WerewolfGame {
         if (WerewolfTeams.getTeam(Role.WEREWOLF).getSize() > 1) {
             String werewolves = String.join(", ", WerewolfTeams.getTeam(Role.WEREWOLF).getEntries());
             for (Player player : instance.teamsMap.get(Role.WEREWOLF).stream().map(Bukkit::getPlayer).toList()) {
-                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.RESET +
+                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RESET +
                         "The werewolves are " + Role.WEREWOLF.color + werewolves);
             }
         }
@@ -239,6 +247,7 @@ public class WerewolfGame {
         instance = new WerewolfGame(instance);
         instance.map.getWorld().setTime(6000L);
         WerewolfTeams.clear();
+        HandlerList.unregisterAll(listener);
 
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {
@@ -249,7 +258,7 @@ public class WerewolfGame {
                 WerewolfUtil.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
                 player.getInventory().clear();
                 player.sendTitle(endReason, ChatColor.GOLD + "GAME END", 2, 2, 40);
-                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + endReason);
+                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + endReason);
                 player.setGameMode(GameMode.SPECTATOR);
             }
         }

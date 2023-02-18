@@ -1,11 +1,13 @@
 package net.aesten.wwrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
+import net.aesten.wwrpg.configurations.WerewolfConfig;
 import net.aesten.wwrpg.events.WerewolfEvent;
+import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
+import net.azalealibrary.configuration.AzaleaConfigurationApi;
+import net.azalealibrary.configuration.FileConfiguration;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.annotation.command.Command;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.dependency.DependsOn;
 import org.bukkit.plugin.java.annotation.plugin.Description;
@@ -17,42 +19,47 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Plugin(name = "WerewolfRPG", version = "2.0")
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional RPG elements.")
 @Author("Aesten")
-@LogPrefix("wwrpg")
+@LogPrefix("WerewolfRPG")
 @DependsOn(@Dependency("ProtocolLib"))
-@Command(name = "ww", desc = "Master command for all WerewolfRPG-related commands", aliases = {"wwrpg", "werewolf"}, usage = "/<command> <subcommand>")
 public final class WerewolfRpg extends JavaPlugin {
-    private static org.bukkit.plugin.Plugin plugin;
-    private static ProtocolManager protocolManager;
     public static final ChatColor COLOR = ChatColor.GOLD;
-    public static final String LOG = "[wwrpg]: ";
+    public static final String CHAT_LOG = "[wwrpg] ";
+
+    private static org.bukkit.plugin.Plugin plugin;
+    private static HideTabListSpectatorsPacket packetListener;
+    private final WerewolfConfig werewolfConfig = new WerewolfConfig();
 
     @Override
     public void onLoad() {
         plugin = this;
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        getServer().getConsoleSender().sendMessage(COLOR + LOG + ChatColor.BLUE + "Plugin loaded");
     }
 
     @Override
     public void onEnable() {
-        getConfig().addDefault("config.something", "default");
-        saveDefaultConfig();
+        //File configurations
+        FileConfiguration config = AzaleaConfigurationApi.load(this, werewolfConfig.getName());
+        config.load(werewolfConfig);
+        AzaleaConfigurationApi.register(werewolfConfig);
 
+        //ProtocolLib
+        packetListener = new HideTabListSpectatorsPacket(this);
+        ProtocolLibrary.getProtocolManager().addPacketListener(packetListener);
+
+        //Register event listeners
         getServer().getPluginManager().registerEvents(new WerewolfEvent(), this);
-
-        getServer().getConsoleSender().sendMessage(COLOR + LOG + ChatColor.GREEN + "Plugin enabled");
     }
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(COLOR + LOG + ChatColor.RED + "Plugin disabled");
+        //File configurations
+        FileConfiguration config = AzaleaConfigurationApi.load(this, werewolfConfig.getName());
+        config.save(werewolfConfig);
+
+        //ProtocolLib
+        ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
     }
 
     public static org.bukkit.plugin.Plugin getPlugin() {
         return plugin;
-    }
-
-    public static ProtocolManager getProtocolManager() {
-        return protocolManager;
     }
 }

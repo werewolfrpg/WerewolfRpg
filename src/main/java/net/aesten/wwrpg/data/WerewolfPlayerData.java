@@ -69,7 +69,7 @@ public class WerewolfPlayerData {
         return hasActiveSneakNotice;
     }
 
-    public void hasActiveSneakNotice(boolean hasActiveSneakNotice) {
+    public void setHasActiveSneakNotice(boolean hasActiveSneakNotice) {
         this.hasActiveSneakNotice = hasActiveSneakNotice;
     }
 

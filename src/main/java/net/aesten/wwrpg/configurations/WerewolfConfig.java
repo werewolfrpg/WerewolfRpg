@@ -1,21 +1,19 @@
 package net.aesten.wwrpg.configurations;
 
-import net.aesten.wwrpg.items.ItemRegistry;
+import net.aesten.wwrpg.items.models.ShopItem;
+import net.aesten.wwrpg.items.registry.ItemManager;
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.ConfigurableProperty;
 import net.azalealibrary.configuration.property.Property;
 import net.azalealibrary.configuration.property.PropertyType;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class WerewolfConfig implements Configurable {
-    private final Property<Integer> skeletonSpawnNumberPerPlayer = new Property<>(PropertyType.INTEGER, () -> 12, "skeleton.spawn_number_per_player", "number of spawning skeletons per player", true);
+    private final Property<Integer> skeletonSpawnNumberPerPlayer = new Property<>(PropertyType.INTEGER, () -> 12, "skeleton.spawn_number_per_player", "number of spawning skeletons per player", false);
     private final Property<Double> skeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 4.0, "skeleton.damage", "skeleton damage", false);
     private final Property<Double> skeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 12.0, "skeleton.health", "skeleton health", false);
-    private final List<Property<Integer>> shopPrices = ItemRegistry.getRegistry().values().stream().map(item -> new Property<>(PropertyType.INTEGER, item::getDefaultCost, "shop." + item.getId(), "item cost", false)).toList();
 
     @Override
     public String getName() {
@@ -24,7 +22,7 @@ public class WerewolfConfig implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        List<ConfigurableProperty<?, ?>> properties = new ArrayList<>(shopPrices);
+        List<ConfigurableProperty<?, ?>> properties = new ArrayList<>(ItemManager.getRegistry().values().stream().map(ShopItem::getCost).toList());
         properties.add(skeletonSpawnNumberPerPlayer);
         properties.add(skeletonDamage);
         properties.add(skeletonHealth);
@@ -41,9 +39,5 @@ public class WerewolfConfig implements Configurable {
 
     public double getSkeletonHealth() {
         return skeletonHealth.get();
-    }
-
-    public Map<String, Integer> getShopPrices() {
-        return shopPrices.stream().collect(Collectors.toMap(p -> p.getName().replace("shop.", ""), Property::get));
     }
 }

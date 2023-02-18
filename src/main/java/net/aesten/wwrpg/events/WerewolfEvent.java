@@ -14,7 +14,7 @@ public class WerewolfEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " joined the server!");
+        event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " joined the server!");
     }
 
     @EventHandler
@@ -27,7 +27,7 @@ public class WerewolfEvent implements Listener {
             WerewolfGame.getInstance().getDataMap().remove(player.getUniqueId());
         }
         else {
-            event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " left the server!");
+            event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.AQUA + player.getName() + ChatColor.GOLD + " left the server!");
         }
     }
 }

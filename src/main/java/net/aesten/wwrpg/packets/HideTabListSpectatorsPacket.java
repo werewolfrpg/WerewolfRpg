@@ -1,0 +1,50 @@
+package net.aesten.wwrpg.packets;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
+import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
+
+import net.aesten.wwrpg.WerewolfRpg;
+
+import java.util.List;
+import java.util.ListIterator;
+
+public class HideTabListSpectatorsPacket extends PacketAdapter {
+    public HideTabListSpectatorsPacket(WerewolfRpg plugin) {
+        super(plugin, PacketType.Play.Server.PLAYER_INFO);
+    }
+
+    @Override
+    public void onPacketSending(PacketEvent e) {
+        try {
+            PlayerInfoAction action = e.getPacket().getPlayerInfoAction().read(0);
+            if (action != PlayerInfoAction.ADD_PLAYER && action != PlayerInfoAction.UPDATE_GAME_MODE) return;
+
+            String playerName = e.getPlayer().getName();
+            PacketContainer packet = e.getPacket().shallowClone();
+
+            List<PlayerInfoData> dataList = packet.getPlayerInfoDataLists().read(0);
+            ListIterator<PlayerInfoData> dataListIt = dataList.listIterator();
+            while (dataListIt.hasNext()) {
+                PlayerInfoData data = dataListIt.next();
+                WrappedGameProfile profile = data.getProfile();
+                NativeGameMode gameMode = data.getGameMode();
+                if (gameMode != NativeGameMode.SPECTATOR || profile.getName().equals(playerName)) continue;
+
+                PlayerInfoData newData = new PlayerInfoData(profile, data.getLatency(),
+                        NativeGameMode.SURVIVAL, data.getDisplayName());
+                dataListIt.set(newData);
+            }
+
+            packet.getPlayerInfoDataLists().write(0, dataList);
+            e.setPacket(packet);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}

@@ -16,7 +16,7 @@
 
     <groupId>${plugins.groupId}</groupId>
     <artifactId>${plugins.artifactId}</artifactId>
-    <version>3.0</version>
+    <version>2.0</version>
 
     <repositories>
         <repository>
@@ -54,9 +54,15 @@
             <version>4.7.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- azalea library -->
         <dependency>
             <groupId>net.azalealibrary</groupId>
             <artifactId>configuration</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.azalealibrary</groupId>
+            <artifactId>command</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
@@ -65,6 +71,27 @@
         <finalName>${project.artifactId}-${mc.version}-${project.version}</finalName>
         <directory>${plugins.dir}</directory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>net.azalealibrary:configuration</include>
+                                    <include>net.azalealibrary:command</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
