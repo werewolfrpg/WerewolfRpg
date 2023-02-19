@@ -1,4 +1,4 @@
-package net.aesten.wwrpg.configurations;
+package net.aesten.wwrpg.map;
 
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.ConfigurableProperty;

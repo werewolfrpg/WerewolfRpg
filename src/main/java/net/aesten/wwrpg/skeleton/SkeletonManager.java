@@ -1,6 +1,5 @@
 package net.aesten.wwrpg.skeleton;
 
-import net.aesten.wwrpg.configurations.WerewolfMap;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.items.models.WerewolfItem;
 import net.aesten.wwrpg.items.registry.Item;
@@ -9,6 +8,7 @@ import net.azalealibrary.configuration.property.ConfigurableProperty;
 import net.azalealibrary.configuration.property.ListProperty;
 import net.azalealibrary.configuration.property.Property;
 import net.azalealibrary.configuration.property.PropertyType;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -49,6 +49,7 @@ public class SkeletonManager implements Listener, Configurable {
     private static final List<String> defaultSpecialSkeletonDropTable = List.of("ash_of_the_dead", "invisibility_potion", "light_of_revelation", "skeleton_slicer", "stun_grenade", "curse_spear");
 
     private final Random rnd = new Random();
+    private final List<Vector> temporarySpawnPointCandidateList = new ArrayList<>();
 
     private void summonBasicSkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
@@ -111,6 +112,14 @@ public class SkeletonManager implements Listener, Configurable {
         }
     }
 
+    public void addSpawnFromBlock(Location blockLocation) {
+        temporarySpawnPointCandidateList.add(blockLocation.toVector().add(new Vector(0, 1, 0)));
+    }
+
+    public List<Vector> getTemporarySpawnPointCandidateList() {
+        return temporarySpawnPointCandidateList;
+    }
+
     @EventHandler
     public void onSkeletonKill(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
@@ -155,6 +164,7 @@ public class SkeletonManager implements Listener, Configurable {
                 specialSkeletonSpawnChance,
                 specialSkeletonHealth,
                 specialSkeletonDamage,
-                specialSkeletonDrops);
+                specialSkeletonDrops
+        );
     }
 }

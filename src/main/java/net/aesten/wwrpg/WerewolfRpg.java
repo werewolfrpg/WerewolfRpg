@@ -78,3 +78,6 @@ public final class WerewolfRpg extends JavaPlugin {
         return plugin;
     }
 }
+
+//notes:
+// visualize all skeleton spawns with armor stands -> store in list -> destroy manually -> recreate spawn list if armorstand.isValid()

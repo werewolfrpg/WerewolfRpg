@@ -10,7 +10,7 @@ import net.aesten.wwrpg.shop.ShopManager;
 import net.aesten.wwrpg.skeleton.SkeletonManager;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.data.RolePool;
-import net.aesten.wwrpg.configurations.WerewolfMap;
+import net.aesten.wwrpg.map.WerewolfMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
