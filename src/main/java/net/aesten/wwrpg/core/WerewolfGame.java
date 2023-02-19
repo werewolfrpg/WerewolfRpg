@@ -7,6 +7,7 @@ import net.aesten.wwrpg.data.WerewolfTeams;
 import net.aesten.wwrpg.items.registry.Item;
 import net.aesten.wwrpg.items.registry.ItemManager;
 import net.aesten.wwrpg.shop.ShopManager;
+import net.aesten.wwrpg.skeleton.SkeletonManager;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.configurations.WerewolfMap;
@@ -25,7 +26,9 @@ import java.util.*;
 public class WerewolfGame {
     private static WerewolfGame instance;
     private static String statusMessage;
-    private static Listener listener;
+    private static final Listener listener = new ItemManager();
+    private static final SkeletonManager skeletonManager = new SkeletonManager();
+    private static final ShopManager shopManager = new ShopManager();
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Map<Role, List<UUID>> teamsMap;
@@ -48,7 +51,6 @@ public class WerewolfGame {
             this.teamsMap.put(role, new ArrayList<>());
         }
 
-        listener = new ItemManager();
         instance = this;
     }
 
@@ -76,6 +78,14 @@ public class WerewolfGame {
 
     public static String getStatusMessage() {
         return statusMessage;
+    }
+
+    public static SkeletonManager getSkeletonManager() {
+        return skeletonManager;
+    }
+
+    public static ShopManager getShopManager() {
+        return shopManager;
     }
 
     public List<UUID> getFaction(Role role) {
@@ -120,7 +130,6 @@ public class WerewolfGame {
 
     public static void init() {
         instance = new WerewolfGame();
-        ShopManager.initShopLists();
     }
 
     public static boolean isReady() {
@@ -151,6 +160,7 @@ public class WerewolfGame {
         instance.isPlaying = true;
         instance.map.getWorld().setTime(6000L);
         Bukkit.getPluginManager().registerEvents(listener, WerewolfRpg.getPlugin());
+        Bukkit.getPluginManager().registerEvents(skeletonManager, WerewolfRpg.getPlugin());
 
         int count = 0;
         List<Role> specialRoles = instance.pool.getRoles();
@@ -199,8 +209,8 @@ public class WerewolfGame {
 
                     //Prepare player
                     player.setGameMode(GameMode.ADVENTURE);
-                    player.getInventory().addItem(Item.SKELETON_PUNISHER.werewolfItem.getItem());
-                    player.getInventory().addItem(Item.EXQUISITE_MEAT.werewolfItem.getItem());
+                    player.getInventory().addItem(Item.SKELETON_PUNISHER.getItem());
+                    player.getInventory().addItem(Item.EXQUISITE_MEAT.getItem());
                 }
                 else {
                     instance.teamsMap.get(Role.SPECTATOR).add(player.getUniqueId());
@@ -250,6 +260,7 @@ public class WerewolfGame {
         instance.map.getWorld().setTime(6000L);
         WerewolfTeams.clear();
         HandlerList.unregisterAll(listener);
+        HandlerList.unregisterAll(skeletonManager);
 
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {

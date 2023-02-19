@@ -2,16 +2,15 @@ package net.aesten.wwrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.wwrpg.commands.WerewolfCommand;
-import net.aesten.wwrpg.configurations.WerewolfConfig;
+import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.events.WerewolfEvent;
 import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
 import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
-import net.azalealibrary.configuration.FileConfiguration;
+import net.azalealibrary.configuration.Configurable;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
-import org.bukkit.plugin.java.annotation.dependency.DependsOn;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
@@ -24,14 +23,15 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Author("Aesten")
 @LogPrefix("WerewolfRPG")
 @ApiVersion(ApiVersion.Target.v1_17)
-@DependsOn(@Dependency("ProtocolLib"))
+@Dependency("ProtocolLib")
+@Dependency("AzaleaConfiguration")
+@Dependency("AzaleaCommand")
 public final class WerewolfRpg extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;
     public static final String CHAT_LOG = "[wwrpg] ";
 
     private static org.bukkit.plugin.Plugin plugin;
     private static HideTabListSpectatorsPacket packetListener;
-    private final WerewolfConfig werewolfConfig = new WerewolfConfig();
 
     @Override
     public void onLoad() {
@@ -42,9 +42,13 @@ public final class WerewolfRpg extends JavaPlugin {
     @Override
     public void onEnable() {
         //File configurations
-        FileConfiguration config = AzaleaConfigurationApi.load(this, werewolfConfig.getName());
-        config.load(werewolfConfig);
-        AzaleaConfigurationApi.register(werewolfConfig);
+        Configurable shop = WerewolfGame.getShopManager();
+        AzaleaConfigurationApi.load(this, shop.getName()).load(shop);
+        AzaleaConfigurationApi.register(shop);
+
+        Configurable skeleton = WerewolfGame.getSkeletonManager();
+        AzaleaConfigurationApi.load(this, skeleton.getName()).load(skeleton);
+        AzaleaConfigurationApi.register(skeleton);
 
         //ProtocolLib
         packetListener = new HideTabListSpectatorsPacket(this);
@@ -52,13 +56,19 @@ public final class WerewolfRpg extends JavaPlugin {
 
         //Register event listeners
         getServer().getPluginManager().registerEvents(new WerewolfEvent(), this);
+
+        //Initialize Plugin
+        WerewolfGame.init();
     }
 
     @Override
     public void onDisable() {
         //File configurations
-        FileConfiguration config = AzaleaConfigurationApi.load(this, werewolfConfig.getName());
-        config.save(werewolfConfig);
+        Configurable shop = WerewolfGame.getShopManager();
+        AzaleaConfigurationApi.load(this, shop.getName()).save(shop);
+
+        Configurable skeleton = WerewolfGame.getSkeletonManager();
+        AzaleaConfigurationApi.load(this, skeleton.getName()).save(skeleton);
 
         //ProtocolLib
         ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);

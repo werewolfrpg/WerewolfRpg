@@ -2,6 +2,7 @@ package net.aesten.wwrpg.items.registry;
 
 import net.aesten.wwrpg.items.models.WerewolfItem;
 import net.aesten.wwrpg.items.registry.player.*;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,5 +48,9 @@ public enum Item {
     Item(WerewolfItem werewolfItem) {
         this.id = werewolfItem.getId();
         this.werewolfItem = werewolfItem;
+    }
+
+    public ItemStack getItem() {
+        return werewolfItem.getItem();
     }
 }

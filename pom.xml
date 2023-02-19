@@ -10,10 +10,11 @@
         <maven.compiler.target>17</maven.compiler.target>
         <mc.version>1.17.1</mc.version>                       <!-- default mc version -->
         <plugins.dir>${project.basedir}/out</plugins.dir>     <!-- default output dir -->
+        <file.name>${project.artifactId}-${mc.version}-${project.version}</file.name>
     </properties>
 
     <groupId>net.aesten</groupId>
-    <artifactId>wwrpg</artifactId>
+    <artifactId>WerewolfRPG</artifactId>
     <version>2.0</version>
 
     <repositories>
@@ -66,4 +67,29 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-${mc.version}-${project.version}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/target/${file.name}.jar</sourceFile>
+                            <destinationFile>${plugins.dir}/${project.artifactId}.jar</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
