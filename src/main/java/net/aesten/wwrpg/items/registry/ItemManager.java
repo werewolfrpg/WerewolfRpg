@@ -71,7 +71,7 @@ public class ItemManager implements Listener {
         ItemMeta clickItemMeta = event.getPlayer().getInventory().getItem(event.getHand()).getItemMeta();
         Optional<WerewolfItem> werewolfItem = Item.getRegistry().values().stream().filter(item -> item.getItem().getItemMeta() == clickItemMeta).findAny();
         if (werewolfItem.isPresent() && werewolfItem.get() instanceof EntityInteractItem entityInteractItem) {
-            entityInteractItem.onPlayerInteract(event);
+            entityInteractItem.onEntityInteract(event);
         }
     }
 }
