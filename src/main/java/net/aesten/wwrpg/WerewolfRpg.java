@@ -43,11 +43,11 @@ public final class WerewolfRpg extends JavaPlugin {
     public void onEnable() {
         //File configurations
         Configurable shop = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.load(this, shop.getName()).load(shop);
+        AzaleaConfigurationApi.getFileConfiguration(this, shop.getName()).load(shop);
         AzaleaConfigurationApi.register(shop);
 
         Configurable skeleton = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.load(this, skeleton.getName()).load(skeleton);
+        AzaleaConfigurationApi.getFileConfiguration(this, skeleton.getName()).load(skeleton);
         AzaleaConfigurationApi.register(skeleton);
 
         //ProtocolLib
@@ -65,10 +65,10 @@ public final class WerewolfRpg extends JavaPlugin {
     public void onDisable() {
         //File configurations
         Configurable shop = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.load(this, shop.getName()).save(shop);
+        AzaleaConfigurationApi.getFileConfiguration(this, shop.getName()).save(shop);
 
         Configurable skeleton = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.load(this, skeleton.getName()).save(skeleton);
+        AzaleaConfigurationApi.getFileConfiguration(this, skeleton.getName()).save(skeleton);
 
         //ProtocolLib
         ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
