@@ -3,7 +3,7 @@ package net.aesten.wwrpg;
 import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.wwrpg.commands.WerewolfCommand;
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.events.WerewolfEvent;
+import net.aesten.wwrpg.events.GeneralEvents;
 import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
 import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
@@ -55,7 +55,7 @@ public final class WerewolfRpg extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().addPacketListener(packetListener);
 
         //Register event listeners
-        getServer().getPluginManager().registerEvents(new WerewolfEvent(), this);
+        getServer().getPluginManager().registerEvents(new GeneralEvents(), this);
 
         //Initialize Plugin
         WerewolfGame.init();

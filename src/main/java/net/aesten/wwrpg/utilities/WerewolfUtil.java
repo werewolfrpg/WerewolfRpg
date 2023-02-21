@@ -4,7 +4,9 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfTeams;
 import org.bukkit.*;
-import org.bukkit.block.Sign;
+import org.bukkit.block.Skull;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,12 +31,22 @@ public class WerewolfUtil {
         }
     }
 
-    public static void updateSignPost(World world, Vector signCoordinates, String... lines) {
-        if (world.getBlockAt(signCoordinates.toLocation(world)).getState() instanceof Sign sign) {
-            for (int i = 0 ; i < lines.length ; i++) {
-                sign.setLine(i, lines[i]);
-            }
+    public static void updateSkull(World world, Vector skullCoordinates, Player player) {
+        if (world.getBlockAt(skullCoordinates.toLocation(world)).getState() instanceof Skull skull) {
+            skull.setOwningPlayer(player);
+            skull.update();
         }
+    }
+
+    public static ArmorStand summonNameTagArmorStand(World world, Vector coordinates, Vector offset, String name) {
+        ArmorStand armorStand = (ArmorStand) world.spawnEntity(coordinates.add(offset).toLocation(world), EntityType.ARMOR_STAND);
+        armorStand.setVisible(false);
+        armorStand.setInvulnerable(true);
+        armorStand.setGravity(false);
+        armorStand.setSmall(true);
+        armorStand.setCustomNameVisible(true);
+        armorStand.setCustomName(ChatColor.AQUA + name);
+        return armorStand;
     }
 
     public static void removeAllPotionEffectsFromPlayer(Player player) {

@@ -15,11 +15,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -37,6 +39,7 @@ public class WerewolfGame {
     private final Ticker ticker;
     private boolean isPlaying;
     private boolean isNight;
+    private final List<ArmorStand> displayNameArmorStands;
 
     public WerewolfGame() {
         this.participants = new ArrayList<>();
@@ -46,6 +49,7 @@ public class WerewolfGame {
         this.ticker = new Ticker();
         this.isPlaying = false;
         this.isNight = false;
+        this.displayNameArmorStands = new ArrayList<>();
 
         for (Role role : Role.values()) {
             this.teamsMap.put(role, new ArrayList<>());
@@ -64,6 +68,7 @@ public class WerewolfGame {
         this.map = previousGame.map;
         this.isPlaying = false;
         this.isNight = false;
+        this.displayNameArmorStands = new ArrayList<>();
 
         for (Role role : Role.values()) {
             this.teamsMap.put(role, new ArrayList<>());
@@ -92,6 +97,10 @@ public class WerewolfGame {
         return teamsMap.get(role);
     }
 
+    public void removeFromFaction(Player player) {
+        teamsMap.get(dataMap.get(player.getUniqueId()).getRole()).remove(player.getUniqueId());
+    }
+
     public Map<UUID, WerewolfPlayerData> getDataMap() {
         return dataMap;
     }
@@ -114,6 +123,10 @@ public class WerewolfGame {
 
     public WerewolfMap getMap() {
         return map;
+    }
+
+    public List<ArmorStand> getDisplayNameArmorStands() {
+        return displayNameArmorStands;
     }
 
     public void setMap(WerewolfMap map) {
@@ -180,7 +193,7 @@ public class WerewolfGame {
                 player.setSaturation(20);
 
                 if (instance.participants.contains(player)) {
-                    //Select the role to attribute
+                    //select the role to attribute
                     Role role;
                     try {
                         role = specialRoles.get(count);
@@ -188,26 +201,28 @@ public class WerewolfGame {
                         role = Role.VILLAGER;
                     }
 
-                    //Update sign post todo skulls
-                    WerewolfUtil.updateSignPost(instance.map.getWorld(),
+                    //update skulls and put name
+                    WerewolfUtil.updateSkull(instance.map.getWorld(),
                             instance.map.getSkullLocations().get(count),
-                            ChatColor.GRAY + "Player:",
-                            player.getName(),
-                            ChatColor.GRAY + "Click to divinate");
+                            player);
+                    WerewolfUtil.summonNameTagArmorStand(instance.map.getWorld(),
+                            instance.map.getSkullLocations().get(count),
+                            new Vector(0, 0.4, 0),
+                            player.getName());
 
-                    //Add player to correct team and set roles
+                    //add player to correct team and set roles
                     instance.teamsMap.get(role).add(player.getUniqueId());
                     instance.dataMap.put(player.getUniqueId(), new WerewolfPlayerData());
                     instance.dataMap.get(player.getUniqueId()).setRole(role);
                     WerewolfTeams.getTeam(role).addEntry(player.getName());
 
-                    //Send role message to player
+                    //send role message to player
                     player.sendTitle(role.apparentRole().color + role.apparentRole().name,
                             ChatColor.GOLD + "GAME START", 2, 2, 40);
                     player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RESET +
                             "You are a " + role.apparentRole().color + role.apparentRole().name);
 
-                    //Prepare player
+                    //prepare player
                     player.setGameMode(GameMode.ADVENTURE);
                     player.getInventory().addItem(Item.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(Item.EXQUISITE_MEAT.getItem());
@@ -250,7 +265,10 @@ public class WerewolfGame {
         instance.ticker.stop();
 
         //todo send data to database
-        //todo erase sign posts
+
+        //clear skulls todo check if null player works
+        instance.map.getSkullLocations().forEach(v -> WerewolfUtil.updateSkull(instance.map.getWorld(), v, null));
+        instance.displayNameArmorStands.forEach(ArmorStand::remove);
 
         //show roles to players
         WerewolfUtil.showMatchRoles();
@@ -284,6 +302,4 @@ public class WerewolfGame {
             }
         });
     }
-
-
 }

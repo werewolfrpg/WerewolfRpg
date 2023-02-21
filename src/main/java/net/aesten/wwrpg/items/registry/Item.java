@@ -1,6 +1,9 @@
 package net.aesten.wwrpg.items.registry;
 
 import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.registry.admin.BasicVillagerSummonWand;
+import net.aesten.wwrpg.items.registry.admin.SkeletonSpawnPointWand;
+import net.aesten.wwrpg.items.registry.admin.SpecialVillagerSummonWand;
 import net.aesten.wwrpg.items.registry.player.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Item {
+    //Game items
     SKELETON_PUNISHER(new SkeletonPunisher()),
     EXQUISITE_MEAT(new ExquisiteMeat()),
     HUNTERS_BOW(new HuntersBow()),
@@ -24,7 +28,12 @@ public enum Item {
     HOLY_STAR(new HolyStar()),
     SNEAK_NOTICE(new SneakNotice()),
     ASH_OF_THE_DEAD(new AshOfTheDead()),
-    CURSE_SPEAR(new CurseSpear());
+    CURSE_SPEAR(new CurseSpear()),
+
+    //Admin items
+    BASIC_VILLAGER_SUMMON_WAND(new BasicVillagerSummonWand()),
+    SPECIAL_VILLAGER_SUMMON_WAND(new SpecialVillagerSummonWand()),
+    SKELETON_SPAWN_POINT_WAND(new SkeletonSpawnPointWand());
 
     private static final Map<String, WerewolfItem> registry = new HashMap<>();
 
