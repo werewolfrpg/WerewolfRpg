@@ -19,8 +19,8 @@ public class PlayerStats {
 
     ////item stats
     private int steaksEaten = 0;
-    private int ashesUsed = 0;
-    private int divinationsUsed = 0;
+    private int asheUsed = 0;
+    private int divinationUsed = 0;
     private int invisibilityUsed = 0;
     private int swiftnessUsed = 0;
     private int revelationUsed = 0;
