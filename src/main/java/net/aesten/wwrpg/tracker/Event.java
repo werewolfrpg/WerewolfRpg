@@ -4,5 +4,4 @@ import java.sql.Timestamp;
 
 public abstract class Event {
     private Timestamp timestamp;
-    private EventType eventType;
 }
