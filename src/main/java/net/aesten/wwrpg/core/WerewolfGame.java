@@ -8,6 +8,7 @@ import net.aesten.wwrpg.items.registry.Item;
 import net.aesten.wwrpg.items.registry.ItemManager;
 import net.aesten.wwrpg.shop.ShopManager;
 import net.aesten.wwrpg.skeleton.SkeletonManager;
+import net.aesten.wwrpg.tracker.TrackerManager;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.map.WerewolfMap;
@@ -34,9 +35,10 @@ public class WerewolfGame {
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Map<Role, List<UUID>> teamsMap;
-    private final RolePool pool;
-    private WerewolfMap map;
     private final Ticker ticker;
+    private final RolePool pool;
+    private final TrackerManager tracker = new TrackerManager();
+    private WerewolfMap map;
     private boolean isPlaying;
     private boolean isNight;
     private final List<ArmorStand> displayNameArmorStands;
@@ -109,6 +111,10 @@ public class WerewolfGame {
         return pool;
     }
 
+    public TrackerManager getTracker() {
+        return tracker;
+    }
+
     public boolean isNight() {
         return isNight;
     }
@@ -123,10 +129,6 @@ public class WerewolfGame {
 
     public WerewolfMap getMap() {
         return map;
-    }
-
-    public List<ArmorStand> getDisplayNameArmorStands() {
-        return displayNameArmorStands;
     }
 
     public void setMap(WerewolfMap map) {
@@ -201,14 +203,19 @@ public class WerewolfGame {
                         role = Role.VILLAGER;
                     }
 
+                    //prepare tracker
+                    instance.tracker.addPlayer(player).setRole(role);
+
                     //update skulls and put name
                     WerewolfUtil.updateSkull(instance.map.getWorld(),
                             instance.map.getSkullLocations().get(count),
                             player);
-                    WerewolfUtil.summonNameTagArmorStand(instance.map.getWorld(),
+                    instance.displayNameArmorStands.add(
+                            WerewolfUtil.summonNameTagArmorStand(instance.map.getWorld(),
                             instance.map.getSkullLocations().get(count),
                             new Vector(0, 0.4, 0),
-                            player.getName());
+                            player.getName())
+                    );
 
                     //add player to correct team and set roles
                     instance.teamsMap.get(role).add(player.getUniqueId());
@@ -246,25 +253,31 @@ public class WerewolfGame {
 
     public static void endGame() {
         if (instance.getFaction(Role.VAMPIRE).size() != 0) {
-            stop(Role.VAMPIRE.color + "Vampire Victory!");
+            stop(Role.VAMPIRE);
         }
         else if (instance.getFaction(Role.VILLAGER).size() == 0) {
-            stop(Role.WEREWOLF.color + "Werewolf Victory!");
+            stop(Role.WEREWOLF);
         }
         else {
-            stop(Role.VILLAGER.color + "Villager Victory!");
+            stop(Role.VILLAGER);
         }
     }
 
     public static void interrupt() {
-        stop(ChatColor.YELLOW + "Game Cancelled");
+        stop(null);
     }
 
-    private static void stop(String endReason) {
+    private static String getEndString(Role role) {
+        if (role == null) return ChatColor.YELLOW + "Game Cancelled";
+        return role.color + role.name + " Victory!";
+    }
+
+    private static void stop(Role role) {
         //stop ticker
         instance.ticker.stop();
 
         //todo send data to database
+        instance.tracker
 
         //clear skulls todo check if null player works
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.updateSkull(instance.map.getWorld(), v, null));
@@ -288,8 +301,8 @@ public class WerewolfGame {
             else if (entity instanceof Player player) {
                 WerewolfUtil.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
                 player.getInventory().clear();
-                player.sendTitle(endReason, ChatColor.GOLD + "GAME END", 2, 2, 40);
-                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + endReason);
+                player.sendTitle(getEndString(role), ChatColor.GOLD + "GAME END", 2, 2, 40);
+                player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + getEndString(role));
                 player.setGameMode(GameMode.SPECTATOR);
             }
         }

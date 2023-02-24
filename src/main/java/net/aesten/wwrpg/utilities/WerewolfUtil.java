@@ -70,6 +70,10 @@ public class WerewolfUtil {
         }.runTaskLater(WerewolfRpg.getPlugin(), delay);
     }
 
+    public static boolean getFaction(Role role) {
+
+    }
+
     public static void showMatchRoles() {
         String villagerPlayers = String.join(", ", WerewolfTeams.getTeam(Role.VILLAGER).getEntries());
         String werewolfPlayer = String.join(", ", WerewolfTeams.getTeam(Role.WEREWOLF).getEntries());

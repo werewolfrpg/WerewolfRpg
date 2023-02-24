@@ -2,12 +2,9 @@ package net.aesten.wwrpg.tracker;
 
 import net.aesten.wwrpg.data.Role;
 
-import java.util.UUID;
-
 public class PlayerStats {
-    private UUID PlayerId;
-    private Result result; //win rate = W / (W+L+D)
     private Role role;
+    private Result result; //win rate = W / (W+L+D)
 
     //basic stats
     private int kills = 0; //kills by role
@@ -37,5 +34,19 @@ public class PlayerStats {
     private ItemUses werewolfAxe = new ItemUses();
 
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public Result getResult() {
+        return result;
+    }
 }
