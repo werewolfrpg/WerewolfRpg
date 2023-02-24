@@ -61,21 +61,25 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
 
                 if (data.isCursed()) {
                     if (game.isNight() && data.getRole() == Role.VAMPIRE) {
+                        game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, false);
                         return;
                     }
                     if (game.isNight() && data.hasActiveProtection()) {
                         data.setHasActiveProtection(false);
                         target.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                         WerewolfUtil.sendPluginText(target, "Protection was activated", ChatColor.GREEN);
+                        game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, false);
                     }
                     else {
                         world.playSound(target.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.6f,1);
                         target.setHealth(0);
+                        game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, true);
                     }
                 }
                 else {
                     world.playSound(target.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.6f,1);
                     data.setCursed(true);
+                    game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(true, false);
                 }
             }
         }
@@ -85,27 +89,34 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
     public void onProjectileHit(ProjectileHitEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
         Projectile projectile = event.getEntity();
-        if (event.getHitEntity() instanceof Player player) {
+        if (event.getHitEntity() instanceof Player player && event.getEntity().getShooter() instanceof Player shooter) {
             World world = game.getMap().getWorld();
             WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
 
             if (data.isCursed()) {
                 if (game.isNight() && data.getRole() == Role.VAMPIRE) {
+                    game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, false);
                     return;
                 }
                 if (game.isNight() && data.hasActiveProtection()) {
                     data.setHasActiveProtection(false);
                     player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     WerewolfUtil.sendPluginText(player, "Protection was activated", ChatColor.GREEN);
+                    game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, false);
+
                 }
                 else {
                     world.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.6f,1);
                     player.setHealth(0);
+                    game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, true);
+
                 }
             }
             else {
                 world.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.6f,1);
                 data.setCursed(true);
+                game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(true, false);
+
             }
         }
         projectile.remove();

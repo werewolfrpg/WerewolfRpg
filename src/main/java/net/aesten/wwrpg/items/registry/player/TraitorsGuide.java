@@ -2,7 +2,7 @@ package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
-import net.aesten.wwrpg.data.WerewolfTeams;
+import net.aesten.wwrpg.data.TeamsManager;
 import net.aesten.wwrpg.items.models.InteractItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
 import net.aesten.wwrpg.items.models.ShopWerewolfItem;
@@ -59,8 +59,10 @@ public class TraitorsGuide extends ShopWerewolfItem implements InteractItem {
         Player user = event.getPlayer();
         user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
         game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_VILLAGER_WORK_LIBRARIAN, 0.8f,1);
-        String werewolf = WerewolfTeams.getTeam(Role.WEREWOLF).getEntries().stream().toList()
+        String werewolf = WerewolfGame.getTeamsManager().getTeam(Role.WEREWOLF).getEntries().stream().toList()
                 .get(new Random().nextInt(game.getPool().getWerewolfNumber()));
         WerewolfUtil.sendPluginText(user, werewolf + " is a werewolf!", ChatColor.RED);
+
+        WerewolfGame.getInstance().getTracker().getPlayerStats(user.getUniqueId()).addTraitorsGuideUsed();
     }
 }

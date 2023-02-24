@@ -2,6 +2,7 @@ package net.aesten.wwrpg.core;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
+import net.aesten.wwrpg.data.TeamsManager;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.items.registry.Item;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
@@ -116,8 +117,9 @@ public class Ticker {
     }
 
     private void tick(WerewolfGame game) {
-        if ((game.getFaction(Role.VILLAGER).size() == 0 && game.getFaction(Role.POSSESSED).size() == 0) ||
-                game.getFaction(Role.WEREWOLF).size() == 0) {
+        TeamsManager teamsManager = WerewolfGame.getTeamsManager();
+        if ((teamsManager.getFaction(Role.VILLAGER).size() == 0 && teamsManager.getFaction(Role.POSSESSED).size() == 0) ||
+                teamsManager.getFaction(Role.WEREWOLF).size() == 0) {
             WerewolfGame.endGame();
         }
         else {

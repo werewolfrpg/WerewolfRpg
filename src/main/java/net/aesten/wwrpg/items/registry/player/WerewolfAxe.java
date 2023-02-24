@@ -58,15 +58,18 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
 
                 if (game.isNight() && data.getRole() == Role.VAMPIRE) {
                     event.setCancelled(true);
+                    game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(false);
                 }
                 else if (game.isNight() && data.hasActiveProtection()) {
                     event.setCancelled(true);
                     data.setHasActiveProtection(false);
                     target.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     WerewolfUtil.sendPluginText(target, "Protection was activated", ChatColor.GREEN);
+                    game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(false);
                 }
                 else {
                     target.setHealth(0);
+                    game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(true);
                 }
             }
         }

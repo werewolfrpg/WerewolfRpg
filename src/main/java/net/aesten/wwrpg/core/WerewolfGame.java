@@ -3,12 +3,12 @@ package net.aesten.wwrpg.core;
 import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
-import net.aesten.wwrpg.data.WerewolfTeams;
+import net.aesten.wwrpg.data.TeamsManager;
 import net.aesten.wwrpg.items.registry.Item;
 import net.aesten.wwrpg.items.registry.ItemManager;
 import net.aesten.wwrpg.shop.ShopManager;
 import net.aesten.wwrpg.skeleton.SkeletonManager;
-import net.aesten.wwrpg.tracker.TrackerManager;
+import net.aesten.wwrpg.tracker.Tracker;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.map.WerewolfMap;
@@ -32,12 +32,12 @@ public class WerewolfGame {
     private static final Listener listener = new ItemManager();
     private static final SkeletonManager skeletonManager = new SkeletonManager();
     private static final ShopManager shopManager = new ShopManager();
+    private static final TeamsManager teamsManager = new TeamsManager();
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
-    private final Map<Role, List<UUID>> teamsMap;
     private final Ticker ticker;
     private final RolePool pool;
-    private final TrackerManager tracker = new TrackerManager();
+    private final Tracker tracker = new Tracker();
     private WerewolfMap map;
     private boolean isPlaying;
     private boolean isNight;
@@ -46,16 +46,11 @@ public class WerewolfGame {
     public WerewolfGame() {
         this.participants = new ArrayList<>();
         this.dataMap = new HashMap<>();
-        this.teamsMap = new HashMap<>();
         this.pool = new RolePool(1,0,0,0);
         this.ticker = new Ticker();
         this.isPlaying = false;
         this.isNight = false;
         this.displayNameArmorStands = new ArrayList<>();
-
-        for (Role role : Role.values()) {
-            this.teamsMap.put(role, new ArrayList<>());
-        }
 
         instance = this;
     }
@@ -64,17 +59,12 @@ public class WerewolfGame {
         previousGame.participants.removeIf(p -> !Bukkit.getOnlinePlayers().contains(p));
         this.participants = previousGame.participants;
         this.dataMap = new HashMap<>();
-        this.teamsMap = new HashMap<>();
         this.pool = previousGame.pool;
         this.ticker = new Ticker();
         this.map = previousGame.map;
         this.isPlaying = false;
         this.isNight = false;
         this.displayNameArmorStands = new ArrayList<>();
-
-        for (Role role : Role.values()) {
-            this.teamsMap.put(role, new ArrayList<>());
-        }
 
         instance = this;
     }
@@ -95,12 +85,8 @@ public class WerewolfGame {
         return shopManager;
     }
 
-    public List<UUID> getFaction(Role role) {
-        return teamsMap.get(role);
-    }
-
-    public void removeFromFaction(Player player) {
-        teamsMap.get(dataMap.get(player.getUniqueId()).getRole()).remove(player.getUniqueId());
+    public static TeamsManager getTeamsManager() {
+        return teamsManager;
     }
 
     public Map<UUID, WerewolfPlayerData> getDataMap() {
@@ -111,7 +97,7 @@ public class WerewolfGame {
         return pool;
     }
 
-    public TrackerManager getTracker() {
+    public Tracker getTracker() {
         return tracker;
     }
 
@@ -203,7 +189,7 @@ public class WerewolfGame {
                         role = Role.VILLAGER;
                     }
 
-                    //prepare tracker
+                    //prepare stats tracker
                     instance.tracker.addPlayer(player).setRole(role);
 
                     //update skulls and put name
@@ -218,10 +204,9 @@ public class WerewolfGame {
                     );
 
                     //add player to correct team and set roles
-                    instance.teamsMap.get(role).add(player.getUniqueId());
                     instance.dataMap.put(player.getUniqueId(), new WerewolfPlayerData());
                     instance.dataMap.get(player.getUniqueId()).setRole(role);
-                    WerewolfTeams.getTeam(role).addEntry(player.getName());
+                    teamsManager.registerPlayerRole(player, role);
 
                     //send role message to player
                     player.sendTitle(role.apparentRole().color + role.apparentRole().name,
@@ -235,14 +220,14 @@ public class WerewolfGame {
                     player.getInventory().addItem(Item.EXQUISITE_MEAT.getItem());
                 }
                 else {
-                    instance.teamsMap.get(Role.SPECTATOR).add(player.getUniqueId());
+                    teamsManager.registerPlayerRole(player, Role.SPECTATOR);
                 }
             }
         }
 
-        if (WerewolfTeams.getTeam(Role.WEREWOLF).getSize() > 1) {
-            String werewolves = String.join(", ", WerewolfTeams.getTeam(Role.WEREWOLF).getEntries());
-            for (Player player : instance.teamsMap.get(Role.WEREWOLF).stream().map(Bukkit::getPlayer).toList()) {
+        if (teamsManager.getTeam(Role.WEREWOLF).getSize() > 1) {
+            String werewolves = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
+            for (Player player : teamsManager.getFaction(Role.WEREWOLF).stream().map(Bukkit::getPlayer).toList()) {
                 player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RESET +
                         "The werewolves are " + Role.WEREWOLF.color + werewolves);
             }
@@ -252,10 +237,10 @@ public class WerewolfGame {
     }
 
     public static void endGame() {
-        if (instance.getFaction(Role.VAMPIRE).size() != 0) {
+        if (teamsManager.getFaction(Role.VAMPIRE).size() != 0) {
             stop(Role.VAMPIRE);
         }
-        else if (instance.getFaction(Role.VILLAGER).size() == 0) {
+        else if (teamsManager.getFaction(Role.VILLAGER).size() == 0) {
             stop(Role.WEREWOLF);
         }
         else {
@@ -277,7 +262,7 @@ public class WerewolfGame {
         instance.ticker.stop();
 
         //todo send data to database
-        instance.tracker
+        instance.tracker.setResults(role);
 
         //clear skulls todo check if null player works
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.updateSkull(instance.map.getWorld(), v, null));
@@ -289,7 +274,7 @@ public class WerewolfGame {
         //reset all values
         instance = new WerewolfGame(instance);
         instance.map.getWorld().setTime(6000L);
-        WerewolfTeams.clear();
+        teamsManager.clear();
         HandlerList.unregisterAll(listener);
         HandlerList.unregisterAll(skeletonManager);
 

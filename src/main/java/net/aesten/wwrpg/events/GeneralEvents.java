@@ -2,6 +2,10 @@ package net.aesten.wwrpg.events;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.core.WerewolfGame;
+import net.aesten.wwrpg.items.registry.Item;
+import net.aesten.wwrpg.tracker.Result;
+import net.aesten.wwrpg.tracker.Tracker;
+import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
@@ -10,17 +14,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class GeneralEvents implements Listener {
     //change join message
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        if (WerewolfGame.getInstance().isPlaying()) {
+            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+        }
         event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
                 ChatColor.GREEN + event.getPlayer().getName() + ChatColor.GOLD + " joined the server!");
     }
@@ -32,9 +38,9 @@ public class GeneralEvents implements Listener {
 
         if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
             event.setQuitMessage(null);
-            //todo player stats (for database) will be saved and status disconnect instead of dead/alive
-            WerewolfGame.getInstance().removeFromFaction(player);
+            WerewolfGame.getTeamsManager().unregisterPlayer(player);
             WerewolfGame.getInstance().getDataMap().remove(player.getUniqueId());
+            WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
         }
         else {
             event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.GREEN + player.getName() + ChatColor.GOLD + " left the server!");
@@ -90,11 +96,21 @@ public class GeneralEvents implements Listener {
             LivingEntity entity = event.getEntity();
             if (event.getEntity().getType() == EntityType.PLAYER) {
                 Player player = (Player) entity;
-                WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
-                WerewolfGame.getInstance().removeFromFaction(player);
+                UUID id = player.getUniqueId();
+                WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
+                WerewolfGame.getTeamsManager().unregisterPlayer(player);
                 player.setGameMode(GameMode.SPECTATOR);
                 player.getInventory().clear();
                 player.getActivePotionEffects().clear();
+
+                //stats
+                Tracker tracker = WerewolfGame.getInstance().getTracker();
+                String deathCause = tracker.getSpecificDeathCauses().get(id);
+                if (deathCause == null) {
+                    deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
+                }
+                tracker.getPlayerStats(id).setDeathCause(deathCause);
+                tracker.getPlayerStats(id).addDeath();
             }
         }
     }

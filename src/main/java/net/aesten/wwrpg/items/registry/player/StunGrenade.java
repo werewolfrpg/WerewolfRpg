@@ -47,11 +47,16 @@ public class StunGrenade extends ShopWerewolfItem implements ProjectileItem, Pla
     public void onProjectileHit(ProjectileHitEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
         Location landingPosition;
-        if (event.getHitEntity() instanceof Player player) {
-            landingPosition = player.getLocation();
-        }
-        else if (event.getHitBlock() != null) {
-            landingPosition = event.getHitBlock().getLocation();
+        if (event.getEntity().getShooter() instanceof Player shooter) {
+            if (event.getHitEntity() instanceof Player player) {
+                landingPosition = player.getLocation();
+            }
+            else if (event.getHitBlock() != null) {
+                landingPosition = event.getHitBlock().getLocation();
+            }
+            else {
+                return;
+            }
         }
         else {
             return;
@@ -61,14 +66,19 @@ public class StunGrenade extends ShopWerewolfItem implements ProjectileItem, Pla
         world.playSound(landingPosition, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1,1);
         world.spawnParticle(Particle.FIREWORKS_SPARK, landingPosition, 300);
 
+        int affected = 0;
         for (Entity entity : world.getNearbyEntities(landingPosition, 2, 2, 2)) {
             if (entity instanceof Player player && game.isParticipant(player)) {
+                affected++;
                 game.getDataMap().get(player.getUniqueId()).setStunned(true);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 0,false, false, false));
                 WerewolfUtil.runDelayedTask(100, () -> {
                     game.getDataMap().get(player.getUniqueId()).setStunned(false);
                 });
             }
+        }
+        if (affected != 0) {
+            game.getTracker().getPlayerStats(shooter.getUniqueId()).addStunGrenadeHits(affected);
         }
     }
 

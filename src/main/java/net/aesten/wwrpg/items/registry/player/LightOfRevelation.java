@@ -62,5 +62,7 @@ public class LightOfRevelation extends ShopWerewolfItem implements InteractItem 
         Objects.requireNonNull(event.getItem()).setAmount(event.getItem().getAmount() - 1);
         game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.6f,1);
         WerewolfUtil.sendPluginText(user, "Players are revealed");
+
+        game.getTracker().getPlayerStats(user.getUniqueId()).addRevelationUsed();
     }
 }

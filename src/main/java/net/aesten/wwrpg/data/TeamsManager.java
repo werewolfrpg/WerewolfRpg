@@ -1,30 +1,24 @@
 package net.aesten.wwrpg.data;
 
+import net.aesten.wwrpg.core.WerewolfGame;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.Objects;
+import java.util.*;
 
-public class WerewolfTeams {
-    private static Team villagers;
-    private static Team werewolves;
-    private static Team traitors;
-    private static Team vampires;
-    private static Team possessed;
+public class TeamsManager {
+    private final Map<Role, List<UUID>> factions = initFactions();
+    private final Team villagers;
+    private final Team werewolves;
+    private final Team traitors;
+    private final Team vampires;
+    private final Team possessed;
+    private final Team spectators;
 
-    public static Team getTeam(Role role) {
-        return switch(role) {
-            case WEREWOLF -> werewolves;
-            case TRAITOR -> traitors;
-            case VAMPIRE -> vampires;
-            case POSSESSED -> possessed;
-            default -> villagers;
-        };
-    }
-
-    public static void init() {
+    public TeamsManager() {
         Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard();
 
         villagers = board.registerNewTeam("Villager");
@@ -56,19 +50,64 @@ public class WerewolfTeams {
         possessed.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         possessed.setCanSeeFriendlyInvisibles(false);
         possessed.setColor(ChatColor.GREEN);
+
+        spectators = board.registerNewTeam("Spectator");
+        spectators.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
+        spectators.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
+        spectators.setCanSeeFriendlyInvisibles(true);
+        spectators.setColor(ChatColor.RED);
     }
 
-    public static void clear() {
+    public Team getTeam(Role role) {
+        return switch(role) {
+            case WEREWOLF -> werewolves;
+            case TRAITOR -> traitors;
+            case VAMPIRE -> vampires;
+            case POSSESSED -> possessed;
+            case VILLAGER -> villagers;
+            default -> spectators;
+        };
+    }
+
+    public void registerPlayerRole(Player player, Role role) {
+        getTeam(role).addEntry(player.getName());
+        getFaction(role).add(player.getUniqueId());
+    }
+
+    public void unregisterPlayer(Player player) {
+        Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
+        getFaction(role).remove(player.getUniqueId());
+    }
+
+    public void clear() {
         removeAllEntries(villagers);
         removeAllEntries(werewolves);
         removeAllEntries(traitors);
         removeAllEntries(vampires);
         removeAllEntries(possessed);
+        clearFactions();
     }
 
-    private static void removeAllEntries(Team team) {
+    private void removeAllEntries(Team team) {
         for (String s : team.getEntries()) {
             team.removeEntry(s);
+        }
+    }
+
+    private Map<Role, List<UUID>> initFactions() {
+        return Map.of(
+                Role.VILLAGER, new ArrayList<>(),
+                Role.WEREWOLF, new ArrayList<>(),
+                Role.VAMPIRE, new ArrayList<>());
+    }
+
+    public List<UUID> getFaction(Role role) {
+        return factions.get(role);
+    }
+
+    private void clearFactions() {
+        for (Role role : factions.keySet()) {
+            factions.get(role).clear();
         }
     }
 }

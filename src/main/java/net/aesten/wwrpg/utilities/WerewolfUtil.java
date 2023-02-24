@@ -1,13 +1,15 @@
 package net.aesten.wwrpg.utilities;
 
 import net.aesten.wwrpg.WerewolfRpg;
+import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
-import net.aesten.wwrpg.data.WerewolfTeams;
+import net.aesten.wwrpg.data.TeamsManager;
 import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -70,16 +72,25 @@ public class WerewolfUtil {
         }.runTaskLater(WerewolfRpg.getPlugin(), delay);
     }
 
-    public static boolean getFaction(Role role) {
+    public static boolean areSameFaction(Role role1, Role role2) {
+        if (role1 == role2) return true;
+        else return (role1 == Role.WEREWOLF && role2 == Role.TRAITOR) ||
+                (role1 == Role.TRAITOR && role2 == Role.WEREWOLF) ||
+                (role1 == Role.VILLAGER && role2 == Role.POSSESSED) ||
+                (role1 == Role.POSSESSED && role2 == Role.VILLAGER);
+    }
 
+    public static boolean sameItem(ItemStack item1, ItemStack item2) {
+        return (item1.getItemMeta() == item2.getItemMeta());
     }
 
     public static void showMatchRoles() {
-        String villagerPlayers = String.join(", ", WerewolfTeams.getTeam(Role.VILLAGER).getEntries());
-        String werewolfPlayer = String.join(", ", WerewolfTeams.getTeam(Role.WEREWOLF).getEntries());
-        String traitorPlayers = String.join(", ", WerewolfTeams.getTeam(Role.TRAITOR).getEntries());
-        String vampirePlayers = String.join(", ", WerewolfTeams.getTeam(Role.VAMPIRE).getEntries());
-        String possessedPlayers = String.join(", ", WerewolfTeams.getTeam(Role.POSSESSED).getEntries());
+        TeamsManager teamsManager = WerewolfGame.getTeamsManager();
+        String villagerPlayers = String.join(", ", teamsManager.getTeam(Role.VILLAGER).getEntries());
+        String werewolfPlayer = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
+        String traitorPlayers = String.join(", ", teamsManager.getTeam(Role.TRAITOR).getEntries());
+        String vampirePlayers = String.join(", ", teamsManager.getTeam(Role.VAMPIRE).getEntries());
+        String possessedPlayers = String.join(", ", teamsManager.getTeam(Role.POSSESSED).getEntries());
 
         Bukkit.broadcastMessage("\n");
         Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
