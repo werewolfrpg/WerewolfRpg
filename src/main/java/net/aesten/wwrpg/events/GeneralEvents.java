@@ -105,12 +105,15 @@ public class GeneralEvents implements Listener {
 
                 //stats
                 Tracker tracker = WerewolfGame.getInstance().getTracker();
-                String deathCause = tracker.getSpecificDeathCauses().get(id);
-                if (deathCause == null) {
+                String deathCause;
+                if (tracker.getSpecificDeathCauses().get(id) == null) {
                     deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
                 }
+                else {
+                    deathCause = tracker.getSpecificDeathCauses().get(id).getFirst();
+                }
                 tracker.getPlayerStats(id).setDeathCause(deathCause);
-                tracker.getPlayerStats(id).addDeath();
+                tracker.getPlayerStats(id).setKiller(tracker.getSpecificDeathCauses().get(id).getSecond());
             }
         }
     }

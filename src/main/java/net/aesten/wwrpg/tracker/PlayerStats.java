@@ -2,14 +2,16 @@ package net.aesten.wwrpg.tracker;
 
 import net.aesten.wwrpg.data.Role;
 
+import java.util.UUID;
+
 public class PlayerStats {
     private Role role;
     private Result result; //win rate = W / (W+L+D)
 
     //basic stats
-    private int kills = 0; //kills by role
-    private int death = 0; //deaths by role + stupid death causes?
-    private String deathCause;
+    private int kills = 0;
+    private UUID killer; //can be null
+    private String deathCause; //can be null
     private int killedBasicSkeletons = 0;
     private int killedLuckySkeletons = 0;
     private int killedSpecialSkeletons = 0;
@@ -73,12 +75,12 @@ public class PlayerStats {
         this.kills += 1;
     }
 
-    public int getDeath() {
-        return death;
+    public UUID getKiller() {
+        return killer;
     }
 
-    public void addDeath() {
-        this.death += 1;
+    public void setKiller(UUID killer) {
+        this.killer = killer;
     }
 
     public String getDeathCause() {

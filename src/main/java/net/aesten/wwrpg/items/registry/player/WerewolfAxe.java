@@ -1,5 +1,6 @@
 package net.aesten.wwrpg.items.registry.player;
 
+import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
@@ -66,10 +67,13 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
                     target.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     WerewolfUtil.sendPluginText(target, "Protection was activated", ChatColor.GREEN);
                     game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(false);
+                    game.getTracker().getPlayerStats(target.getUniqueId()).addProtectionTriggered();
                 }
                 else {
                     target.setHealth(0);
                     game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(true);
+                    game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
+                    game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new Pair<>("werewolf_axe_hit", damager.getUniqueId()));
                 }
             }
         }

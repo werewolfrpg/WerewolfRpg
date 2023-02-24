@@ -115,7 +115,7 @@ public class ItemManager implements Listener {
         WerewolfGame game = WerewolfGame.getInstance();
         Player player = event.getPlayer();
         WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.PLAYER_HEAD) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Objects.requireNonNull(event.getClickedBlock()).getType() == Material.PLAYER_HEAD) {
             if (!game.isNight()) {
                 WerewolfUtil.sendPluginText(player, "You cannot use a divination during day time", ChatColor.RED);
             }
@@ -133,11 +133,13 @@ public class ItemManager implements Listener {
                         WerewolfUtil.sendPluginText(player, "You cannot use a divination on yourself", ChatColor.RED);
                     }
                     else {
-                        Role role = game.getDataMap().get(offlinePlayer.getUniqueId()).getRole();
+                        Role role = game.getDataMap().get(offlinePlayer.getUniqueId()).getRole().divinationRole();
+                        String name = offlinePlayer.getName();
                         data.setHasAlreadyUsedDivination(true);
                         data.setRemainingDivinations(data.getRemainingDivinations() - 1);
                         targetData.setHasBeenDivinated(true);
-                        //todo send message
+                        WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.color + role.name, WerewolfRpg.COLOR);
+                        game.getTracker().getPlayerStats(player.getUniqueId()).addDivinationUsed();
                     }
                 }
                 else {

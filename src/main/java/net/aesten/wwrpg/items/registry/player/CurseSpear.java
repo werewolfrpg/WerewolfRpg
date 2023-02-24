@@ -1,5 +1,6 @@
 package net.aesten.wwrpg.items.registry.player;
 
+import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
@@ -69,11 +70,14 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                         target.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                         WerewolfUtil.sendPluginText(target, "Protection was activated", ChatColor.GREEN);
                         game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, false);
+                        game.getTracker().getPlayerStats(target.getUniqueId()).addProtectionTriggered();
                     }
                     else {
                         world.playSound(target.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.6f,1);
                         target.setHealth(0);
                         game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, true);
+                        game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
+                        game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new Pair<>("curse_spear_melee", damager.getUniqueId()));
                     }
                 }
                 else {
@@ -103,20 +107,20 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                     player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     WerewolfUtil.sendPluginText(player, "Protection was activated", ChatColor.GREEN);
                     game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, false);
-
+                    game.getTracker().getPlayerStats(player.getUniqueId()).addProtectionTriggered();
                 }
                 else {
                     world.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.6f,1);
                     player.setHealth(0);
                     game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, true);
-
+                    game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
+                    game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new Pair<>("curse_spear_throw", shooter.getUniqueId()));
                 }
             }
             else {
                 world.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.6f,1);
                 data.setCursed(true);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(true, false);
-
             }
         }
         projectile.remove();

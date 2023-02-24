@@ -71,7 +71,6 @@ public class Ticker {
     }
 
     private void switchToNight(WerewolfGame game) {
-        //todo db event timeline
         days++;
         bar.setColor(BarColor.PURPLE);
         bar.setTitle(ChatColor.DARK_PURPLE + "Night Time");
@@ -95,7 +94,6 @@ public class Ticker {
     }
 
     private void switchToDay(WerewolfGame game) {
-        //todo db event timeline
         bar.setColor(BarColor.YELLOW);
         bar.setTitle(ChatColor.YELLOW + "Day Time");
         game.getMap().getWorld().setTime(6000L);
@@ -169,6 +167,7 @@ public class Ticker {
                 if (data.hasActiveSneakNotice() && data.hasBeenDivinated()) {
                     WerewolfUtil.sendPluginText(player, "(Sneak Notice) Your identity has been unveiled", ChatColor.DARK_RED);
                     data.setHasBeenDivinated(false);
+                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addSneakNoticeTriggered();
                 }
             }
         }

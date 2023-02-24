@@ -1,5 +1,6 @@
 package net.aesten.wwrpg.tracker;
 
+import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.entity.Player;
@@ -7,10 +8,8 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class Tracker {
-    private final Map<UUID, String> specificDeathCauses = new HashMap<>();
+    private final Map<UUID, Pair<String, UUID>> specificDeathCauses = new HashMap<>();
     private final Map<UUID, PlayerStats> playerStats = new HashMap<>();
-
-    private final List<Event> history = new ArrayList<>();
 
     public PlayerStats addPlayer(Player player) {
         playerStats.put(player.getUniqueId(), new PlayerStats());
@@ -21,15 +20,7 @@ public class Tracker {
         return playerStats.get(id);
     }
 
-    public void addEvent(Event event) {
-        history.add(event);
-    }
-
-    public List<Event> getHistory() {
-        return history;
-    }
-
-    public Map<UUID, String> getSpecificDeathCauses() {
+    public Map<UUID, Pair<String, UUID>> getSpecificDeathCauses() {
         return specificDeathCauses;
     }
 

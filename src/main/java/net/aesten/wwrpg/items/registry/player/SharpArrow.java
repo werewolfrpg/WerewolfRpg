@@ -1,5 +1,6 @@
 package net.aesten.wwrpg.items.registry.player;
 
+import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
@@ -54,7 +55,6 @@ public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
             if (game.isNight() && data.getRole() == Role.VAMPIRE) {
                 event.setCancelled(true);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(false);
-                //todo history: save event
             }
             else if (game.isNight() && data.hasActiveProtection()) {
                 event.setCancelled(true);
@@ -62,13 +62,13 @@ public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
                 player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                 WerewolfUtil.sendPluginText(player, "Protection was activated", ChatColor.GREEN);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(false);
-                //todo history: save event
+                game.getTracker().getPlayerStats(player.getUniqueId()).addProtectionTriggered();
             }
             else {
                 player.setHealth(0);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(true);
-                //todo history: save event
-                //todo data: player death cause
+                game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
+                game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new Pair<>("arrow_hit", shooter.getUniqueId()));
             }
         }
         projectile.remove();
