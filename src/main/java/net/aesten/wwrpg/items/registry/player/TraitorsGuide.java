@@ -2,7 +2,6 @@ package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
-import net.aesten.wwrpg.data.TeamsManager;
 import net.aesten.wwrpg.items.models.InteractItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
 import net.aesten.wwrpg.items.models.ShopWerewolfItem;

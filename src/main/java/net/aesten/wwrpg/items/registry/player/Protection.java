@@ -6,7 +6,6 @@ import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.items.models.InteractItem;
 import net.aesten.wwrpg.items.models.ItemStackBuilder;
 import net.aesten.wwrpg.items.models.ShopWerewolfItem;
-import net.aesten.wwrpg.items.models.WerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;

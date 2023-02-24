@@ -2,10 +2,8 @@ package net.aesten.wwrpg.events;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.items.registry.Item;
 import net.aesten.wwrpg.tracker.Result;
 import net.aesten.wwrpg.tracker.Tracker;
-import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;

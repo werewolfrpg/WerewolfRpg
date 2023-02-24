@@ -264,8 +264,8 @@ public class WerewolfGame {
         //todo send data to database
         instance.tracker.setResults(role);
 
-        //clear skulls todo check if null player works
-        instance.map.getSkullLocations().forEach(v -> WerewolfUtil.updateSkull(instance.map.getWorld(), v, null));
+        //clear skulls todo check if skull operations work
+        instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
         instance.displayNameArmorStands.forEach(ArmorStand::remove);
 
         //show roles to players

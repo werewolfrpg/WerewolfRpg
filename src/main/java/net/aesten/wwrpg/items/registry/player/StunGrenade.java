@@ -72,9 +72,7 @@ public class StunGrenade extends ShopWerewolfItem implements ProjectileItem, Pla
                 affected++;
                 game.getDataMap().get(player.getUniqueId()).setStunned(true);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 0,false, false, false));
-                WerewolfUtil.runDelayedTask(100, () -> {
-                    game.getDataMap().get(player.getUniqueId()).setStunned(false);
-                });
+                WerewolfUtil.runDelayedTask(100, () -> game.getDataMap().get(player.getUniqueId()).setStunned(false));
             }
         }
         if (affected != 0) {

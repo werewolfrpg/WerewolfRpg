@@ -5,6 +5,7 @@ import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.TeamsManager;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -34,10 +35,17 @@ public class WerewolfUtil {
     }
 
     public static void updateSkull(World world, Vector skullCoordinates, Player player) {
-        if (world.getBlockAt(skullCoordinates.toLocation(world)).getState() instanceof Skull skull) {
+        Block block = world.getBlockAt(skullCoordinates.toLocation(world));
+        block.setType(Material.PLAYER_HEAD);
+        if (block.getState() instanceof Skull skull) {
             skull.setOwningPlayer(player);
             skull.update();
         }
+    }
+
+    public static void resetSkull(World world, Vector skullCoordinates) {
+        Block block = world.getBlockAt(skullCoordinates.toLocation(world));
+        block.setType(Material.SKELETON_SKULL);
     }
 
     public static ArmorStand summonNameTagArmorStand(World world, Vector coordinates, Vector offset, String name) {
