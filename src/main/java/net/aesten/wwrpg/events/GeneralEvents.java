@@ -2,8 +2,14 @@ package net.aesten.wwrpg.events;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.core.WerewolfGame;
+import net.aesten.wwrpg.items.base.EntityInteractItem;
+import net.aesten.wwrpg.items.base.InteractItem;
+import net.aesten.wwrpg.items.base.WerewolfItem;
+import net.aesten.wwrpg.items.registry.AdminItem;
+import net.aesten.wwrpg.items.registry.PlayerItem;
 import net.aesten.wwrpg.tracker.Result;
 import net.aesten.wwrpg.tracker.Tracker;
+import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
@@ -14,8 +20,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class GeneralEvents implements Listener {
@@ -88,12 +96,32 @@ public class GeneralEvents implements Listener {
         }
     }
 
+    //admin item events
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getItem() == null) return;
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Optional<WerewolfItem> werewolfItem = AdminItem.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), event.getItem())).findAny();
+            if (werewolfItem.isPresent() && werewolfItem.get() instanceof InteractItem interactItem) {
+                interactItem.onPlayerInteract(event);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        ItemStack clickItem = event.getPlayer().getInventory().getItem(event.getHand());
+        Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), clickItem)).findAny();
+        if (werewolfItem.isPresent() && werewolfItem.get() instanceof EntityInteractItem entityInteractItem) {
+            entityInteractItem.onEntityInteract(event);
+        }
+    }
+
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (WerewolfGame.getInstance().isPlaying()) {
-            LivingEntity entity = event.getEntity();
-            if (event.getEntity().getType() == EntityType.PLAYER) {
-                Player player = (Player) entity;
+        if (event.getEntity() instanceof Player player) {
+             if (WerewolfGame.getInstance().isPlaying()) {
                 UUID id = player.getUniqueId();
                 WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
                 WerewolfGame.getTeamsManager().unregisterPlayer(player);
@@ -111,8 +139,11 @@ public class GeneralEvents implements Listener {
                     deathCause = tracker.getSpecificDeathCauses().get(id).getFirst();
                 }
                 tracker.getPlayerStats(id).setDeathCause(deathCause);
-                tracker.getPlayerStats(id).setKiller(tracker.getSpecificDeathCauses().get(id).getSecond());
+                tracker.getPlayerStats(id).setKiller(tracker.getSpecificDeathCauses().get(id).getSecond().toString());
             }
+             else {
+                 player.teleport(WerewolfGame.getInstance().getMap().getMapSpawn());
+             }
         }
     }
 }

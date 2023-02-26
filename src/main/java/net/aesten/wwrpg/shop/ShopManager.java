@@ -1,7 +1,7 @@
 package net.aesten.wwrpg.shop;
 
-import net.aesten.wwrpg.items.models.ShopWerewolfItem;
-import net.aesten.wwrpg.items.registry.Item;
+import net.aesten.wwrpg.items.base.ShopWerewolfItem;
+import net.aesten.wwrpg.items.registry.PlayerItem;
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.ConfigurableProperty;
 import org.bukkit.ChatColor;
@@ -29,8 +29,8 @@ public class ShopManager implements Configurable {
     };
 
     public ShopManager() {
-        basicShopItems = Item.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.BASIC).sorted(comparator).toList();
-        specialShopItems = Item.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.SPECIAL).sorted(comparator).toList();
+        basicShopItems = PlayerItem.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.BASIC).sorted(comparator).toList();
+        specialShopItems = PlayerItem.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.SPECIAL).sorted(comparator).toList();
     }
 
     private static void setVillagerSetting(Villager villager) {
@@ -84,6 +84,6 @@ public class ShopManager implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        return new ArrayList<>(Item.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(item -> ((ShopWerewolfItem) item).getCost()).toList());
+        return new ArrayList<>(PlayerItem.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(item -> ((ShopWerewolfItem) item).getCost()).toList());
     }
 }

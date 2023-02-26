@@ -57,8 +57,8 @@ public final class WerewolfRpg extends JavaPlugin {
         //Register event listeners
         getServer().getPluginManager().registerEvents(new GeneralEvents(), this);
 
-        //Initialize Plugin
-        WerewolfGame.init();
+        //load worlds
+        WerewolfGame.initMapManager();
     }
 
     @Override
@@ -81,3 +81,4 @@ public final class WerewolfRpg extends JavaPlugin {
 
 //notes:
 // visualize all skeleton spawns with armor stands -> store in list -> destroy manually -> recreate spawn list if armorstand.isValid()
+// manage maps

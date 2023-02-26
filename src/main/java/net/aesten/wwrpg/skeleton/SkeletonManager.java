@@ -1,8 +1,8 @@
 package net.aesten.wwrpg.skeleton;
 
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.items.models.WerewolfItem;
-import net.aesten.wwrpg.items.registry.Item;
+import net.aesten.wwrpg.items.base.WerewolfItem;
+import net.aesten.wwrpg.items.registry.PlayerItem;
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.ConfigurableProperty;
 import net.azalealibrary.configuration.property.ListProperty;
@@ -137,7 +137,7 @@ public class SkeletonManager implements Listener, Configurable {
                 }
                 else if (Objects.equals(entity.getCustomName(), "special_skeleton")) {
                     List<String> drops = specialSkeletonDrops.get();
-                    WerewolfItem dropItem = Item.getItemFromId(drops.get(rnd.nextInt(drops.size())));
+                    WerewolfItem dropItem = PlayerItem.getItemFromId(drops.get(rnd.nextInt(drops.size())));
                     player.getInventory().addItem(dropItem.getItem());
                     WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledSpecialSkeletons();
                 }

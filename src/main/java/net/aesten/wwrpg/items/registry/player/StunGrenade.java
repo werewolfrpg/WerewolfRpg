@@ -1,7 +1,7 @@
 package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.items.models.*;
+import net.aesten.wwrpg.items.base.*;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.*;

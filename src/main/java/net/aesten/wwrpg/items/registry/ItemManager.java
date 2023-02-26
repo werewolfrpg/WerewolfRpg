@@ -4,7 +4,7 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
-import net.aesten.wwrpg.items.models.*;
+import net.aesten.wwrpg.items.base.*;
 import net.aesten.wwrpg.tracker.Tracker;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.Bukkit;
@@ -19,7 +19,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -33,7 +32,7 @@ public class ItemManager implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getItem() == null) return;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Optional<WerewolfItem> werewolfItem = Item.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), event.getItem())).findAny();
+            Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), event.getItem())).findAny();
             if (werewolfItem.isPresent() && werewolfItem.get() instanceof InteractItem interactItem) {
                 interactItem.onPlayerInteract(event);
             }
@@ -44,7 +43,7 @@ public class ItemManager implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player player) {
             ItemStack eventItem = player.getInventory().getItemInMainHand();
-            Optional<WerewolfItem> werewolfItem = Item.getRegistry().values().stream().filter(item -> item.getItem().getItemMeta() == Objects.requireNonNull(eventItem).getItemMeta()).findAny();
+            Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> item.getItem().getItemMeta() == Objects.requireNonNull(eventItem).getItemMeta()).findAny();
             if (werewolfItem.isPresent() && werewolfItem.get() instanceof EntityDamageItem entityDamageItem) {
                 entityDamageItem.onEntityDamage(event);
             }
@@ -55,28 +54,19 @@ public class ItemManager implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
         if (projectile instanceof Arrow && projectile.hasMetadata("werewolf_projectile")) {
-            ((ProjectileItem) Item.SHARP_ARROW.werewolfItem).onProjectileHit(event);
+            ((ProjectileItem) PlayerItem.SHARP_ARROW.werewolfItem).onProjectileHit(event);
         }
         else if (projectile instanceof Snowball && projectile.hasMetadata("werewolf_projectile")) {
-            ((ProjectileItem) Item.STUN_GRENADE.werewolfItem).onProjectileHit(event);
+            ((ProjectileItem) PlayerItem.STUN_GRENADE.werewolfItem).onProjectileHit(event);
         }
         else if (projectile instanceof Trident && projectile.hasMetadata("werewolf_projectile")) {
-            ((ProjectileItem) Item.CURSE_SPEAR.werewolfItem).onProjectileHit(event);
+            ((ProjectileItem) PlayerItem.CURSE_SPEAR.werewolfItem).onProjectileHit(event);
         }
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        ((PlayerMoveItem) Item.STUN_GRENADE.werewolfItem).onPlayerMove(event);
-    }
-
-    @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        ItemStack clickItem = event.getPlayer().getInventory().getItem(event.getHand());
-        Optional<WerewolfItem> werewolfItem = Item.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), clickItem)).findAny();
-        if (werewolfItem.isPresent() && werewolfItem.get() instanceof EntityInteractItem entityInteractItem) {
-            entityInteractItem.onEntityInteract(event);
-        }
+        ((PlayerMoveItem) PlayerItem.STUN_GRENADE.werewolfItem).onPlayerMove(event);
     }
 
     @EventHandler
@@ -99,13 +89,13 @@ public class ItemManager implements Listener {
     public void onItemConsume(PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
         Tracker tracker = WerewolfGame.getInstance().getTracker();
-        if (WerewolfUtil.sameItem(event.getItem(), Item.getItemFromId("exquisite_meat").getItem())) {
+        if (WerewolfUtil.sameItem(event.getItem(), PlayerItem.getItemFromId("exquisite_meat").getItem())) {
             tracker.getPlayerStats(player.getUniqueId()).addSteaksEaten();
         }
-        else if (WerewolfUtil.sameItem(event.getItem(), Item.getItemFromId("swiftness_potion").getItem())) {
+        else if (WerewolfUtil.sameItem(event.getItem(), PlayerItem.getItemFromId("swiftness_potion").getItem())) {
             tracker.getPlayerStats(player.getUniqueId()).addSwiftnessUsed();
         }
-        else if (WerewolfUtil.sameItem(event.getItem(), Item.getItemFromId("invisibility_potion").getItem())) {
+        else if (WerewolfUtil.sameItem(event.getItem(), PlayerItem.getItemFromId("invisibility_potion").getItem())) {
             tracker.getPlayerStats(player.getUniqueId()).addInvisibilityUsed();
         }
     }

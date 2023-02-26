@@ -1,4 +1,4 @@
-package net.aesten.wwrpg.items.models;
+package net.aesten.wwrpg.items.base;
 
 import net.azalealibrary.configuration.property.Property;
 import net.azalealibrary.configuration.property.PropertyType;

@@ -4,7 +4,7 @@ import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
-import net.aesten.wwrpg.items.models.*;
+import net.aesten.wwrpg.items.base.*;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;

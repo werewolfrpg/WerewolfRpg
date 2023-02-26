@@ -1,10 +1,12 @@
 package net.aesten.wwrpg.tracker;
 
 import com.comphenix.protocol.wrappers.Pair;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Tracker {
@@ -12,7 +14,7 @@ public class Tracker {
     private final Map<UUID, PlayerStats> playerStats = new HashMap<>();
 
     public PlayerStats addPlayer(Player player) {
-        playerStats.put(player.getUniqueId(), new PlayerStats());
+        playerStats.put(player.getUniqueId(), new PlayerStats(player.getUniqueId().toString()));
         return playerStats.get(player.getUniqueId());
     }
 
@@ -41,4 +43,18 @@ public class Tracker {
                 }
             );
     }
+
+    private static String exportStatsAsJson(PlayerStats stats) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(stats);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendStatsAsJson() {
+
+    }
+
 }

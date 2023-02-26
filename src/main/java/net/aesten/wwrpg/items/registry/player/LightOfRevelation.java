@@ -1,9 +1,9 @@
 package net.aesten.wwrpg.items.registry.player;
 
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.items.models.InteractItem;
-import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.ShopWerewolfItem;
+import net.aesten.wwrpg.items.base.InteractItem;
+import net.aesten.wwrpg.items.base.ItemStackBuilder;
+import net.aesten.wwrpg.items.base.ShopWerewolfItem;
 import net.aesten.wwrpg.shop.ShopType;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;

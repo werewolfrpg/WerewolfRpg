@@ -1,7 +1,7 @@
 package net.aesten.wwrpg.items.registry.player;
 
-import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.base.ItemStackBuilder;
+import net.aesten.wwrpg.items.base.WerewolfItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

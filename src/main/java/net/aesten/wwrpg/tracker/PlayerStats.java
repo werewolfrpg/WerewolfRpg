@@ -2,22 +2,22 @@ package net.aesten.wwrpg.tracker;
 
 import net.aesten.wwrpg.data.Role;
 
-import java.util.UUID;
-
+@SuppressWarnings({"all"})
 public class PlayerStats {
+    private final String playerId;
     private Role role;
     private Result result; //win rate = W / (W+L+D)
 
     //basic stats
     private int kills = 0;
-    private UUID killer; //can be null
+    private String killerId; //can be null
     private String deathCause; //can be null
     private int killedBasicSkeletons = 0;
     private int killedLuckySkeletons = 0;
     private int killedSpecialSkeletons = 0;
     private int basicSkeletonEmeraldDrops = 0;
 
-    ////item stats
+    //item stats
     private int steaksEaten = 0;
     private int asheUsed = 0;
     private int divinationUsed = 0;
@@ -50,6 +50,9 @@ public class PlayerStats {
     private int werewolfAxeUsed = 0;
     private int werewolfAxeKills = 0;
 
+    public PlayerStats(String playerId) {
+        this.playerId = playerId;
+    }
 
     public void setRole(Role role) {
         this.role = role;
@@ -67,126 +70,187 @@ public class PlayerStats {
         return result;
     }
 
-    public int getKills() {
-        return kills;
-    }
-
     public void addKills() {
         this.kills += 1;
     }
 
-    public UUID getKiller() {
-        return killer;
-    }
-
-    public void setKiller(UUID killer) {
-        this.killer = killer;
-    }
-
-    public String getDeathCause() {
-        return deathCause;
+    public void setKiller(String killerId) {
+        this.killerId = killerId;
     }
 
     public void setDeathCause(String deathCause) {
         this.deathCause = deathCause;
     }
 
-    public int getKilledBasicSkeletons() {
-        return killedBasicSkeletons;
-    }
-
     public void addKilledBasicSkeletons() {
         this.killedBasicSkeletons += 1;
-    }
-
-    public int getKilledLuckySkeletons() {
-        return killedLuckySkeletons;
     }
 
     public void addKilledLuckySkeletons() {
         this.killedLuckySkeletons += 1;
     }
 
-    public int getKilledSpecialSkeletons() {
-        return killedSpecialSkeletons;
-    }
-
     public void addKilledSpecialSkeletons() {
         this.killedSpecialSkeletons += 1;
+    }
+    
+    public void addBasicSkeletonEmeraldDrops() {
+        this.basicSkeletonEmeraldDrops += 1;
+    }
+    
+    public void addSteaksEaten() {
+        this.steaksEaten += 1;
+    }
+    
+    public void addAsheUsed() {
+        this.asheUsed += 1;
+    }
+    
+    public void addDivinationUsed() {
+        this.divinationUsed += 1;
+    }
+    
+    public void addInvisibilityUsed() {
+        this.invisibilityUsed += 1;
+    }
+    
+    public void addSwiftnessUsed() {
+        this.swiftnessUsed += 1;
+    }
+    
+    public void addRevelationUsed() {
+        this.revelationUsed += 1;
+    }
+    
+    public void addTraitorsGuideUsed() {
+        this.traitorsGuideUsed += 1;
+    }
+    
+    public void addCurseSpearMeleeUsed(boolean cursed, boolean killed) {
+        this.curseSpearMeleeUsed += 1;
+        if (cursed) this.curseSpearMeleeCurses += 1;
+        if (killed) this.curseSpearMeleeKills += 1;
+    }
+    
+    public void addCurseSpearThrowUsed() {
+        this.curseSpearThrowUsed += 1;
+    }
+    
+    public void addCurseSpearThrowHits(boolean cursed, boolean killed) {
+        this.curseSpearThrowHits += 1;
+        if (cursed) this.curseSpearThrowCurses += 1;
+        if (killed) this.curseSpearThrowKills += 1;
+    }
+
+    public void addArrowUsed() {
+        this.arrowUsed += 1;
+    }
+
+    public void addArrowHits(boolean killed) {
+        this.arrowHits += 1;
+        if (killed) this.arrowKills += 1;
+    }
+
+    public void addStunGrenadeUsed() {
+        this.stunGrenadeUsed += 1;
+    }
+    
+    public void addStunGrenadeHits(int targets) {
+        this.stunGrenadeHits += 1;
+        this.stunGrenadeHitTargets += targets;
+    }
+
+    public void addHolyStarUsed(boolean killed) {
+        this.holyStarUsed += 1;
+        if (killed) this.holyStarKills += 1;
+    }
+    
+    public void addProtectionUsed(boolean activated) {
+        this.protectionUsed += 1;
+        if (activated) this.protectionActivated += 1;
+    }
+    
+    public void addProtectionTriggered() {
+        this.protectionTriggered += 1;
+    }
+
+    public void addSneakNoticeUsed() {
+        this.sneakNoticeUsed += 1;
+    }
+    
+    public void addSneakNoticeTriggered() {
+        this.sneakNoticeTriggered += 1;
+    }
+
+    public void addWerewolfAxeUsed(boolean killed) {
+        this.werewolfAxeUsed += 1;
+        if (killed) this.werewolfAxeKills += 1;
+    }
+
+    //getters for jackson
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public String getKillerId() {
+        return killerId;
+    }
+
+    public String getDeathCause() {
+        return deathCause;
+    }
+
+    public int getKilledBasicSkeletons() {
+        return killedBasicSkeletons;
+    }
+
+    public int getKilledLuckySkeletons() {
+        return killedLuckySkeletons;
+    }
+
+    public int getKilledSpecialSkeletons() {
+        return killedSpecialSkeletons;
     }
 
     public int getBasicSkeletonEmeraldDrops() {
         return basicSkeletonEmeraldDrops;
     }
 
-    public void addBasicSkeletonEmeraldDrops() {
-        this.basicSkeletonEmeraldDrops += 1;
-    }
-
     public int getSteaksEaten() {
         return steaksEaten;
-    }
-
-    public void addSteaksEaten() {
-        this.steaksEaten += 1;
     }
 
     public int getAsheUsed() {
         return asheUsed;
     }
 
-    public void addAsheUsed() {
-        this.asheUsed += 1;
-    }
-
     public int getDivinationUsed() {
         return divinationUsed;
-    }
-
-    public void addDivinationUsed() {
-        this.divinationUsed += 1;
     }
 
     public int getInvisibilityUsed() {
         return invisibilityUsed;
     }
 
-    public void addInvisibilityUsed() {
-        this.invisibilityUsed += 1;
-    }
-
     public int getSwiftnessUsed() {
         return swiftnessUsed;
-    }
-
-    public void addSwiftnessUsed() {
-        this.swiftnessUsed += 1;
     }
 
     public int getRevelationUsed() {
         return revelationUsed;
     }
 
-    public void addRevelationUsed() {
-        this.revelationUsed += 1;
-    }
-
     public int getTraitorsGuideUsed() {
         return traitorsGuideUsed;
     }
 
-    public void addTraitorsGuideUsed() {
-        this.traitorsGuideUsed += 1;
-    }
-
     public int getCurseSpearMeleeUsed() {
         return curseSpearMeleeUsed;
-    }
-
-    public void addCurseSpearMeleeUsed(boolean cursed, boolean killed) {
-        this.curseSpearMeleeUsed += 1;
-        if (cursed) this.curseSpearMeleeCurses += 1;
-        if (killed) this.curseSpearMeleeKills += 1;
     }
 
     public int getCurseSpearMeleeCurses() {
@@ -201,18 +265,8 @@ public class PlayerStats {
         return curseSpearThrowUsed;
     }
 
-    public void addCurseSpearThrowUsed() {
-        this.curseSpearThrowUsed += 1;
-    }
-
     public int getCurseSpearThrowHits() {
         return curseSpearThrowHits;
-    }
-
-    public void addCurseSpearThrowHits(boolean cursed, boolean killed) {
-        this.curseSpearThrowHits += 1;
-        if (cursed) this.curseSpearThrowCurses += 1;
-        if (killed) this.curseSpearThrowKills += 1;
     }
 
     public int getCurseSpearThrowCurses() {
@@ -227,17 +281,8 @@ public class PlayerStats {
         return arrowUsed;
     }
 
-    public void addArrowUsed() {
-        this.arrowUsed += 1;
-    }
-
     public int getArrowHits() {
         return arrowHits;
-    }
-
-    public void addArrowHits(boolean killed) {
-        this.arrowHits += 1;
-        if (killed) this.arrowKills += 1;
     }
 
     public int getArrowKills() {
@@ -248,17 +293,8 @@ public class PlayerStats {
         return stunGrenadeUsed;
     }
 
-    public void addStunGrenadeUsed() {
-        this.stunGrenadeUsed += 1;
-    }
-
     public int getStunGrenadeHits() {
         return stunGrenadeHits;
-    }
-
-    public void addStunGrenadeHits(int targets) {
-        this.stunGrenadeHits += 1;
-        this.stunGrenadeHitTargets += targets;
     }
 
     public int getStunGrenadeHitTargets() {
@@ -269,22 +305,12 @@ public class PlayerStats {
         return holyStarUsed;
     }
 
-    public void addHolyStarUsed(boolean killed) {
-        this.holyStarUsed += 1;
-        if (killed) this.holyStarKills += 1;
-    }
-
     public int getHolyStarKills() {
         return holyStarKills;
     }
 
     public int getProtectionUsed() {
         return protectionUsed;
-    }
-
-    public void addProtectionUsed(boolean activated) {
-        this.protectionUsed += 1;
-        if (activated) this.protectionActivated += 1;
     }
 
     public int getProtectionActivated() {
@@ -295,33 +321,16 @@ public class PlayerStats {
         return protectionTriggered;
     }
 
-    public void addProtectionTriggered() {
-        this.protectionTriggered += 1;
-    }
-
     public int getSneakNoticeUsed() {
         return sneakNoticeUsed;
-    }
-
-    public void addSneakNoticeUsed() {
-        this.sneakNoticeUsed += 1;
     }
 
     public int getSneakNoticeTriggered() {
         return sneakNoticeTriggered;
     }
 
-    public void addSneakNoticeTriggered() {
-        this.sneakNoticeTriggered += 1;
-    }
-
     public int getWerewolfAxeUsed() {
         return werewolfAxeUsed;
-    }
-
-    public void addWerewolfAxeUsed(boolean killed) {
-        this.werewolfAxeUsed += 1;
-        if (killed) this.werewolfAxeKills += 1;
     }
 
     public int getWerewolfAxeKills() {

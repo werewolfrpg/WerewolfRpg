@@ -4,7 +4,7 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.TeamsManager;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
-import net.aesten.wwrpg.items.registry.Item;
+import net.aesten.wwrpg.items.registry.PlayerItem;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -125,7 +125,7 @@ public class Ticker {
                 Inventory inventory = player.getInventory();
                 WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
 
-                if (inventory.contains(Item.DIVINATION.getItem().getType())) {
+                if (inventory.contains(PlayerItem.DIVINATION.getItem().getType())) {
                     int div = 0;
                     for (int i = 0 ; i < inventory.getSize() ; i++) {
                         ItemStack is = inventory.getItem(i);
@@ -133,7 +133,7 @@ public class Ticker {
                             div += is.getAmount();
                         }
                     }
-                    inventory.remove(Item.DIVINATION.getItem().getType());
+                    inventory.remove(PlayerItem.DIVINATION.getItem().getType());
                     data.setRemainingDivinations(data.getRemainingDivinations() + div);
                 }
 
@@ -152,14 +152,14 @@ public class Ticker {
                     }
                 }
 
-                if (inventory.contains(Item.WEREWOLF_AXE.getItem()) && data.getRole() != Role.WEREWOLF) {
-                    inventory.remove(Item.WEREWOLF_AXE.getItem());
+                if (inventory.contains(PlayerItem.WEREWOLF_AXE.getItem()) && data.getRole() != Role.WEREWOLF) {
+                    inventory.remove(PlayerItem.WEREWOLF_AXE.getItem());
                     WerewolfUtil.sendPluginText(player, "Werewolf Axe deleted from inventory", ChatColor.RED);
                     WerewolfUtil.sendPluginText(player, "You cannot use this item", ChatColor.RED);
                 }
 
-                if (inventory.contains(Item.TRAITORS_GUIDE.getItem()) && data.getRole() != Role.TRAITOR) {
-                    inventory.remove(Item.TRAITORS_GUIDE.getItem());
+                if (inventory.contains(PlayerItem.TRAITORS_GUIDE.getItem()) && data.getRole() != Role.TRAITOR) {
+                    inventory.remove(PlayerItem.TRAITORS_GUIDE.getItem());
                     WerewolfUtil.sendPluginText(player, "Traitor's Guide deleted from inventory", ChatColor.RED);
                     WerewolfUtil.sendPluginText(player, "You cannot use this item", ChatColor.RED);
                 }

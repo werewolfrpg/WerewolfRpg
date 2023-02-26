@@ -4,8 +4,10 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
 import net.aesten.wwrpg.data.TeamsManager;
-import net.aesten.wwrpg.items.registry.Item;
+import net.aesten.wwrpg.items.registry.PlayerItem;
 import net.aesten.wwrpg.items.registry.ItemManager;
+import net.aesten.wwrpg.map.MapManager;
+import net.aesten.wwrpg.map.WorldManager;
 import net.aesten.wwrpg.shop.ShopManager;
 import net.aesten.wwrpg.skeleton.SkeletonManager;
 import net.aesten.wwrpg.tracker.Tracker;
@@ -27,12 +29,13 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class WerewolfGame {
-    private static WerewolfGame instance;
-    private static String statusMessage;
+    private static WerewolfGame instance = new WerewolfGame();
     private static final Listener listener = new ItemManager();
     private static final SkeletonManager skeletonManager = new SkeletonManager();
     private static final ShopManager shopManager = new ShopManager();
     private static final TeamsManager teamsManager = new TeamsManager();
+    private static MapManager mapManager;
+    private static String statusMessage;
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Ticker ticker;
@@ -73,10 +76,6 @@ public class WerewolfGame {
         return instance;
     }
 
-    public static String getStatusMessage() {
-        return statusMessage;
-    }
-
     public static SkeletonManager getSkeletonManager() {
         return skeletonManager;
     }
@@ -87,6 +86,18 @@ public class WerewolfGame {
 
     public static TeamsManager getTeamsManager() {
         return teamsManager;
+    }
+
+    public static MapManager getMapManager() {
+        return mapManager;
+    }
+
+    public static String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public static void initMapManager() {
+        mapManager = new MapManager(new WorldManager());
     }
 
     public Map<UUID, WerewolfPlayerData> getDataMap() {
@@ -127,10 +138,6 @@ public class WerewolfGame {
 
     public boolean isParticipant(Player player) {
         return participants.contains(player);
-    }
-
-    public static void init() {
-        instance = new WerewolfGame();
     }
 
     public static boolean isReady() {
@@ -216,8 +223,8 @@ public class WerewolfGame {
 
                     //prepare player
                     player.setGameMode(GameMode.ADVENTURE);
-                    player.getInventory().addItem(Item.SKELETON_PUNISHER.getItem());
-                    player.getInventory().addItem(Item.EXQUISITE_MEAT.getItem());
+                    player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
+                    player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
                 }
                 else {
                     teamsManager.registerPlayerRole(player, Role.SPECTATOR);

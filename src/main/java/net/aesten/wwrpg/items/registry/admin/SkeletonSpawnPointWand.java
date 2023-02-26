@@ -1,9 +1,9 @@
 package net.aesten.wwrpg.items.registry.admin;
 
 import net.aesten.wwrpg.core.WerewolfGame;
-import net.aesten.wwrpg.items.models.InteractItem;
-import net.aesten.wwrpg.items.models.ItemStackBuilder;
-import net.aesten.wwrpg.items.models.WerewolfItem;
+import net.aesten.wwrpg.items.base.InteractItem;
+import net.aesten.wwrpg.items.base.ItemStackBuilder;
+import net.aesten.wwrpg.items.base.WerewolfItem;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,8 +24,7 @@ public class SkeletonSpawnPointWand extends WerewolfItem implements InteractItem
                 .addName(ChatColor.AQUA + "Skeleton Spawn Point Wand")
                 .addLore(ChatColor.LIGHT_PURPLE + "Click a block to select a spawn point")
                 .addLore(ChatColor.LIGHT_PURPLE + "The spawn locations will be temporarily stored")
-                .addLore(ChatColor.LIGHT_PURPLE + "Confirm the addition using the command:")
-                .addLore(ChatColor.YELLOW + "/ww map skeleton add-spawns <current_map>")
+                .addLore(ChatColor.LIGHT_PURPLE + "Use '/ww skeleton add <map>' to confirm addition")
                 .build();
     }
 
