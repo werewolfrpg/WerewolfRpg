@@ -80,6 +80,4 @@ public class WerewolfMap implements Configurable {
     public List<ConfigurableProperty<?, ?>> getProperties() {
         return List.of(mapName, world, mapSpawn, borderCenter, borderSize, skullLocations, skeletonSpawnLocations);
     }
-
-
 }

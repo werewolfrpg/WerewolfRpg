@@ -116,4 +116,8 @@ public class WerewolfUtil {
         Bukkit.broadcastMessage("\n");
     }
 
+    public static Vector getSpawnFromBlock(Location blockLocation) {
+        return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0, 1, 0));
+    }
+
 }

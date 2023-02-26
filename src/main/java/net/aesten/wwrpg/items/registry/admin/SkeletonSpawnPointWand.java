@@ -1,5 +1,6 @@
 package net.aesten.wwrpg.items.registry.admin;
 
+import net.aesten.wwrpg.commands.WerewolfCommand;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.items.base.InteractItem;
 import net.aesten.wwrpg.items.base.ItemStackBuilder;
@@ -33,7 +34,7 @@ public class SkeletonSpawnPointWand extends WerewolfItem implements InteractItem
         Block block = event.getClickedBlock();
         if (block != null) {
             Location loc = block.getLocation();
-            WerewolfGame.getSkeletonManager().addSpawnFromBlock(loc);
+            WerewolfCommand.addSkeletonSpawn(event.getPlayer(), WerewolfUtil.getSpawnFromBlock(loc));
             WerewolfUtil.sendPluginText(event.getPlayer(), "Added (" + loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + ") to spawn candidate list");
         }
     }

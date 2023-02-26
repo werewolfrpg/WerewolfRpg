@@ -29,7 +29,7 @@ public class SkullWand extends WerewolfItem implements InteractItem {
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.SKELETON_SKULL) {
-
+            
         }
     }
 }

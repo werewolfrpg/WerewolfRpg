@@ -49,7 +49,6 @@ public class SkeletonManager implements Listener, Configurable {
     private static final List<String> defaultSpecialSkeletonDropTable = List.of("ash_of_the_dead", "invisibility_potion", "light_of_revelation", "skeleton_slicer", "stun_grenade", "curse_spear");
 
     private final Random rnd = new Random();
-    private final List<Vector> temporarySpawnPointCandidateList = new ArrayList<>();
 
     private void summonBasicSkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
@@ -110,14 +109,6 @@ public class SkeletonManager implements Listener, Configurable {
                 }
             }
         }
-    }
-
-    public void addSpawnFromBlock(Location blockLocation) {
-        temporarySpawnPointCandidateList.add(blockLocation.toVector().add(new Vector(0, 1, 0)));
-    }
-
-    public List<Vector> getTemporarySpawnPointCandidateList() {
-        return temporarySpawnPointCandidateList;
     }
 
     @EventHandler
