@@ -1,9 +1,7 @@
 package net.aesten.wwrpg.utilities;
 
 import net.aesten.wwrpg.WerewolfRpg;
-import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
-import net.aesten.wwrpg.data.TeamsManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -28,10 +26,8 @@ public class WerewolfUtil {
         player.sendTitle(title, subtitle, 2, 2, 40);
     }
 
-    public static void sendErrorToOps(String message) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.isOp()) sendPluginText(player, message, ChatColor.RED);
-        }
+    public static Vector getVectorAbove(Location blockLocation) {
+        return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0, 1, 0));
     }
 
     public static void updateSkull(World world, Vector skullCoordinates, Player player) {
@@ -91,33 +87,4 @@ public class WerewolfUtil {
     public static boolean sameItem(ItemStack item1, ItemStack item2) {
         return (item1.getItemMeta() == item2.getItemMeta());
     }
-
-    public static void showMatchRoles() {
-        TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        String villagerPlayers = String.join(", ", teamsManager.getTeam(Role.VILLAGER).getEntries());
-        String werewolfPlayer = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
-        String traitorPlayers = String.join(", ", teamsManager.getTeam(Role.TRAITOR).getEntries());
-        String vampirePlayers = String.join(", ", teamsManager.getTeam(Role.VAMPIRE).getEntries());
-        String possessedPlayers = String.join(", ", teamsManager.getTeam(Role.POSSESSED).getEntries());
-
-        Bukkit.broadcastMessage("\n");
-        Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Villagers:");
-        Bukkit.broadcastMessage(ChatColor.GREEN + villagerPlayers);
-        Bukkit.broadcastMessage(ChatColor.DARK_RED + "Werewolves:");
-        Bukkit.broadcastMessage(ChatColor.DARK_RED + werewolfPlayer);
-        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Traitor:");
-        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + traitorPlayers);
-        Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "Vampire:");
-        Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + vampirePlayers);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Possessed:");
-        Bukkit.broadcastMessage(ChatColor.YELLOW + possessedPlayers);
-        Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
-        Bukkit.broadcastMessage("\n");
-    }
-
-    public static Vector getSpawnFromBlock(Location blockLocation) {
-        return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0, 1, 0));
-    }
-
 }

@@ -14,10 +14,7 @@ import net.aesten.wwrpg.tracker.Tracker;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.map.WerewolfMap;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -163,13 +160,19 @@ public class WerewolfGame {
         return false;
     }
 
-
     public static void start() {
+        //set status and register listeners
         instance.isPlaying = true;
-        instance.map.getWorld().setTime(6000L);
         Bukkit.getPluginManager().registerEvents(listener, WerewolfRpg.getPlugin());
         Bukkit.getPluginManager().registerEvents(skeletonManager, WerewolfRpg.getPlugin());
 
+        //prepare map
+        World world = instance.map.getWorld();
+        world.setTime(6000L);
+        world.getWorldBorder().setCenter(instance.map.getBorderCenter().toLocation(world));
+        world.getWorldBorder().setSize(instance.map.getBorderSize());
+
+        //role pool
         int count = 0;
         List<Role> specialRoles = instance.pool.getRoles();
 
@@ -243,27 +246,6 @@ public class WerewolfGame {
         instance.ticker.start();
     }
 
-    public static void endGame() {
-        if (teamsManager.getFaction(Role.VAMPIRE).size() != 0) {
-            stop(Role.VAMPIRE);
-        }
-        else if (teamsManager.getFaction(Role.VILLAGER).size() == 0) {
-            stop(Role.WEREWOLF);
-        }
-        else {
-            stop(Role.VILLAGER);
-        }
-    }
-
-    public static void interrupt() {
-        stop(null);
-    }
-
-    private static String getEndString(Role role) {
-        if (role == null) return ChatColor.YELLOW + "Game Cancelled";
-        return role.color + role.name + " Victory!";
-    }
-
     private static void stop(Role role) {
         //stop ticker
         instance.ticker.stop();
@@ -276,11 +258,14 @@ public class WerewolfGame {
         instance.displayNameArmorStands.forEach(ArmorStand::remove);
 
         //show roles to players
-        WerewolfUtil.showMatchRoles();
+        showMatchRoles();
 
         //reset all values
         instance = new WerewolfGame(instance);
-        instance.map.getWorld().setTime(6000L);
+        World world = instance.map.getWorld();
+        world.setTime(6000L);
+        world.getWorldBorder().setCenter(world.getSpawnLocation());
+        world.getWorldBorder().setSize(1000000d);
         teamsManager.clear();
         HandlerList.unregisterAll(listener);
         HandlerList.unregisterAll(skeletonManager);
@@ -306,5 +291,50 @@ public class WerewolfGame {
                 player.setGameMode(GameMode.ADVENTURE);
             }
         });
+    }
+
+    public static void interrupt() {
+        stop(null);
+    }
+
+    public static void endGame() {
+        if (teamsManager.getFaction(Role.VAMPIRE).size() != 0) {
+            stop(Role.VAMPIRE);
+        }
+        else if (teamsManager.getFaction(Role.VILLAGER).size() == 0) {
+            stop(Role.WEREWOLF);
+        }
+        else {
+            stop(Role.VILLAGER);
+        }
+    }
+
+    private static String getEndString(Role role) {
+        if (role == null) return ChatColor.YELLOW + "Game Cancelled";
+        return role.color + role.name + " Victory!";
+    }
+
+    private static void showMatchRoles() {
+        TeamsManager teamsManager = WerewolfGame.getTeamsManager();
+        String villagerPlayers = String.join(", ", teamsManager.getTeam(Role.VILLAGER).getEntries());
+        String werewolfPlayer = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
+        String traitorPlayers = String.join(", ", teamsManager.getTeam(Role.TRAITOR).getEntries());
+        String vampirePlayers = String.join(", ", teamsManager.getTeam(Role.VAMPIRE).getEntries());
+        String possessedPlayers = String.join(", ", teamsManager.getTeam(Role.POSSESSED).getEntries());
+
+        Bukkit.broadcastMessage("\n");
+        Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Villagers:");
+        Bukkit.broadcastMessage(ChatColor.GREEN + villagerPlayers);
+        Bukkit.broadcastMessage(ChatColor.DARK_RED + "Werewolves:");
+        Bukkit.broadcastMessage(ChatColor.DARK_RED + werewolfPlayer);
+        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Traitor:");
+        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + traitorPlayers);
+        Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "Vampire:");
+        Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + vampirePlayers);
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Possessed:");
+        Bukkit.broadcastMessage(ChatColor.YELLOW + possessedPlayers);
+        Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
+        Bukkit.broadcastMessage("\n");
     }
 }

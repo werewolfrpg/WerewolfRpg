@@ -2,7 +2,6 @@ package net.aesten.wwrpg.map;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
-import net.azalealibrary.configuration.Configurable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,11 +9,16 @@ import java.util.Map;
 
 public class MapManager {
     private final WorldManager worldManager;
+    private final MapEditingHelper helper = new MapEditingHelper();
     private final Map<String, WerewolfMap> maps = new HashMap<>();
 
     public MapManager(WorldManager worldManager) {
         this.worldManager = worldManager;
         loadMaps();
+    }
+
+    public MapEditingHelper getHelper() {
+        return helper;
     }
 
     private void loadMaps() {

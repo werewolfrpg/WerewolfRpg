@@ -71,6 +71,28 @@ public class WerewolfMap implements Configurable {
         return borderSize.get();
     }
 
+
+    public void updateMapName(String mapName) {
+        this.mapName.set(mapName);
+    }
+
+    public void updateWorld(World world) {
+        this.world.set(world);
+    }
+
+    public void updateMapSpawn(Location mapSpawn) {
+        this.mapSpawn.set(mapSpawn);
+    }
+
+    public void updateBorderCenter(Vector borderCenter) {
+        this.borderCenter.set(borderCenter);
+    }
+
+    public void updateBorderSize(Double borderSize) {
+        this.borderSize.set(borderSize);
+    }
+
+
     @Override
     public String getName() {
         return mapName.get();
