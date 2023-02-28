@@ -8,6 +8,13 @@ public class WerewolfCommand extends CommandNode {
     }
 
 
+    @Override
+    public String getPermission() {
+        return "wwrpg.cmd.ww";
+    }
+
+
+
 
 
 }

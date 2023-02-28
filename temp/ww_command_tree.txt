@@ -117,4 +117,9 @@ ww
                 <x> <z>
             border-size
                 <size>
-            
+    util
+        spawn
+        heal
+        spectator
+        survival
+        role
