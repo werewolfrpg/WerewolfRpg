@@ -59,14 +59,19 @@ public class MapManager {
     }
 
     public boolean renameMapConfigFile(String mapName, String newMapName) {
-        if (copyMap(mapName, newMapName)) {
-            return deleteMap(mapName);
-        }
-        return false;
+        return copyMap(mapName, newMapName) && deleteMap(mapName);
     }
 
     public boolean deleteMap(String mapName) {
         AzaleaConfigurationApi.unregister(maps.get(mapName));
         return maps.remove(mapName) != null;
+    }
+
+    public Map<String, WerewolfMap> getMaps() {
+        return maps;
+    }
+
+    public WerewolfMap getMapFromName(String name) {
+        return maps.get(name);
     }
 }

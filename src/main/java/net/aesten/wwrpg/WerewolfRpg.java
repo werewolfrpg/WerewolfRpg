@@ -2,6 +2,7 @@ package net.aesten.wwrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.wwrpg.commands.WerewolfCommand;
+import net.aesten.wwrpg.commands.admin.*;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.events.GeneralEvents;
 import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
@@ -36,7 +37,14 @@ public final class WerewolfRpg extends JavaPlugin {
     @Override
     public void onLoad() {
         plugin = this;
+
+        //Register commands
         AzaleaCommandApi.register(this, WerewolfCommand.class);
+        AzaleaCommandApi.register(this, GameCommand.class);
+        AzaleaCommandApi.register(this, MapCommand.class);
+        AzaleaCommandApi.register(this, SettingCommand.class);
+        AzaleaCommandApi.register(this, TpCommand.class);
+        AzaleaCommandApi.register(this, UtilCommand.class);
     }
 
     @Override
@@ -50,15 +58,15 @@ public final class WerewolfRpg extends JavaPlugin {
         AzaleaConfigurationApi.getFileConfiguration(this, skeleton.getName()).load(skeleton);
         AzaleaConfigurationApi.register(skeleton);
 
+        //load worlds & maps
+        WerewolfGame.initMapManager();
+
         //ProtocolLib
         packetListener = new HideTabListSpectatorsPacket(this);
         ProtocolLibrary.getProtocolManager().addPacketListener(packetListener);
 
         //Register event listeners
         getServer().getPluginManager().registerEvents(new GeneralEvents(), this);
-
-        //load worlds
-        WerewolfGame.initMapManager();
     }
 
     @Override
@@ -81,4 +89,3 @@ public final class WerewolfRpg extends JavaPlugin {
 
 //notes:
 // visualize all skeleton spawns with armor stands -> store in list -> destroy manually -> recreate spawn list if armorstand.isValid()
-// manage maps

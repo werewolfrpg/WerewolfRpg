@@ -5,6 +5,7 @@ import net.aesten.wwrpg.data.Role;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -20,6 +21,22 @@ public class WerewolfUtil {
 
     public static void sendPluginText(Player player, String message, ChatColor color) {
         player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + color + message);
+    }
+
+    public static void sendCommandHelp(CommandSender sender, String message) {
+        if (sender instanceof Player player) sendPluginText(player, message, ChatColor.YELLOW);
+    }
+
+    public static void sendCommandError(CommandSender sender, String message) {
+        if (sender instanceof Player player) sendErrorText(player, message);
+    }
+
+    public static void sendCommandText(CommandSender sender, String message) {
+        if (sender instanceof Player player) sendPluginText(player, message);
+    }
+
+    public static void sendErrorText(Player player, String message) {
+        sendPluginText(player, message, ChatColor.RED);
     }
 
     public static void sendTitle(Player player, String title, String subtitle) {

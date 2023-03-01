@@ -126,7 +126,7 @@ public class WerewolfGame {
     }
 
     public void setMap(WerewolfMap map) {
-        this.map = map;
+        if (map != null) this.map = map;
     }
 
     public List<Player> getParticipants() {

@@ -1,10 +1,16 @@
 package net.aesten.wwrpg.commands;
 
+import net.aesten.wwrpg.commands.admin.*;
 import net.azalealibrary.command.CommandNode;
 
 public class WerewolfCommand extends CommandNode {
     public WerewolfCommand() {
-        super("/ww" /*, children...*/);
+        super("/ww",
+                new GameCommand(),
+                new SettingCommand(),
+                new MapCommand(),
+                new TpCommand(),
+                new UtilCommand());
     }
 
 
