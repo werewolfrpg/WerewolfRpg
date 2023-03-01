@@ -32,7 +32,7 @@ public class UtilCommand extends CommandNode {
 
     @Override
     public void execute(CommandSender sender, Arguments arguments) {
-        if (arguments.size() == 0) help(sender);
+        help(sender);
     }
 
     @Override
