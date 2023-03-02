@@ -40,7 +40,7 @@ public class WorldManager {
             File[] worldDirs = worldsDir.listFiles(File::isDirectory);
             if (worldDirs != null) {
                 for (File worldContainer : worldDirs) {
-                    createWorld("wwrpg_worlds" + File.separator + worldContainer.getName());
+                    createWorld(worldContainer.getName());
                 }
             }
         }
@@ -51,7 +51,7 @@ public class WorldManager {
     }
 
     public void createWorld(String worldName) {
-        World world = new WorldCreator(worldName).createWorld();
+        World world = new WorldCreator("wwrpg_worlds/" + worldName).createWorld();
         if (world != null) {
             worlds.put(world.getName(), world);
         }

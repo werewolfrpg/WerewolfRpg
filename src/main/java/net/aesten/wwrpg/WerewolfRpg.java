@@ -23,7 +23,7 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional RPG elements.")
 @Author("Aesten")
 @LogPrefix("WerewolfRPG")
-@ApiVersion(ApiVersion.Target.v1_17)
+@ApiVersion(ApiVersion.Target.v1_19)
 @Dependency("ProtocolLib")
 @Dependency("AzaleaConfiguration")
 @Dependency("AzaleaCommand")
@@ -73,6 +73,9 @@ public final class WerewolfRpg extends JavaPlugin {
 
         //ProtocolLib
         ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
+
+        //Unregister teams
+        WerewolfGame.getTeamsManager().unregisterAll();
     }
 
     public static org.bukkit.plugin.Plugin getPlugin() {

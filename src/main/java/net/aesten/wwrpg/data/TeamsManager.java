@@ -110,4 +110,13 @@ public class TeamsManager {
             factions.get(role).clear();
         }
     }
+
+    public void unregisterAll() {
+        villagers.unregister();
+        werewolves.unregister();
+        traitors.unregister();
+        vampires.unregister();
+        possessed.unregister();
+        spectators.unregister();
+    }
 }
