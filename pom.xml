@@ -8,7 +8,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <mcVersion>1.17.1</mcVersion> <!-- default mc version -->
+        <mcVersion>1.19</mcVersion> <!-- default mc version -->
     </properties>
 
     <groupId>net.aesten</groupId>
