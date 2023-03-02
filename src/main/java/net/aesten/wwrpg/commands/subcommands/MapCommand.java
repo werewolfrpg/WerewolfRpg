@@ -180,7 +180,7 @@ public class MapCommand extends CommandNode {
         }
 
         @Override
-        public void execute(CommandSender sender, Arguments arguments) {
+        public void execute(CommandSender sender, Arguments arguments) { //todo check error
             if (arguments.size() == 2) {
                 org.bukkit.World world = arguments.find(1, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName);
                 if (WerewolfGame.getMapManager().getMapFromName(arguments.get(0)) == null) {

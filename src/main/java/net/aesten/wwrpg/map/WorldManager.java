@@ -47,7 +47,11 @@ public class WorldManager {
     }
 
     public World getWorldFromName(String name) {
-        return worlds.get(name);
+        if (worlds.get(name) == null) {
+            return worlds.get("wwrpg_worlds/" + name);
+        } else {
+            return worlds.get(name);
+        }
     }
 
     public void createWorld(String worldName) {
