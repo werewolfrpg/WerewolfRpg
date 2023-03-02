@@ -40,11 +40,6 @@ public final class WerewolfRpg extends JavaPlugin {
 
         //Register commands
         AzaleaCommandApi.register(this, WerewolfCommand.class);
-        AzaleaCommandApi.register(this, GameCommand.class);
-        AzaleaCommandApi.register(this, MapCommand.class);
-        AzaleaCommandApi.register(this, SettingCommand.class);
-        AzaleaCommandApi.register(this, TpCommand.class);
-        AzaleaCommandApi.register(this, UtilCommand.class);
     }
 
     @Override
