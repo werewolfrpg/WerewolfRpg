@@ -39,6 +39,12 @@ public class MapManager {
         }
     }
 
+    public void unloadMaps() {
+        for (WerewolfMap map : maps.values()) {
+            AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), map.getName()).save(map);
+        }
+    }
+
     public boolean createMap(String mapName, String worldName) {
         if (maps.get(mapName) != null) return false;
         WerewolfMap newMap = new WerewolfMap(mapName, worldManager.getWorldFromName(worldName));

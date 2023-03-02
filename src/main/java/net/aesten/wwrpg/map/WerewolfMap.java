@@ -26,13 +26,13 @@ public class WerewolfMap implements Configurable {
     private static final AssignmentPolicy<Double> POSITIVE_DOUBLE = AssignmentPolicy.create(d -> d > 0, "World border cannot be smaller than 0");
 
     public WerewolfMap(String mapName, World world) {
-        this.mapName = new Property<>(PropertyType.STRING, () -> mapName, "map_name", "name of the map", false);
-        this.world = new Property<>(CUSTOM_WORLD, () -> world, "world", "the world which contains the map", false);
-        this.mapSpawn = new Property<>(PropertyType.LOCATION, world::getSpawnLocation, "spawn", "the spawn point for this map", false);
-        this.borderCenter = new Property<>(PropertyType.VECTOR, () -> world.getWorldBorder().getCenter().toVector(), "border.center","the center point for the world border when playing this map",false);
-        this.borderSize = new Property<>(PropertyType.DOUBLE, () -> world.getWorldBorder().getSize(), "border.size", "the world border size when playing this map", false, POSITIVE_DOUBLE);
-        this.skullLocations = new ListProperty<>(PropertyType.VECTOR, ArrayList::new, "player_head_positions", "The coordinates of the player head blocks", false);
-        this.skeletonSpawnLocations = new ListProperty<>(PropertyType.VECTOR, ArrayList::new, "skeleton_spawn_locations", "The coordinates of skeleton spawn points", false);
+        this.mapName = new Property<>(PropertyType.STRING, () -> mapName, "map_name", "name of the map");
+        this.world = new Property<>(CUSTOM_WORLD, () -> world, "world", "the world which contains the map");
+        this.mapSpawn = new Property<>(PropertyType.LOCATION, world::getSpawnLocation, "spawn", "the spawn point for this map");
+        this.borderCenter = new Property<>(PropertyType.VECTOR, () -> world.getWorldBorder().getCenter().toVector(), "border.center","the center point for the world border when playing this map");
+        this.borderSize = new Property<>(PropertyType.DOUBLE, () -> world.getWorldBorder().getSize(), "border.size", "the world border size when playing this map", POSITIVE_DOUBLE);
+        this.skullLocations = new ListProperty<>(PropertyType.VECTOR, ArrayList::new, "player_head_positions", "The coordinates of the player head blocks");
+        this.skeletonSpawnLocations = new ListProperty<>(PropertyType.VECTOR, ArrayList::new, "skeleton_spawn_locations", "The coordinates of skeleton spawn points");
     }
 
     public WerewolfMap(WerewolfMap map) {

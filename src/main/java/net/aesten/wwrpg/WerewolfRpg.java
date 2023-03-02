@@ -51,12 +51,10 @@ public final class WerewolfRpg extends JavaPlugin {
     public void onEnable() {
         //File configurations
         Configurable shop = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.getFileConfiguration(this, shop.getName()).load(shop);
-        AzaleaConfigurationApi.register(shop);
+        AzaleaConfigurationApi.load(this, shop);
 
         Configurable skeleton = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.getFileConfiguration(this, skeleton.getName()).load(skeleton);
-        AzaleaConfigurationApi.register(skeleton);
+        AzaleaConfigurationApi.load(this, skeleton);
 
         //load worlds & maps
         WerewolfGame.initMapManager();
@@ -73,10 +71,10 @@ public final class WerewolfRpg extends JavaPlugin {
     public void onDisable() {
         //File configurations
         Configurable shop = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.getFileConfiguration(this, shop.getName()).save(shop);
+        AzaleaConfigurationApi.save(this, shop);
 
         Configurable skeleton = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.getFileConfiguration(this, skeleton.getName()).save(skeleton);
+        AzaleaConfigurationApi.save(this, skeleton);
 
         //ProtocolLib
         ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
@@ -86,6 +84,3 @@ public final class WerewolfRpg extends JavaPlugin {
         return plugin;
     }
 }
-
-//notes:
-// visualize all skeleton spawns with armor stands -> store in list -> destroy manually -> recreate spawn list if armorstand.isValid()

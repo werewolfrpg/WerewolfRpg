@@ -65,26 +65,26 @@ public class SkeletonManager implements Listener, Configurable {
     private static final List<ShopWerewolfItem> defaultSpecialSkeletonDropTable = defaultSpecialSkeletonDropTableIds.stream().map(PlayerItem::getItemFromId).filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).toList();
 
     //basic skeleton properties
-    private final Property<Integer> basicSkeletonSpawnNumberPerPlayer = new Property<>(PropertyType.INTEGER, () -> 12, "skeleton.basic.spawn_number_per_player", "number basic skeletons spawning per player", false, POSITIVE_INTEGER);
-    private final Property<Double> basicSkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 4.0, "skeleton.basic.damage", "basic skeleton damage", false, POSITIVE_DOUBLE);
-    private final Property<Double> basicSkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 12.0, "skeleton.basic.health", "basic skeleton health", false, POSITIVE_DOUBLE);
-    private final Property<Double> basicSkeletonEmeraldDropRate = new Property<>(PropertyType.DOUBLE, () -> 0.5, "skeleton.basic.emerald_drop_rate", "skeleton emerald drop rate", false, PROPORTION);
+    private final Property<Integer> basicSkeletonSpawnNumberPerPlayer = new Property<>(PropertyType.INTEGER, () -> 12, "skeleton.basic.spawn_number_per_player", "number basic skeletons spawning per player", POSITIVE_INTEGER);
+    private final Property<Double> basicSkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 4.0, "skeleton.basic.damage", "basic skeleton damage", POSITIVE_DOUBLE);
+    private final Property<Double> basicSkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 12.0, "skeleton.basic.health", "basic skeleton health", POSITIVE_DOUBLE);
+    private final Property<Double> basicSkeletonEmeraldDropRate = new Property<>(PropertyType.DOUBLE, () -> 0.5, "skeleton.basic.emerald_drop_rate", "skeleton emerald drop rate", PROPORTION);
 
     //lucky skeleton properties
-    private final Property<Boolean> luckySkeletonEnable = new Property<>(PropertyType.BOOLEAN, () -> true, "skeleton.lucky.enable", "enable lucky skeleton spawns", false);
-    private final Property<Integer> luckySkeletonMaxSpawnNumber = new Property<>(PropertyType.INTEGER, () -> 4, "skeleton.lucky.max_spawn_number", "max number of lucky skeletons spawning in one night", false, POSITIVE_INTEGER);
-    private final Property<Double> luckySkeletonSpawnChance = new Property<>(PropertyType.DOUBLE, () -> 0.5, "skeleton.lucky.spawn_chance", "lucky skeleton spawn chance", false, PROPORTION);
-    private final Property<Double> luckySkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 3.0, "skeleton.lucky.damage", "lucky skeleton damage", false, POSITIVE_DOUBLE);
-    private final Property<Double> luckySkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 20.0, "skeleton.lucky.health", "lucky skeleton health", false, POSITIVE_DOUBLE);
-    private final Property<Integer> luckySkeletonEmeraldDropNumber = new Property<>(PropertyType.INTEGER, () -> 2, "skeleton.lucky.emerald_drop_number", "number of emeralds dropped by lucky skeleton", false, POSITIVE_INTEGER);
+    private final Property<Boolean> luckySkeletonEnable = new Property<>(PropertyType.BOOLEAN, () -> true, "skeleton.lucky.enable", "enable lucky skeleton spawns");
+    private final Property<Integer> luckySkeletonMaxSpawnNumber = new Property<>(PropertyType.INTEGER, () -> 4, "skeleton.lucky.max_spawn_number", "max number of lucky skeletons spawning in one night", POSITIVE_INTEGER);
+    private final Property<Double> luckySkeletonSpawnChance = new Property<>(PropertyType.DOUBLE, () -> 0.5, "skeleton.lucky.spawn_chance", "lucky skeleton spawn chance", PROPORTION);
+    private final Property<Double> luckySkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 3.0, "skeleton.lucky.damage", "lucky skeleton damage", POSITIVE_DOUBLE);
+    private final Property<Double> luckySkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 20.0, "skeleton.lucky.health", "lucky skeleton health", POSITIVE_DOUBLE);
+    private final Property<Integer> luckySkeletonEmeraldDropNumber = new Property<>(PropertyType.INTEGER, () -> 2, "skeleton.lucky.emerald_drop_number", "number of emeralds dropped by lucky skeleton", POSITIVE_INTEGER);
 
     //special skeleton properties
-    private final Property<Boolean> specialSkeletonEnable = new Property<>(PropertyType.BOOLEAN, () -> true, "skeleton.special.enable", "enable special skeleton spawns", false);
-    private final Property<Integer> specialSkeletonMaxSpawnNumber = new Property<>(PropertyType.INTEGER, () -> 1, "skeleton.special.max_spawn_number", "max number of special skeletons spawning in one night", false, POSITIVE_INTEGER);
-    private final Property<Double> specialSkeletonSpawnChance = new Property<>(PropertyType.DOUBLE, () -> 0.4, "skeleton.special.spawn_chance", "special skeleton spawn chance", false, PROPORTION);
-    private final Property<Double> specialSkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 5.0, "skeleton.special.damage", "special skeleton damage", false, POSITIVE_DOUBLE);
-    private final Property<Double> specialSkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 32.0, "skeleton.special.health", "special skeleton health", false, POSITIVE_DOUBLE);
-    private final ListProperty<ShopWerewolfItem> specialSkeletonDrops = new ListProperty<>(WEREWOLF_ITEM, () -> defaultSpecialSkeletonDropTable, "skeleton.special.drop_table", "list of minigame items dropped", false);
+    private final Property<Boolean> specialSkeletonEnable = new Property<>(PropertyType.BOOLEAN, () -> true, "skeleton.special.enable", "enable special skeleton spawns");
+    private final Property<Integer> specialSkeletonMaxSpawnNumber = new Property<>(PropertyType.INTEGER, () -> 1, "skeleton.special.max_spawn_number", "max number of special skeletons spawning in one night", POSITIVE_INTEGER);
+    private final Property<Double> specialSkeletonSpawnChance = new Property<>(PropertyType.DOUBLE, () -> 0.4, "skeleton.special.spawn_chance", "special skeleton spawn chance", PROPORTION);
+    private final Property<Double> specialSkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 5.0, "skeleton.special.damage", "special skeleton damage", POSITIVE_DOUBLE);
+    private final Property<Double> specialSkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 32.0, "skeleton.special.health", "special skeleton health", POSITIVE_DOUBLE);
+    private final ListProperty<ShopWerewolfItem> specialSkeletonDrops = new ListProperty<>(WEREWOLF_ITEM, () -> defaultSpecialSkeletonDropTable, "skeleton.special.drop_table", "list of minigame items dropped");
 
 
     private final Random rnd = new Random();
