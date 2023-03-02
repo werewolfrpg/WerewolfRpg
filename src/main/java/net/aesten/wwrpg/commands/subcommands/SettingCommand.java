@@ -13,7 +13,10 @@ import java.util.Collections;
 
 public class SettingCommand extends CommandNode {
     public SettingCommand() {
-        super("setting");
+        super("setting",
+                new Roles(),
+                new UpdateShops()
+                );
     }
 
     private void help(CommandSender sender) {
@@ -52,7 +55,14 @@ public class SettingCommand extends CommandNode {
 
     private static final class Roles extends CommandNode {
         public Roles() {
-            super("roles");
+            super("roles",
+                    new List(),
+                    new Reset(),
+                    new Werewolf(),
+                    new Traitor(),
+                    new Vampire(),
+                    new Possessed()
+                );
         }
 
         private void help(CommandSender sender) {

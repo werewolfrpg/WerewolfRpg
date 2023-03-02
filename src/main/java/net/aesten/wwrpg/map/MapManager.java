@@ -2,9 +2,9 @@ package net.aesten.wwrpg.map;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
-import net.azalealibrary.configuration.FileConfiguration;
 import org.bukkit.World;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,17 +23,26 @@ public class MapManager {
     }
 
     private void loadMaps() {
-        for (FileConfiguration fileConfiguration : AzaleaConfigurationApi.getAllFileConfigurations(WerewolfRpg.getPlugin(), "/wwrpg-maps")) {
-            WerewolfMap mapConfig = new WerewolfMap();
-            fileConfiguration.load(mapConfig);
-            AzaleaConfigurationApi.register(mapConfig);
-            maps.put(mapConfig.getMapName(), mapConfig);
+        String dataDir = WerewolfRpg.getPlugin().getDataFolder().getPath();
+        File mapsDir = new File(dataDir + File.separator + "wwrpg-maps");
+
+        if (!mapsDir.mkdir()) {
+            File[] mapsArray = mapsDir.listFiles();
+            if (mapsArray != null) {
+                for (File map : mapsArray) {
+                    String mapName = "wwrpg-maps" + File.separator + map.getName().split("\\.")[0];
+                    WerewolfMap mapConfig = new WerewolfMap();
+                    AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), mapName).load(mapConfig);
+                    AzaleaConfigurationApi.register(mapConfig);
+                    maps.put(mapConfig.getMapName(), mapConfig);
+                }
+            }
         }
     }
 
     public void unloadMaps() {
         for (WerewolfMap map : maps.values()) {
-            AzaleaConfigurationApi.save(WerewolfRpg.getPlugin(), map);
+            AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), map.getName()).save(map);
         }
     }
 

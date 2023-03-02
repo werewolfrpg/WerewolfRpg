@@ -25,6 +25,6 @@ public class WerewolfCommand extends CommandNode {
     @NotNull
     @Override
     public List<String> getAliases() {
-        return List.of("ww", "wwrpg");
+        return List.of("wwrpg");
     }
 }

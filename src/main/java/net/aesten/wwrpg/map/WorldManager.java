@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -41,7 +40,7 @@ public class WorldManager {
             File[] worldDirs = worldsDir.listFiles(File::isDirectory);
             if (worldDirs != null) {
                 for (File worldContainer : worldDirs) {
-                    createWorld(Paths.get(worldContainer.getPath()).getFileName().toString());
+                    createWorld("wwrpg_worlds" + File.separator + worldContainer.getName());
                 }
             }
         }

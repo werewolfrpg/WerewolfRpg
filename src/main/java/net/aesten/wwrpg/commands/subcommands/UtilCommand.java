@@ -140,7 +140,7 @@ public class UtilCommand extends CommandNode {
         public void execute(CommandSender sender, Arguments arguments) {
             if (sender instanceof Player player) {
                 if (!WerewolfGame.getInstance().isPlaying()) {
-                    player.setGameMode(GameMode.ADVENTURE);
+                    player.setGameMode(GameMode.SPECTATOR);
                 } else {
                     WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
                 }
