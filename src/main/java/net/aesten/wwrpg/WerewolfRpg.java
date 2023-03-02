@@ -2,7 +2,7 @@ package net.aesten.wwrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.wwrpg.commands.WerewolfCommand;
-import net.aesten.wwrpg.commands.admin.*;
+import net.aesten.wwrpg.commands.subcommands.*;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.events.GeneralEvents;
 import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;

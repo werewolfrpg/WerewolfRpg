@@ -1,6 +1,6 @@
 package net.aesten.wwrpg.commands;
 
-import net.aesten.wwrpg.commands.admin.*;
+import net.aesten.wwrpg.commands.subcommands.*;
 import net.azalealibrary.command.CommandNode;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package net.aesten.wwrpg.commands.admin;
+package net.aesten.wwrpg.commands.subcommands;
 
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.map.WerewolfMap;
