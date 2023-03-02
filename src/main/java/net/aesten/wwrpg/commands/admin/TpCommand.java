@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TpCommand extends CommandNode {
@@ -33,7 +34,7 @@ public class TpCommand extends CommandNode {
         } else if (arguments.size() == 2) {
             return List.of("@a", "players");
         } else {
-            return List.of();
+            return Collections.emptyList();
         }
     }
 

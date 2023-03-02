@@ -14,8 +14,7 @@ ww
             add-all
             remove-all
     setting
-        shop
-            update
+        update-shops
         roles
             list
             reset

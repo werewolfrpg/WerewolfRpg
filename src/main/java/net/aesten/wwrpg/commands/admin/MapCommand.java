@@ -11,9 +11,16 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MapCommand extends CommandNode {
@@ -51,7 +58,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public List<String> complete(CommandSender sender, Arguments arguments) {
-            return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : List.of();
+            return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : Collections.emptyList();
         }
 
         @Override
@@ -121,7 +128,7 @@ public class MapCommand extends CommandNode {
                 } else if (arguments.size() == 5) {
                     return Arrays.stream(Facing.values()).map(Enum::name).toList();
                 } else {
-                    return List.of();
+                    return Collections.emptyList();
                 }
             }
 
@@ -166,12 +173,14 @@ public class MapCommand extends CommandNode {
                     );
         }
 
+        public static List<ArmorStand> armorStands = new ArrayList<>();
+
         private void help(CommandSender sender) {
             if (sender instanceof Player player) {
                 WerewolfUtil.sendCommandHelp(player, "/ww map skeleton -> help");
                 WerewolfUtil.sendCommandHelp(player, "/ww map skeleton show -> summon armor stands to see spawn points");
                 WerewolfUtil.sendCommandHelp(player, "/ww map skeleton hide -> remove armor stands");
-                WerewolfUtil.sendCommandHelp(player, "/ww map skeleton summon -> summon a basic skeleton at every spawn points");
+                WerewolfUtil.sendCommandHelp(player, "/ww map skeleton summon -> summon skeletons at every spawn point");
             }
         }
 
@@ -192,7 +201,14 @@ public class MapCommand extends CommandNode {
 
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
-
+                if (sender instanceof Player player) {
+                    World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
+                    WerewolfGame.getInstance().getMap().getSkeletonSpawnLocations().forEach(v ->  {
+                        ArmorStand armorStand = (ArmorStand) world.spawnEntity(v.toLocation(world), EntityType.ARMOR_STAND);
+                        armorStand.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 999999, 1));
+                        armorStands.add(armorStand);
+                    });
+                }
             }
 
             @Override
@@ -208,7 +224,8 @@ public class MapCommand extends CommandNode {
 
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
-
+                armorStands.forEach(Entity::remove);
+                armorStands.clear();
             }
 
             @Override
@@ -224,7 +241,9 @@ public class MapCommand extends CommandNode {
 
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
-
+                if (sender instanceof Player player) {
+                    WerewolfGame.getSkeletonManager().summonAllSkeletons(WerewolfGame.getMapManager().getHelper().getSelectedMap(player));
+                }
             }
 
             @Override

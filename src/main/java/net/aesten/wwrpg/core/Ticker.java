@@ -77,7 +77,7 @@ public class Ticker {
         game.getMap().getWorld().setTime(18000L);
         game.switchDayNight();
 
-        WerewolfGame.getSkeletonManager().summonAllSkeletons();
+        WerewolfGame.getSkeletonManager().summonAllSkeletons(game.getMap());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (game.getParticipants().contains(player)) {

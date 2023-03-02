@@ -4,6 +4,7 @@ import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.items.base.ShopWerewolfItem;
 import net.aesten.wwrpg.items.base.WerewolfItem;
 import net.aesten.wwrpg.items.registry.PlayerItem;
+import net.aesten.wwrpg.map.WerewolfMap;
 import net.azalealibrary.command.Arguments;
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.*;
@@ -123,19 +124,18 @@ public class SkeletonManager implements Listener, Configurable {
         skeleton.setLootTable(null);
     }
 
-    public void summonAllSkeletons() {
-        WerewolfGame game = WerewolfGame.getInstance();
-        List<Vector> spawns = game.getMap().getSkeletonSpawnLocations();
+    public void summonAllSkeletons(WerewolfMap map) {
+        List<Vector> spawns = map.getSkeletonSpawnLocations();
         Collections.shuffle(spawns);
 
-        for (int i = 0 ; i < game.getParticipants().size() * basicSkeletonSpawnNumberPerPlayer.get() ; i++) {
-            summonBasicSkeleton(game.getMap().getWorld(), spawns.get(i));
+        for (int i = 0 ; i < WerewolfGame.getInstance().getParticipants().size() * basicSkeletonSpawnNumberPerPlayer.get() ; i++) {
+            summonBasicSkeleton(map.getWorld(), spawns.get(i));
         }
 
         if (luckySkeletonEnable.get()) {
             for (int i = 0 ; i < luckySkeletonMaxSpawnNumber.get() ; i++) {
                 if (rnd.nextDouble() < luckySkeletonSpawnChance.get()) {
-                    summonLuckySkeleton(game.getMap().getWorld(), spawns.get(rnd.nextInt(spawns.size())));
+                    summonLuckySkeleton(map.getWorld(), spawns.get(rnd.nextInt(spawns.size())));
                 }
             }
         }
@@ -143,7 +143,7 @@ public class SkeletonManager implements Listener, Configurable {
         if (specialSkeletonEnable.get()) {
             for (int i = 0 ; i < specialSkeletonMaxSpawnNumber.get() ; i++) {
                 if (rnd.nextDouble() < specialSkeletonSpawnChance.get()) {
-                    summonSpecialSkeleton(game.getMap().getWorld(), spawns.get(rnd.nextInt(spawns.size())));
+                    summonSpecialSkeleton(map.getWorld(), spawns.get(rnd.nextInt(spawns.size())));
                 }
             }
         }

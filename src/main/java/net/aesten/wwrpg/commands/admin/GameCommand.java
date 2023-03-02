@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GameCommand extends CommandNode {
@@ -95,7 +96,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public List<String> complete(CommandSender sender, Arguments arguments) {
-            return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : List.of();
+            return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : Collections.emptyList();
         }
 
         @Override
@@ -203,7 +204,7 @@ public class GameCommand extends CommandNode {
                     players.removeAll(WerewolfGame.getInstance().getParticipants());
                     return players.stream().map(Player::getName).toList();
                 } else {
-                    return java.util.List.of();
+                    return Collections.emptyList();
                 }
             }
 
@@ -267,7 +268,7 @@ public class GameCommand extends CommandNode {
                 if (arguments.size() == 1) {
                     return WerewolfGame.getInstance().getParticipants().stream().map(Player::getName).toList();
                 } else {
-                    return java.util.List.of();
+                    return Collections.emptyList();
                 }
             }
 
