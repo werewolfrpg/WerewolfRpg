@@ -76,6 +76,8 @@ public final class WerewolfRpg extends JavaPlugin {
         Configurable skeleton = WerewolfGame.getSkeletonManager();
         AzaleaConfigurationApi.save(this, skeleton);
 
+        WerewolfGame.getMapManager().unloadMaps();
+
         //ProtocolLib
         ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
     }

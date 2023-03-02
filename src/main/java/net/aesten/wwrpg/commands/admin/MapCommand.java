@@ -9,7 +9,6 @@ import net.azalealibrary.command.CommandNode;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -27,6 +26,8 @@ public class MapCommand extends CommandNode {
     public MapCommand() {
         super("map",
                 new Select(),
+                new Create(),
+                new Delete(),
                 new Shop(),
                 new Skeleton()
         );
@@ -36,6 +37,8 @@ public class MapCommand extends CommandNode {
         if (sender instanceof Player player) {
             WerewolfUtil.sendCommandHelp(player, "/ww map -> help");
             WerewolfUtil.sendCommandHelp(player, "/ww map select <map> -> select the map to work on");
+            WerewolfUtil.sendCommandHelp(player, "/ww map create <name> <world> -> create a new map");
+            WerewolfUtil.sendCommandHelp(player, "/ww map delete <map> -> delete map");
             WerewolfUtil.sendCommandHelp(player, "/ww map shop [...] -> shop spawning commands");
             WerewolfUtil.sendCommandHelp(player, "/ww map skeleton [...] -> skeleton visualization commands");
         }
@@ -77,6 +80,67 @@ public class MapCommand extends CommandNode {
         @Override
         public String getPermission() {
             return "wwrpg.cmd.ww.map.select";
+        }
+    }
+
+    private static final class Create extends CommandNode {
+        public Create() {
+            super("create");
+        }
+
+        @Override
+        public List<String> complete(CommandSender sender, Arguments arguments) {
+            if (arguments.size() == 1) {
+                return List.of("<map-name>");
+            } else if (arguments.size() == 2) {
+                return List.of("<world>");
+            } else {
+                return Collections.emptyList();
+            }
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            if (arguments.size() == 2) {
+                World world = arguments.find(1, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName);
+                if (WerewolfGame.getMapManager().getMapFromName(arguments.get(0)) == null) {
+                    WerewolfGame.getMapManager().createMap(arguments.get(0), world);
+                    WerewolfUtil.sendCommandText(sender, "New map created :" + arguments.get(0));
+                } else {
+                    WerewolfUtil.sendCommandError(sender, "Map name already taken");
+                }
+            } else {
+                WerewolfUtil.sendCommandError(sender, "Arguments length is incorrect");
+            }
+        }
+
+        @Override
+        public String getPermission() {
+            return "wwrpg.cmd.ww.map.create";
+        }
+    }
+
+    private static final class Delete extends CommandNode {
+        public Delete() {
+            super("delete");
+        }
+
+        @Override
+        public List<String> complete(CommandSender sender, Arguments arguments) {
+            return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : Collections.emptyList();
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            if (arguments.size() == 1) {
+                WerewolfMap map = arguments.find(0, "map", WerewolfGame.getMapManager()::getMapFromName);
+                WerewolfGame.getMapManager().deleteMap(map);
+            }
+        }
+
+        @Override
+        public String getPermission() {
+            return "wwrpg.cmd.ww.map.delete";
         }
     }
 
@@ -173,7 +237,7 @@ public class MapCommand extends CommandNode {
                     );
         }
 
-        public static List<ArmorStand> armorStands = new ArrayList<>();
+        public static final List<ArmorStand> armorStands = new ArrayList<>();
 
         private void help(CommandSender sender) {
             if (sender instanceof Player player) {

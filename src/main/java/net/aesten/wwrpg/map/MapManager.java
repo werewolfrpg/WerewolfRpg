@@ -2,6 +2,7 @@ package net.aesten.wwrpg.map;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
+import org.bukkit.World;
 
 import java.io.File;
 import java.util.HashMap;
@@ -45,32 +46,32 @@ public class MapManager {
         }
     }
 
-    public boolean createMap(String mapName, String worldName) {
+    public boolean createMap(String mapName, World world) {
         if (maps.get(mapName) != null) return false;
-        WerewolfMap newMap = new WerewolfMap(mapName, worldManager.getWorldFromName(worldName));
+        WerewolfMap newMap = new WerewolfMap(mapName, world);
         maps.put(mapName, newMap);
         AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), mapName).load(newMap);
         AzaleaConfigurationApi.register(newMap);
         return true;
     }
 
-    public boolean copyMap(String mapName, String newMapName) {
-        if (maps.get(mapName) == null) return false;
-        if (maps.get(newMapName) != null) return false;
-        WerewolfMap newMap =new WerewolfMap(maps.get(mapName));
-        maps.put(newMapName, newMap);
-        AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), newMapName).load(newMap);
-        AzaleaConfigurationApi.register(newMap);
-        return true;
-    }
+//    public boolean copyMap(String mapName, String newMapName) {
+//        if (maps.get(mapName) == null) return false;
+//        if (maps.get(newMapName) != null) return false;
+//        WerewolfMap newMap = new WerewolfMap(maps.get(mapName));
+//        maps.put(newMapName, newMap);
+//        AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), newMapName).load(newMap);
+//        AzaleaConfigurationApi.register(newMap);
+//        return true;
+//    }
 
-    public boolean renameMapConfigFile(String mapName, String newMapName) {
-        return copyMap(mapName, newMapName) && deleteMap(mapName);
-    }
+//    public boolean renameMapConfigFile(String mapName, String newMapName) {
+//        return copyMap(mapName, newMapName) && deleteMap(mapName);
+//    }
 
-    public boolean deleteMap(String mapName) {
-        AzaleaConfigurationApi.unregister(maps.get(mapName));
-        return maps.remove(mapName) != null;
+    public boolean deleteMap(WerewolfMap map) {
+        AzaleaConfigurationApi.unregister(map);
+        return maps.remove(map.getMapName()) != null;
     }
 
     public WorldManager getWorldManager() {

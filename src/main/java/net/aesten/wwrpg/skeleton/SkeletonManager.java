@@ -8,7 +8,6 @@ import net.aesten.wwrpg.map.WerewolfMap;
 import net.azalealibrary.command.Arguments;
 import net.azalealibrary.configuration.Configurable;
 import net.azalealibrary.configuration.property.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;

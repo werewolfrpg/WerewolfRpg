@@ -33,6 +33,10 @@ ww
     map
         select
             <map>
+        create
+            <map>
+        delete
+            <map>
         shop
             summon
                 basic

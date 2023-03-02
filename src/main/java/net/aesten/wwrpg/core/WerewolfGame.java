@@ -144,7 +144,7 @@ public class WerewolfGame {
         else if (instance.participants.size() > instance.map.getSkullLocations().size()) {
             statusMessage = "Too many players for selected map";
         }
-        else if (!Bukkit.getOnlinePlayers().containsAll(instance.participants)) {
+        else if (!instance.participants.stream().allMatch(Player::isOnline)) {
             statusMessage = "Some participants are not online";
         }
         else if (instance.pool.getWerewolfNumber() == 0) {
