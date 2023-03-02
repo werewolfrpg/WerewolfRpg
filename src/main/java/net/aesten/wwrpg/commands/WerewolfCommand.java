@@ -2,10 +2,13 @@ package net.aesten.wwrpg.commands;
 
 import net.aesten.wwrpg.commands.admin.*;
 import net.azalealibrary.command.CommandNode;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class WerewolfCommand extends CommandNode {
     public WerewolfCommand() {
-        super("/ww",
+        super("ww",
                 new GameCommand(),
                 new SettingCommand(),
                 new MapCommand(),
@@ -19,8 +22,9 @@ public class WerewolfCommand extends CommandNode {
         return "wwrpg.cmd.ww";
     }
 
-
-
-
-
+    @NotNull
+    @Override
+    public List<String> getAliases() {
+        return List.of("ww", "wwrpg");
+    }
 }

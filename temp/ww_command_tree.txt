@@ -15,56 +15,7 @@ ww
             remove-all
     setting
         shop
-            default-all
-            default
-                <item>
-            modify
-                <item> <cost>
-            update    
-        skeleton
-            default-all
-            basic
-                default
-                health
-                    <double>
-                damage
-                    <double>
-                drop_rate
-                    <double>
-                spawn_per_player
-                    <int>
-            lucky
-                default
-                enable
-                    <boolean>
-                health
-                    <double>
-                damage
-                    <double>
-                max_spawn_number
-                    <int>
-                spawn_chance
-                    <double>
-                drop_number
-                    <int>
-            special
-                default
-                enable
-                    <boolean>
-                health
-                    <double>
-                damage
-                    <double>
-                max_spawn_number
-                    <int>
-                spawn_chance
-                    <double>
-                loot_table
-                    add
-                        <item>
-                    remove
-                        <item>
-                    clear
+            update
         roles
             list
             reset
@@ -83,42 +34,16 @@ ww
     map
         select
             <map>
-        edit
-            name
-                <name>
-            shop
-                summon
-                    basic
-                        <x> <y> <z> <facing>
-                    special
-                        <x> <y> <z> <facing>
-            skeleton
-                add
-                    <x> <y> <z>
-                remove
-                    <x> <y> <z>
-                count
-                list
-                show
-                hide
-                summon
-                clear
-            skull
-                add
-                    <x> <y> <z>
-                remove
-                    <x> <y> <z>
-                count
-                list
-                clear
-            world
-                <world>
-            spawn
-                <x> <y> <z>
-            border-center
-                <x> <z>
-            border-size
-                <size>
+        shop
+            summon
+                basic
+                    <x> <y> <z> <facing>
+                special
+                    <x> <y> <z> <facing>
+        skeleton
+            show
+            hide
+            summon
     util
         spawn
         heal

@@ -60,4 +60,8 @@ public class WorldManager {
         File worldDir = new File(serverDir + File.separator + "wwrpg_worlds" + File.separator + worldName);
         return worldDir.delete();
     }
+
+    public Map<String, World> getWorlds() {
+        return worlds;
+    }
 }

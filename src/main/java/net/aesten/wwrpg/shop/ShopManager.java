@@ -33,6 +33,12 @@ public class ShopManager implements Configurable {
         specialShopItems = PlayerItem.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).filter(item -> item.getShopType() == ShopType.SPECIAL).sorted(comparator).toList();
     }
 
+    public List<ShopWerewolfItem> getAllShopItems() {
+        List<ShopWerewolfItem> list = new ArrayList<>(basicShopItems);
+        list.addAll(specialShopItems);
+        return list;
+    }
+
     private static void setVillagerSetting(Villager villager) {
         villager.setVillagerLevel(5);
         villager.setSilent(true);

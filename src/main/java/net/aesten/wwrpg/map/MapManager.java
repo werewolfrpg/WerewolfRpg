@@ -67,6 +67,10 @@ public class MapManager {
         return maps.remove(mapName) != null;
     }
 
+    public WorldManager getWorldManager() {
+        return worldManager;
+    }
+
     public Map<String, WerewolfMap> getMaps() {
         return maps;
     }
