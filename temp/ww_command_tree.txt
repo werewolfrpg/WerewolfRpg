@@ -31,6 +31,11 @@ ww
         <map> @a
         <map> players
     map
+        world
+            create
+                <file-name>
+            delete
+                <world>
         select
             <map>
         create

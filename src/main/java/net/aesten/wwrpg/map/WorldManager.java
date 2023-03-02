@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,10 +41,7 @@ public class WorldManager {
             File[] worldDirs = worldsDir.listFiles(File::isDirectory);
             if (worldDirs != null) {
                 for (File worldContainer : worldDirs) {
-                    World world = new WorldCreator(worldContainer.getPath()).createWorld();
-                    if (world != null) {
-                        worlds.put(world.getName(), world);
-                    }
+                    createWorld(Paths.get(worldContainer.getPath()).getFileName().toString());
                 }
             }
         }
@@ -53,11 +51,19 @@ public class WorldManager {
         return worlds.get(name);
     }
 
-    public boolean deleteWorld(String worldName) {
-        if (worldName.equals("lobby")) return false;
-        Bukkit.unloadWorld(worlds.get(worldName), false);
+    public void createWorld(String worldName) {
+        World world = new WorldCreator(worldName).createWorld();
+        if (world != null) {
+            worlds.put(world.getName(), world);
+        }
+    }
+
+    public boolean deleteWorld(World world) {
+        if (world == null) return false;
+        if (world.getName().equals("lobby")) return false;
+        Bukkit.unloadWorld(world, false);
         String serverDir = Bukkit.getServer().getWorldContainer().getAbsolutePath();
-        File worldDir = new File(serverDir + File.separator + "wwrpg_worlds" + File.separator + worldName);
+        File worldDir = new File(serverDir + File.separator + "wwrpg_worlds" + File.separator + world.getName());
         return worldDir.delete();
     }
 

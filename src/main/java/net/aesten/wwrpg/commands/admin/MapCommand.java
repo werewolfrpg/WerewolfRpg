@@ -8,7 +8,6 @@ import net.azalealibrary.command.Arguments;
 import net.azalealibrary.command.CommandNode;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -25,6 +24,7 @@ import java.util.List;
 public class MapCommand extends CommandNode {
     public MapCommand() {
         super("map",
+                new World(),
                 new Select(),
                 new Create(),
                 new Delete(),
@@ -36,6 +36,7 @@ public class MapCommand extends CommandNode {
     private void help(CommandSender sender) {
         if (sender instanceof Player player) {
             WerewolfUtil.sendCommandHelp(player, "/ww map -> help");
+            WerewolfUtil.sendCommandHelp(player, "/ww map world [...] -> manage worlds");
             WerewolfUtil.sendCommandHelp(player, "/ww map select <map> -> select the map to work on");
             WerewolfUtil.sendCommandHelp(player, "/ww map create <name> <world> -> create a new map");
             WerewolfUtil.sendCommandHelp(player, "/ww map delete <map> -> delete map");
@@ -53,6 +54,85 @@ public class MapCommand extends CommandNode {
     public String getPermission() {
         return "wwrpg.cmd.ww.map";
     }
+
+    private static final class World extends CommandNode {
+        public World() {
+            super("world",
+                    new Create(),
+                    new Delete()
+            );
+        }
+
+        private void help(CommandSender sender) {
+            if (sender instanceof Player player) {
+                WerewolfUtil.sendCommandHelp(player, "/ww map world -> help");
+                WerewolfUtil.sendCommandHelp(player, "/ww map world create <file-name> -> loads a world from the werewolf worlds folder");
+                WerewolfUtil.sendCommandHelp(player, "/ww map world delete <world> -> unloads and deletes a world except lobby");
+            }
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            help(sender);
+        }
+
+        @Override
+        public String getPermission() {
+            return "wwrpg.cmd.ww.map.world";
+        }
+
+        private static final class Create extends CommandNode {
+            public Create() {
+                super("create");
+            }
+
+            @Override
+            public List<String> complete(CommandSender sender, Arguments arguments) {
+                return (arguments.size() == 1) ? List.of("<file-name>") : Collections.emptyList();
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+                if (WerewolfGame.getMapManager().getWorldManager().getWorldFromName(arguments.get(0)) == null) {
+                    WerewolfGame.getMapManager().getWorldManager().createWorld(arguments.get(0));
+                    WerewolfUtil.sendCommandText(sender, "World loaded");
+                } else {
+                    WerewolfUtil.sendCommandError(sender, "World already existing");
+                }
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.world.create";
+            }
+        }
+
+        private static final class Delete extends CommandNode {
+            public Delete() {
+                super("delete");
+            }
+
+            @Override
+            public List<String> complete(CommandSender sender, Arguments arguments) {
+                return (arguments.size() == 1) ? WerewolfGame.getMapManager().getWorldManager().getWorlds().keySet().stream().toList() : Collections.emptyList();
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+                if (WerewolfGame.getMapManager().getWorldManager().deleteWorld(arguments.find(0, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName))) {
+                    WerewolfUtil.sendCommandText(sender, "World successfully deleted");
+                } else {
+                    WerewolfUtil.sendCommandError(sender, "World deletion failed");
+                }
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.world.delete";
+            }
+        }
+    }
+
 
     private static final class Select extends CommandNode {
         public Select() {
@@ -102,7 +182,7 @@ public class MapCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             if (arguments.size() == 2) {
-                World world = arguments.find(1, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName);
+                org.bukkit.World world = arguments.find(1, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName);
                 if (WerewolfGame.getMapManager().getMapFromName(arguments.get(0)) == null) {
                     WerewolfGame.getMapManager().createMap(arguments.get(0), world);
                     WerewolfUtil.sendCommandText(sender, "New map created :" + arguments.get(0));
@@ -202,7 +282,7 @@ public class MapCommand extends CommandNode {
                     help(sender);
                 } else {
                     if (sender instanceof Player player) {
-                        World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
+                        org.bukkit.World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
                         Double x = arguments.find(1, "x", Double::parseDouble);
                         Double y = arguments.find(2, "y", Double::parseDouble);
                         Double z = arguments.find(3, "z", Double::parseDouble);
@@ -266,7 +346,7 @@ public class MapCommand extends CommandNode {
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
                 if (sender instanceof Player player) {
-                    World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
+                    org.bukkit.World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
                     WerewolfGame.getInstance().getMap().getSkeletonSpawnLocations().forEach(v ->  {
                         ArmorStand armorStand = (ArmorStand) world.spawnEntity(v.toLocation(world), EntityType.ARMOR_STAND);
                         armorStand.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 999999, 1));
