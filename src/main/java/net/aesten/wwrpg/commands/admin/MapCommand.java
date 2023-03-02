@@ -2,14 +2,18 @@ package net.aesten.wwrpg.commands.admin;
 
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.map.WerewolfMap;
+import net.aesten.wwrpg.shop.Facing;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.azalealibrary.command.Arguments;
 import net.azalealibrary.command.CommandNode;
-import net.azalealibrary.configuration.property.PropertyType;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MapCommand extends CommandNode {
@@ -106,7 +110,19 @@ public class MapCommand extends CommandNode {
 
             @Override
             public List<String> complete(CommandSender sender, Arguments arguments) {
-                return List.of();
+                if (arguments.size() == 1) {
+                    return List.of("basic, special");
+                } else if (arguments.size() == 2) {
+                    return List.of("<x>");
+                } else if (arguments.size() == 3) {
+                    return List.of("<y>");
+                } else if (arguments.size() == 4) {
+                    return List.of("<z>");
+                } else if (arguments.size() == 5) {
+                    return Arrays.stream(Facing.values()).map(Enum::name).toList();
+                } else {
+                    return List.of();
+                }
             }
 
             @Override
@@ -114,11 +130,24 @@ public class MapCommand extends CommandNode {
                 if (arguments.size() != 5) {
                     help(sender);
                 } else {
-                    Double x = arguments.find(1, "x", Double::parseDouble);
-                    Double y = arguments.find(2, "y", Double::parseDouble);
-                    Double z = arguments.find(3, "z", Double::parseDouble);
+                    if (sender instanceof Player player) {
+                        World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
+                        Double x = arguments.find(1, "x", Double::parseDouble);
+                        Double y = arguments.find(2, "y", Double::parseDouble);
+                        Double z = arguments.find(3, "z", Double::parseDouble);
+                        Float yaw = arguments.find(4, "facing", s -> Facing.valueOf(s).getYaw());
+                        Location location = new Location(world, x, y, z, yaw, 0);
+                        if (arguments.get(0).equals("basic")) {
+                            WerewolfGame.getShopManager().summonBasicShopVillager(location);
+                            WerewolfUtil.sendCommandText(sender, "Basic villager summoned at: (" + x + "," + y + "," + z + ")");
+                        } else if (arguments.get(0).equals("special")) {
+                            WerewolfGame.getShopManager().summonSpecialShopVillager(location);
+                            WerewolfUtil.sendCommandText(sender, "Special villager summoned at: (" + x + "," + y + "," + z + ")");
+                        } else {
+                            WerewolfUtil.sendCommandError(sender, "Not a valid villager type");
+                        }
+                    }
                 }
-
             }
 
             @Override
@@ -130,7 +159,11 @@ public class MapCommand extends CommandNode {
 
     private static final class Skeleton extends CommandNode {
         public Skeleton() {
-            super("skeleton");
+            super("skeleton",
+                    new Show(),
+                    new Hide(),
+                    new Summon()
+                    );
         }
 
         private void help(CommandSender sender) {
@@ -152,6 +185,52 @@ public class MapCommand extends CommandNode {
             return "wwrpg.cmd.ww.map.skeleton";
         }
 
+        private static final class Show extends CommandNode {
+            public Show() {
+                super("show");
+            }
 
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.skeleton.show";
+            }
+        }
+
+        private static final class Hide extends CommandNode {
+            public Hide() {
+                super("hide");
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.skeleton.hide";
+            }
+        }
+
+        private static final class Summon extends CommandNode {
+            public Summon() {
+                super("summon");
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.skeleton.summon";
+            }
+        }
     }
 }
