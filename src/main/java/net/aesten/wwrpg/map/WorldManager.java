@@ -47,11 +47,11 @@ public class WorldManager {
     }
 
     public World getWorldFromName(String name) {
-        if (worlds.get(name) == null) {
-            return worlds.get("wwrpg_worlds/" + name);
-        } else {
-            return worlds.get(name);
-        }
+        return worlds.get(name);
+    }
+
+    public World getLobby() {
+        return worlds.get("lobby");
     }
 
     public void createWorld(String worldName) {

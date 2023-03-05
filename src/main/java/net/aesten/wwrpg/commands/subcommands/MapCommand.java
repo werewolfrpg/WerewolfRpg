@@ -19,13 +19,12 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class MapCommand extends CommandNode {
     public MapCommand() {
         super("map",
-                new World(),
                 new Select(),
+                new List(),
                 new Create(),
                 new Delete(),
                 new Shop(),
@@ -35,13 +34,13 @@ public class MapCommand extends CommandNode {
 
     private void help(CommandSender sender) {
         if (sender instanceof Player player) {
-            WerewolfUtil.sendCommandHelp(player, "/ww map -> help");
-            WerewolfUtil.sendCommandHelp(player, "/ww map world [...] -> manage worlds");
-            WerewolfUtil.sendCommandHelp(player, "/ww map select <map> -> select the map to work on");
-            WerewolfUtil.sendCommandHelp(player, "/ww map create <name> <world> -> create a new map");
-            WerewolfUtil.sendCommandHelp(player, "/ww map delete <map> -> delete map");
-            WerewolfUtil.sendCommandHelp(player, "/ww map shop [...] -> shop spawning commands");
-            WerewolfUtil.sendCommandHelp(player, "/ww map skeleton [...] -> skeleton visualization commands");
+            WerewolfUtil.sendHelpText(player, "/ww map -> help");
+            WerewolfUtil.sendHelpText(player, "/ww map select <map> -> select the map to work on");
+            WerewolfUtil.sendHelpText(player, "/ww map list -> list all available maps");
+            WerewolfUtil.sendHelpText(player, "/ww map create <name> <world> -> create a new map");
+            WerewolfUtil.sendHelpText(player, "/ww map delete <map> -> delete map");
+            WerewolfUtil.sendHelpText(player, "/ww map shop [...] -> shop spawning commands");
+            WerewolfUtil.sendHelpText(player, "/ww map skeleton [...] -> skeleton visualization commands");
         }
     }
 
@@ -55,92 +54,13 @@ public class MapCommand extends CommandNode {
         return "wwrpg.cmd.ww.map";
     }
 
-    private static final class World extends CommandNode {
-        public World() {
-            super("world",
-                    new Create(),
-                    new Delete()
-            );
-        }
-
-        private void help(CommandSender sender) {
-            if (sender instanceof Player player) {
-                WerewolfUtil.sendCommandHelp(player, "/ww map world -> help");
-                WerewolfUtil.sendCommandHelp(player, "/ww map world create <file-name> -> loads a world from the werewolf worlds folder");
-                WerewolfUtil.sendCommandHelp(player, "/ww map world delete <world> -> unloads and deletes a world except lobby");
-            }
-        }
-
-        @Override
-        public void execute(CommandSender sender, Arguments arguments) {
-            help(sender);
-        }
-
-        @Override
-        public String getPermission() {
-            return "wwrpg.cmd.ww.map.world";
-        }
-
-        private static final class Create extends CommandNode {
-            public Create() {
-                super("create");
-            }
-
-            @Override
-            public List<String> complete(CommandSender sender, Arguments arguments) {
-                return (arguments.size() == 1) ? List.of("<file-name>") : Collections.emptyList();
-            }
-
-            @Override
-            public void execute(CommandSender sender, Arguments arguments) {
-                if (WerewolfGame.getMapManager().getWorldManager().getWorldFromName(arguments.get(0)) == null) {
-                    WerewolfGame.getMapManager().getWorldManager().createWorld(arguments.get(0));
-                    WerewolfUtil.sendCommandText(sender, "World loaded");
-                } else {
-                    WerewolfUtil.sendCommandError(sender, "World already existing");
-                }
-            }
-
-            @Override
-            public String getPermission() {
-                return "wwrpg.cmd.ww.map.world.create";
-            }
-        }
-
-        private static final class Delete extends CommandNode {
-            public Delete() {
-                super("delete");
-            }
-
-            @Override
-            public List<String> complete(CommandSender sender, Arguments arguments) {
-                return (arguments.size() == 1) ? WerewolfGame.getMapManager().getWorldManager().getWorlds().keySet().stream().toList() : Collections.emptyList();
-            }
-
-            @Override
-            public void execute(CommandSender sender, Arguments arguments) {
-                if (WerewolfGame.getMapManager().getWorldManager().deleteWorld(arguments.find(0, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName))) {
-                    WerewolfUtil.sendCommandText(sender, "World successfully deleted");
-                } else {
-                    WerewolfUtil.sendCommandError(sender, "World deletion failed");
-                }
-            }
-
-            @Override
-            public String getPermission() {
-                return "wwrpg.cmd.ww.map.world.delete";
-            }
-        }
-    }
-
-
     private static final class Select extends CommandNode {
         public Select() {
             super("select");
         }
 
         @Override
-        public List<String> complete(CommandSender sender, Arguments arguments) {
+        public java.util.List<String> complete(CommandSender sender, Arguments arguments) {
             return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : Collections.emptyList();
         }
 
@@ -148,13 +68,30 @@ public class MapCommand extends CommandNode {
         public void execute(CommandSender sender, Arguments arguments) {
             WerewolfMap map = WerewolfGame.getMapManager().getMapFromName(arguments.get(0));
             if (map == null) {
-                WerewolfUtil.sendCommandError(sender, "There is no such map");
+                WerewolfUtil.sendErrorText(sender, "There is no such map");
             } else {
                 if (sender instanceof Player player) {
                     WerewolfGame.getMapManager().getHelper().selectMap(player, map);
-                    WerewolfUtil.sendCommandText(sender, "Selected map " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                    WerewolfUtil.sendPluginText(sender, "Selected map " + ChatColor.LIGHT_PURPLE + map.getMapName());
                 }
             }
+        }
+
+        @Override
+        public String getPermission() {
+            return "wwrpg.cmd.ww.map.select";
+        }
+    }
+
+    private static final class List extends CommandNode {
+        public List() {
+            super("list");
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            WerewolfUtil.sendPluginText(sender, "Loaded maps:");
+            WerewolfGame.getMapManager().getMaps().keySet().forEach(s -> WerewolfUtil.sendPluginText(sender, s));
         }
 
         @Override
@@ -169,28 +106,31 @@ public class MapCommand extends CommandNode {
         }
 
         @Override
-        public List<String> complete(CommandSender sender, Arguments arguments) {
+        public java.util.List<String> complete(CommandSender sender, Arguments arguments) {
             if (arguments.size() == 1) {
-                return List.of("<map-name>");
+                return java.util.List.of("<map-name>");
             } else if (arguments.size() == 2) {
-                return List.of("<world>");
+                return WerewolfGame.getMapManager().getWorldManager().getWorlds().keySet().stream().toList();
             } else {
                 return Collections.emptyList();
             }
         }
 
         @Override
-        public void execute(CommandSender sender, Arguments arguments) { //todo check error
+        public void execute(CommandSender sender, Arguments arguments) {
             if (arguments.size() == 2) {
                 org.bukkit.World world = arguments.find(1, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName);
                 if (WerewolfGame.getMapManager().getMapFromName(arguments.get(0)) == null) {
-                    WerewolfGame.getMapManager().createMap(arguments.get(0), world);
-                    WerewolfUtil.sendCommandText(sender, "New map created :" + arguments.get(0));
+                    if (WerewolfGame.getMapManager().createMap(arguments.get(0), world)) {
+                        WerewolfUtil.sendPluginText(sender, "New map created :" + arguments.get(0));
+                    } else {
+                        WerewolfUtil.sendErrorText(sender, "Map creation failed");
+                    }
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "Map name already taken");
+                    WerewolfUtil.sendErrorText(sender, "Map name already taken");
                 }
             } else {
-                WerewolfUtil.sendCommandError(sender, "Arguments length is incorrect");
+                WerewolfUtil.sendErrorText(sender, "Arguments length is incorrect");
             }
         }
 
@@ -206,7 +146,7 @@ public class MapCommand extends CommandNode {
         }
 
         @Override
-        public List<String> complete(CommandSender sender, Arguments arguments) {
+        public java.util.List<String> complete(CommandSender sender, Arguments arguments) {
             return (arguments.size() == 1) ? WerewolfGame.getMapManager().getMaps().keySet().stream().toList() : Collections.emptyList();
         }
 
@@ -214,7 +154,13 @@ public class MapCommand extends CommandNode {
         public void execute(CommandSender sender, Arguments arguments) {
             if (arguments.size() == 1) {
                 WerewolfMap map = arguments.find(0, "map", WerewolfGame.getMapManager()::getMapFromName);
-                WerewolfGame.getMapManager().deleteMap(map);
+                if (WerewolfGame.getMapManager().deleteMap(map)) {
+                    WerewolfUtil.sendPluginText(sender, "Map deleted :" + arguments.get(0));
+                } else {
+                    WerewolfUtil.sendErrorText(sender, "Map deletion failed");
+                }
+            } else {
+                WerewolfUtil.sendErrorText(sender, "Arguments length is incorrect");
             }
         }
 
@@ -231,8 +177,8 @@ public class MapCommand extends CommandNode {
 
         private void help(CommandSender sender) {
             if (sender instanceof Player player) {
-                WerewolfUtil.sendCommandHelp(player, "/ww map shop -> help");
-                WerewolfUtil.sendCommandHelp(player, "/ww map shop summon -> summon a shop villager");
+                WerewolfUtil.sendHelpText(player, "/ww map shop -> help");
+                WerewolfUtil.sendHelpText(player, "/ww map shop summon -> summon a shop villager");
             }
         }
 
@@ -253,22 +199,22 @@ public class MapCommand extends CommandNode {
 
             private void help(CommandSender sender) {
                 if (sender instanceof Player player) {
-                    WerewolfUtil.sendCommandHelp(player, "/ww map shop summon -> help");
-                    WerewolfUtil.sendCommandHelp(player, "/ww map shop summon basic <x> <y> <z> <facing> -> summon a basic shop villager");
-                    WerewolfUtil.sendCommandHelp(player, "/ww map shop summon special <x> <y> <z> <facing> -> summon a special shop villager");
+                    WerewolfUtil.sendHelpText(player, "/ww map shop summon -> help");
+                    WerewolfUtil.sendHelpText(player, "/ww map shop summon basic <x> <y> <z> <facing> -> summon a basic shop villager");
+                    WerewolfUtil.sendHelpText(player, "/ww map shop summon special <x> <y> <z> <facing> -> summon a special shop villager");
                 }
             }
 
             @Override
-            public List<String> complete(CommandSender sender, Arguments arguments) {
+            public java.util.List<String> complete(CommandSender sender, Arguments arguments) {
                 if (arguments.size() == 1) {
-                    return List.of("basic, special");
+                    return java.util.List.of("basic, special");
                 } else if (arguments.size() == 2) {
-                    return List.of("<x>");
+                    return java.util.List.of("<x>");
                 } else if (arguments.size() == 3) {
-                    return List.of("<y>");
+                    return java.util.List.of("<y>");
                 } else if (arguments.size() == 4) {
-                    return List.of("<z>");
+                    return java.util.List.of("<z>");
                 } else if (arguments.size() == 5) {
                     return Arrays.stream(Facing.values()).map(Enum::name).toList();
                 } else {
@@ -290,12 +236,12 @@ public class MapCommand extends CommandNode {
                         Location location = new Location(world, x, y, z, yaw, 0);
                         if (arguments.get(0).equals("basic")) {
                             WerewolfGame.getShopManager().summonBasicShopVillager(location);
-                            WerewolfUtil.sendCommandText(sender, "Basic villager summoned at: (" + x + "," + y + "," + z + ")");
+                            WerewolfUtil.sendPluginText(sender, "Basic villager summoned at: (" + x + "," + y + "," + z + ")");
                         } else if (arguments.get(0).equals("special")) {
                             WerewolfGame.getShopManager().summonSpecialShopVillager(location);
-                            WerewolfUtil.sendCommandText(sender, "Special villager summoned at: (" + x + "," + y + "," + z + ")");
+                            WerewolfUtil.sendPluginText(sender, "Special villager summoned at: (" + x + "," + y + "," + z + ")");
                         } else {
-                            WerewolfUtil.sendCommandError(sender, "Not a valid villager type");
+                            WerewolfUtil.sendErrorText(sender, "Not a valid villager type");
                         }
                     }
                 }
@@ -317,14 +263,14 @@ public class MapCommand extends CommandNode {
                     );
         }
 
-        public static final List<ArmorStand> armorStands = new ArrayList<>();
+        public static final java.util.List<ArmorStand> armorStands = new ArrayList<>();
 
         private void help(CommandSender sender) {
             if (sender instanceof Player player) {
-                WerewolfUtil.sendCommandHelp(player, "/ww map skeleton -> help");
-                WerewolfUtil.sendCommandHelp(player, "/ww map skeleton show -> summon armor stands to see spawn points");
-                WerewolfUtil.sendCommandHelp(player, "/ww map skeleton hide -> remove armor stands");
-                WerewolfUtil.sendCommandHelp(player, "/ww map skeleton summon -> summon skeletons at every spawn point");
+                WerewolfUtil.sendHelpText(player, "/ww map skeleton -> help");
+                WerewolfUtil.sendHelpText(player, "/ww map skeleton show -> summon armor stands to see spawn points");
+                WerewolfUtil.sendHelpText(player, "/ww map skeleton hide -> remove armor stands");
+                WerewolfUtil.sendHelpText(player, "/ww map skeleton summon -> summon skeletons at every spawn point");
             }
         }
 

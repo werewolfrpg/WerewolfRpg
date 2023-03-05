@@ -26,11 +26,11 @@ public class GameCommand extends CommandNode {
 
     private void help(CommandSender sender) {
         if (sender instanceof Player player) {
-            WerewolfUtil.sendCommandHelp(player, "/ww game -> help");
-            WerewolfUtil.sendCommandHelp(player, "/ww game start -> start game");
-            WerewolfUtil.sendCommandHelp(player, "/ww game stop -> interrupt game");
-            WerewolfUtil.sendCommandHelp(player, "/ww game map <map> -> change map");
-            WerewolfUtil.sendCommandHelp(player, "/ww game players [...] -> manage players");
+            WerewolfUtil.sendHelpText(player, "/ww game -> help");
+            WerewolfUtil.sendHelpText(player, "/ww game start -> start game");
+            WerewolfUtil.sendHelpText(player, "/ww game stop -> interrupt game");
+            WerewolfUtil.sendHelpText(player, "/ww game map <map> -> change map");
+            WerewolfUtil.sendHelpText(player, "/ww game players [...] -> manage players");
         }
     }
 
@@ -54,12 +54,12 @@ public class GameCommand extends CommandNode {
             if (!WerewolfGame.getInstance().isPlaying()) {
                 if (WerewolfGame.isReady()) {
                     WerewolfGame.start();
-                    WerewolfUtil.sendCommandText(sender, "Starting game");
+                    WerewolfUtil.sendPluginText(sender, "Starting game");
                 } else {
-                    WerewolfUtil.sendCommandError(sender, WerewolfGame.getStatusMessage());
+                    WerewolfUtil.sendErrorText(sender, WerewolfGame.getStatusMessage());
                 }
             } else {
-                WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
             }
         }
 
@@ -79,7 +79,7 @@ public class GameCommand extends CommandNode {
             if (WerewolfGame.getInstance().isPlaying()) {
                 WerewolfGame.interrupt();
             } else {
-                WerewolfUtil.sendCommandError(sender, "There is currently no ongoing game");
+                WerewolfUtil.sendErrorText(sender, "There is currently no ongoing game");
             }
         }
 
@@ -102,14 +102,14 @@ public class GameCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             if (WerewolfGame.getInstance().isPlaying()) {
-                WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
             } else {
                 WerewolfMap map = WerewolfGame.getMapManager().getMapFromName(arguments.get(0));
                 if (map == null) {
-                    WerewolfUtil.sendCommandError(sender, "There is no such map");
+                    WerewolfUtil.sendErrorText(sender, "There is no such map");
                 } else {
                     WerewolfGame.getInstance().setMap(map);
-                    WerewolfUtil.sendCommandText(sender, "Changed map to " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                    WerewolfUtil.sendPluginText(sender, "Changed map to " + ChatColor.LIGHT_PURPLE + map.getMapName());
                 }
             }
         }
@@ -134,13 +134,13 @@ public class GameCommand extends CommandNode {
 
         private void help(CommandSender sender) {
             if (sender instanceof Player player) {
-                WerewolfUtil.sendCommandHelp(player, "/ww game players -> help");
-                WerewolfUtil.sendCommandHelp(player, "/ww game players count -> number of players");
-                WerewolfUtil.sendCommandHelp(player, "/ww game players list -> list players");
-                WerewolfUtil.sendCommandHelp(player, "/ww game players add <player> -> add a player");
-                WerewolfUtil.sendCommandHelp(player, "/ww game players add-all -> add all online players");
-                WerewolfUtil.sendCommandHelp(player, "/ww game players remove <player> -> remove a player");
-                WerewolfUtil.sendCommandHelp(player, "/ww game players remove-all -> remove all online players");
+                WerewolfUtil.sendHelpText(player, "/ww game players -> help");
+                WerewolfUtil.sendHelpText(player, "/ww game players count -> number of players");
+                WerewolfUtil.sendHelpText(player, "/ww game players list -> list players");
+                WerewolfUtil.sendHelpText(player, "/ww game players add <player> -> add a player");
+                WerewolfUtil.sendHelpText(player, "/ww game players add-all -> add all online players");
+                WerewolfUtil.sendHelpText(player, "/ww game players remove <player> -> remove a player");
+                WerewolfUtil.sendHelpText(player, "/ww game players remove-all -> remove all online players");
             }
         }
 
@@ -162,7 +162,7 @@ public class GameCommand extends CommandNode {
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
                 int count = WerewolfGame.getInstance().getParticipants().size();
-                WerewolfUtil.sendCommandText(sender, "There are " + ChatColor.LIGHT_PURPLE + count + ChatColor.RESET + " players");
+                WerewolfUtil.sendPluginText(sender, "There are " + ChatColor.LIGHT_PURPLE + count + ChatColor.RESET + " players");
             }
 
             @Override
@@ -183,7 +183,7 @@ public class GameCommand extends CommandNode {
                                 ChatColor.RESET + ", " + ChatColor.LIGHT_PURPLE,
                                 WerewolfGame.getInstance().getParticipants().stream().map(Player::getName).toList()
                         );
-                WerewolfUtil.sendCommandText(sender, "Participants: " + players);
+                WerewolfUtil.sendPluginText(sender, "Participants: " + players);
             }
 
             @Override
@@ -216,18 +216,18 @@ public class GameCommand extends CommandNode {
                         if (player != null) {
                             if (!WerewolfGame.getInstance().isParticipant(player)) {
                                 WerewolfGame.getInstance().getParticipants().add(player);
-                                WerewolfUtil.sendCommandText(sender, "Added " + ChatColor.LIGHT_PURPLE + player.getName());
+                                WerewolfUtil.sendPluginText(sender, "Added " + ChatColor.LIGHT_PURPLE + player.getName());
                             } else {
-                                WerewolfUtil.sendCommandError(sender, "Player is already a participant");
+                                WerewolfUtil.sendErrorText(sender, "Player is already a participant");
                             }
                         } else {
-                            WerewolfUtil.sendCommandError(sender, "Player not found");
+                            WerewolfUtil.sendErrorText(sender, "Player not found");
                         }
                     } else {
-                        WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                        WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
                     }
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "Arguments length is incorrect");
+                    WerewolfUtil.sendErrorText(sender, "Arguments length is incorrect");
                 }
             }
 
@@ -247,7 +247,7 @@ public class GameCommand extends CommandNode {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (!WerewolfGame.getInstance().getParticipants().contains(player)) {
                         WerewolfGame.getInstance().getParticipants().add(player);
-                        WerewolfUtil.sendCommandText(sender, "Added " + ChatColor.LIGHT_PURPLE + player.getName());
+                        WerewolfUtil.sendPluginText(sender, "Added " + ChatColor.LIGHT_PURPLE + player.getName());
                     }
                 }
             }
@@ -280,18 +280,18 @@ public class GameCommand extends CommandNode {
                         if (player != null) {
                             if (WerewolfGame.getInstance().isParticipant(player)) {
                                 WerewolfGame.getInstance().getParticipants().remove(player);
-                                WerewolfUtil.sendCommandText(sender, "Removed " + ChatColor.LIGHT_PURPLE + player.getName());
+                                WerewolfUtil.sendPluginText(sender, "Removed " + ChatColor.LIGHT_PURPLE + player.getName());
                             } else {
-                                WerewolfUtil.sendCommandError(sender, "Player is not a participant");
+                                WerewolfUtil.sendErrorText(sender, "Player is not a participant");
                             }
                         } else {
-                            WerewolfUtil.sendCommandError(sender, "Player not found");
+                            WerewolfUtil.sendErrorText(sender, "Player not found");
                         }
                     } else {
-                        WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                        WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
                     }
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "Arguments length is incorrect");
+                    WerewolfUtil.sendErrorText(sender, "Arguments length is incorrect");
                 }
             }
 
@@ -311,7 +311,7 @@ public class GameCommand extends CommandNode {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (WerewolfGame.getInstance().getParticipants().contains(player)) {
                         WerewolfGame.getInstance().getParticipants().remove(player);
-                        WerewolfUtil.sendCommandText(sender, "Removed " + ChatColor.LIGHT_PURPLE + player.getName());
+                        WerewolfUtil.sendPluginText(sender, "Removed " + ChatColor.LIGHT_PURPLE + player.getName());
                     }
                 }
             }

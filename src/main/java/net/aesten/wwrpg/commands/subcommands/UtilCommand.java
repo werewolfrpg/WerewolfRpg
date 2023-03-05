@@ -21,12 +21,12 @@ public class UtilCommand extends CommandNode {
 
     private void help(CommandSender sender) {
         if (sender instanceof Player player) {
-            WerewolfUtil.sendCommandHelp(player, "/ww util -> help");
-            WerewolfUtil.sendCommandHelp(player, "/ww util spawn -> teleport to playing map spawn");
-            WerewolfUtil.sendCommandHelp(player, "/ww util heal -> heal and fill hunger");
-            WerewolfUtil.sendCommandHelp(player, "/ww util role -> get current role in-game");
-            WerewolfUtil.sendCommandHelp(player, "/ww util spectator -> switch to spectator mode");
-            WerewolfUtil.sendCommandHelp(player, "/ww util adventure -> switch to adventure mode");
+            WerewolfUtil.sendHelpText(player, "/ww util -> help");
+            WerewolfUtil.sendHelpText(player, "/ww util spawn -> teleport to playing map spawn");
+            WerewolfUtil.sendHelpText(player, "/ww util heal -> heal and fill hunger");
+            WerewolfUtil.sendHelpText(player, "/ww util role -> get current role in-game");
+            WerewolfUtil.sendHelpText(player, "/ww util spectator -> switch to spectator mode");
+            WerewolfUtil.sendHelpText(player, "/ww util adventure -> switch to adventure mode");
         }
     }
 
@@ -51,7 +51,7 @@ public class UtilCommand extends CommandNode {
                 if (!WerewolfGame.getInstance().isPlaying()) {
                     player.teleport(WerewolfGame.getInstance().getMap().getMapSpawn());
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                    WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
                 }
             }
         }
@@ -75,7 +75,7 @@ public class UtilCommand extends CommandNode {
                     player.setFoodLevel(20);
                     player.setSaturation(20f);
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                    WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
                 }
             }
         }
@@ -96,9 +96,9 @@ public class UtilCommand extends CommandNode {
             if (sender instanceof Player player) {
                 if (WerewolfGame.getInstance().isPlaying()) {
                     net.aesten.wwrpg.data.Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
-                    WerewolfUtil.sendCommandText(sender, "Your role is: " + role.color + role.name);
+                    WerewolfUtil.sendPluginText(sender, "Your role is: " + role.color + role.name);
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "This command only works during a game");
+                    WerewolfUtil.sendErrorText(sender, "This command only works during a game");
                 }
             }
         }
@@ -120,7 +120,7 @@ public class UtilCommand extends CommandNode {
                 if (!WerewolfGame.getInstance().isPlaying()) {
                     player.setGameMode(GameMode.ADVENTURE);
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                    WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
                 }
             }
         }
@@ -142,7 +142,7 @@ public class UtilCommand extends CommandNode {
                 if (!WerewolfGame.getInstance().isPlaying()) {
                     player.setGameMode(GameMode.SPECTATOR);
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+                    WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
                 }
             }
         }

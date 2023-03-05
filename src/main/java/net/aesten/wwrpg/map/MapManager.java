@@ -2,6 +2,8 @@ package net.aesten.wwrpg.map;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 
 import java.io.File;
@@ -16,6 +18,7 @@ public class MapManager {
     public MapManager(WorldManager worldManager) {
         this.worldManager = worldManager;
         loadMaps();
+        loadLobby();
     }
 
     public MapEditingHelper getHelper() {
@@ -34,13 +37,26 @@ public class MapManager {
                     WerewolfMap mapConfig = new WerewolfMap();
                     AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), mapName).load(mapConfig);
                     AzaleaConfigurationApi.register(mapConfig);
-                    maps.put(mapConfig.getMapName(), mapConfig);
+                    maps.put(mapName, mapConfig);
                 }
             }
         }
     }
 
-    public void unloadMaps() {
+    private void loadLobby() {
+        String lobby = "wwrpg-maps" + File.separator + "lobby";
+        if (maps.get(lobby) == null) {
+            if (createMap(lobby, worldManager.getLobby())) {
+                Bukkit.getServer().getConsoleSender().sendMessage("[WerewolfRPG] " + "Auto-generated lobby map");
+            }
+        }
+    }
+
+    private void duplicateSave() {
+        WerewolfRpg.getMapsDuplicate().addAll(maps.values());
+    }
+
+    public void saveMaps() {
         for (WerewolfMap map : maps.values()) {
             AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), map.getName()).save(map);
         }
@@ -52,25 +68,27 @@ public class MapManager {
         maps.put(mapName, newMap);
         AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), mapName).load(newMap);
         AzaleaConfigurationApi.register(newMap);
+        WerewolfRpg.getMapsDuplicate().add(newMap);
         return true;
     }
 
-//    public boolean copyMap(String mapName, String newMapName) {
-//        if (maps.get(mapName) == null) return false;
-//        if (maps.get(newMapName) != null) return false;
-//        WerewolfMap newMap = new WerewolfMap(maps.get(mapName));
-//        maps.put(newMapName, newMap);
-//        AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), newMapName).load(newMap);
-//        AzaleaConfigurationApi.register(newMap);
-//        return true;
-//    }
+    public boolean copyMap(WerewolfMap map, String newMapName) {
+        if (map == null) return false;
+        if (maps.get(newMapName) != null) return false;
+        WerewolfMap newMap = new WerewolfMap(map);
+        maps.put(newMapName, newMap);
+        AzaleaConfigurationApi.getFileConfiguration(WerewolfRpg.getPlugin(), newMapName).load(newMap);
+        AzaleaConfigurationApi.register(newMap);
+        return true;
+    }
 
-//    public boolean renameMapConfigFile(String mapName, String newMapName) {
-//        return copyMap(mapName, newMapName) && deleteMap(mapName);
-//    }
+    public boolean renameMapConfigFile(WerewolfMap map, String newMapName) {
+        return copyMap(map, newMapName) && deleteMap(map);
+    }
 
     public boolean deleteMap(WerewolfMap map) {
         AzaleaConfigurationApi.unregister(map);
+        WerewolfRpg.getMapsDuplicate().remove(map);
         return maps.remove(map.getMapName()) != null;
     }
 

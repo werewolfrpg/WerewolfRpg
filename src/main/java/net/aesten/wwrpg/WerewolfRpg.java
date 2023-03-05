@@ -5,6 +5,7 @@ import net.aesten.wwrpg.commands.WerewolfCommand;
 import net.aesten.wwrpg.commands.subcommands.*;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.events.GeneralEvents;
+import net.aesten.wwrpg.map.WerewolfMap;
 import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
 import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
@@ -17,6 +18,9 @@ import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Plugin(name = "WerewolfRPG", version = "2.0")
@@ -31,6 +35,7 @@ public final class WerewolfRpg extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;
     public static final String CHAT_LOG = "[wwrpg] ";
 
+    private static final List<WerewolfMap> mapsDuplicate = new ArrayList<>();
     private static org.bukkit.plugin.Plugin plugin;
     private static HideTabListSpectatorsPacket packetListener;
 
@@ -71,6 +76,8 @@ public final class WerewolfRpg extends JavaPlugin {
         Configurable skeleton = WerewolfGame.getSkeletonManager();
         AzaleaConfigurationApi.save(this, skeleton);
 
+        mapsDuplicate.forEach(map -> AzaleaConfigurationApi.save(this, map));
+
         //ProtocolLib
         ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
 
@@ -80,5 +87,9 @@ public final class WerewolfRpg extends JavaPlugin {
 
     public static org.bukkit.plugin.Plugin getPlugin() {
         return plugin;
+    }
+
+    public static List<WerewolfMap> getMapsDuplicate() {
+        return mapsDuplicate;
     }
 }

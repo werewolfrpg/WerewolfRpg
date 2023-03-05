@@ -20,10 +20,10 @@ public class TpCommand extends CommandNode {
 
     private void help(CommandSender sender) {
         if (sender instanceof Player player) {
-            WerewolfUtil.sendCommandHelp(player, "/ww tp -> help");
-            WerewolfUtil.sendCommandHelp(player, "/ww tp <map> -> teleport to map");
-            WerewolfUtil.sendCommandHelp(player, "/ww tp <map> @a -> teleport all online players to map");
-            WerewolfUtil.sendCommandHelp(player, "/ww tp <map> players -> teleport all participants to map");
+            WerewolfUtil.sendHelpText(player, "/ww tp -> help");
+            WerewolfUtil.sendHelpText(player, "/ww tp <map> -> teleport to map");
+            WerewolfUtil.sendHelpText(player, "/ww tp <map> @a -> teleport all online players to map");
+            WerewolfUtil.sendHelpText(player, "/ww tp <map> players -> teleport all participants to map");
         }
     }
 
@@ -51,7 +51,7 @@ public class TpCommand extends CommandNode {
                         WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getMapName());
                     }
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "There is no such map");
+                    WerewolfUtil.sendErrorText(sender, "There is no such map");
                 }
             } else if (arguments.size() == 2) {
                 WerewolfMap map = WerewolfGame.getMapManager().getMapFromName(arguments.get(0));
@@ -67,16 +67,16 @@ public class TpCommand extends CommandNode {
                             WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getMapName());
                         }
                     } else {
-                        WerewolfUtil.sendCommandError(sender, "'" + arguments.get(1) + "' is an invalid argument");
+                        WerewolfUtil.sendErrorText(sender, "'" + arguments.get(1) + "' is an invalid argument");
                     }
                 } else {
-                    WerewolfUtil.sendCommandError(sender, "There is no such map");
+                    WerewolfUtil.sendErrorText(sender, "There is no such map");
                 }
             } else {
-                WerewolfUtil.sendCommandError(sender, "Arguments length is incorrect");
+                WerewolfUtil.sendErrorText(sender, "Arguments length is incorrect");
             }
         } else {
-            WerewolfUtil.sendCommandError(sender, "You cannot use this command during a game");
+            WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
         }
     }
 

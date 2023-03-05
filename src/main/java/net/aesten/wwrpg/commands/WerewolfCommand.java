@@ -12,6 +12,7 @@ public class WerewolfCommand extends CommandNode {
                 new GameCommand(),
                 new SettingCommand(),
                 new MapCommand(),
+                new WorldCommand(),
                 new TpCommand(),
                 new UtilCommand());
     }
