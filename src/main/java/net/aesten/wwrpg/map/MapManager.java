@@ -62,7 +62,8 @@ public class MapManager {
         }
     }
 
-    public boolean createMap(String mapName, World world) {
+    public boolean createMap(String name, World world) {
+        String mapName = "wwrpg-maps" + File.separator + name;
         if (maps.get(mapName) != null) return false;
         WerewolfMap newMap = new WerewolfMap(mapName, world);
         maps.put(mapName, newMap);

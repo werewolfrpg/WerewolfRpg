@@ -10,8 +10,11 @@ import net.aesten.wwrpg.items.registry.PlayerItem;
 import net.aesten.wwrpg.tracker.Result;
 import net.aesten.wwrpg.tracker.Tracker;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
+import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
+import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -28,7 +31,6 @@ public class GeneralEvents implements Listener {
     //change join message
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        event.getPlayer().setPlayerListName("");
         if (WerewolfGame.getInstance().isPlaying()) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
         }
@@ -79,6 +81,21 @@ public class GeneralEvents implements Listener {
                 event.getPlayer().sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RED + "You cannot use this command in-game!");
                 event.setCancelled(true);
             }
+        }
+    }
+
+    //hide spectator mode
+    @EventHandler
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+        Player player = event.getPlayer();
+        GameMode gameMode = event.getNewGameMode();
+
+        if (gameMode == GameMode.SPECTATOR) {
+            player.setPlayerListName(player.getName());
+
+            PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
+            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.d, ((CraftPlayer) player).getHandle());
+            connection.a(packet);
         }
     }
 
