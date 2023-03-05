@@ -1,7 +1,5 @@
 package net.aesten.wwrpg.data;
 
-import net.aesten.wwrpg.data.Role;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

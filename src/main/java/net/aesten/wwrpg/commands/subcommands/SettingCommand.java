@@ -2,6 +2,7 @@ package net.aesten.wwrpg.commands.subcommands;
 
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
+import net.aesten.wwrpg.data.RolePool;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.azalealibrary.command.Arguments;
 import net.azalealibrary.command.CommandNode;
@@ -94,7 +95,12 @@ public class SettingCommand extends CommandNode {
 
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
-
+                RolePool pool = WerewolfGame.getInstance().getPool();
+                WerewolfUtil.sendPluginText(sender, "Current role configuration:");
+                WerewolfUtil.sendPluginText(sender, "Werewolves: " + pool.getWerewolfNumber(), Role.WEREWOLF.color);
+                WerewolfUtil.sendPluginText(sender, "Traitors: " + pool.getTraitorNumber(), Role.TRAITOR.color);
+                WerewolfUtil.sendPluginText(sender, "Vampires: " + pool.getVampireNumber(), Role.VAMPIRE.color);
+                WerewolfUtil.sendPluginText(sender, "Possessed: " + pool.getPossessedNumber(), Role.POSSESSED.color);
             }
 
             @Override
@@ -110,7 +116,12 @@ public class SettingCommand extends CommandNode {
 
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
-
+                RolePool pool = WerewolfGame.getInstance().getPool();
+                pool.setWerewolfNumber(1);
+                pool.setTraitorNumber(0);
+                pool.setVampireNumber(0);
+                pool.setPossessedNumber(0);
+                WerewolfUtil.sendPluginText(sender, "Roles are reset");
             }
 
             @Override

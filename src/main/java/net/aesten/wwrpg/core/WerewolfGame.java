@@ -23,6 +23,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.util.*;
 
 public class WerewolfGame {
@@ -140,20 +141,17 @@ public class WerewolfGame {
     public static boolean isReady() {
         if (instance.participants.size() < 2) {
             statusMessage = "Not enough participants";
-        }
-        else if (instance.participants.size() > instance.map.getSkullLocations().size()) {
+        } else if (instance.participants.size() > instance.map.getSkullLocations().size()) {
             statusMessage = "Too many players for selected map";
-        }
-        else if (!instance.participants.stream().allMatch(Player::isOnline)) {
+        } else if (!instance.participants.stream().allMatch(Player::isOnline)) {
             statusMessage = "Some participants are not online";
-        }
-        else if (instance.pool.getWerewolfNumber() == 0) {
+        } else if (instance.map == null || instance.map.equals(mapManager.getMapFromName("wwrpg-maps" + File.separator + "lobby"))) {
+            statusMessage = "Selected map is not valid";
+        } else if (instance.pool.getWerewolfNumber() == 0) {
             statusMessage = "You need at least 1 werewolf to start a game";
-        }
-        else if (instance.pool.getTotalSpecialRoles() >= instance.participants.size()) {
+        } else if (instance.pool.getTotalSpecialRoles() >= instance.participants.size()) {
             statusMessage = "Too many special roles selected";
-        }
-        else {
+        } else {
             statusMessage = "Game is ready";
             return true;
         }
