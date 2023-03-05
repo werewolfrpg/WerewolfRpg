@@ -7,6 +7,7 @@ import net.aesten.wwrpg.map.WerewolfMap;
 import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
 import net.azalealibrary.configuration.Configurable;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
@@ -79,5 +80,9 @@ public final class WerewolfRpg extends JavaPlugin {
 
     public static List<WerewolfMap> getMapsDuplicate() {
         return mapsDuplicate;
+    }
+
+    public static void logConsole(String log) {
+        Bukkit.getServer().getConsoleSender().sendMessage("[WerewolfRPG] " + log);
     }
 }

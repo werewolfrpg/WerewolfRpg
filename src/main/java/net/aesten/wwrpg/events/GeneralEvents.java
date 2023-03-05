@@ -28,7 +28,7 @@ public class GeneralEvents implements Listener {
     //change join message
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        event.getPlayer().setDisplayName("");
+        event.getPlayer().setPlayerListName("");
         if (WerewolfGame.getInstance().isPlaying()) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
         }

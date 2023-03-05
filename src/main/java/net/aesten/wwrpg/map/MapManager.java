@@ -47,7 +47,7 @@ public class MapManager {
         String lobby = "wwrpg-maps" + File.separator + "lobby";
         if (maps.get(lobby) == null) {
             if (createMap(lobby, worldManager.getLobby())) {
-                Bukkit.getServer().getConsoleSender().sendMessage("[WerewolfRPG] " + "Auto-generated lobby map");
+                WerewolfRpg.logConsole("Auto-generated lobby map");
             }
         }
     }
