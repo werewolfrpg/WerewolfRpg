@@ -1,6 +1,5 @@
 package net.aesten.wwrpg.items.registry.player;
 
-import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
@@ -17,6 +16,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.AbstractMap;
 
 public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, ProjectileItem {
     @Override
@@ -77,7 +78,7 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                         target.setHealth(0);
                         game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, true);
                         game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
-                        game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new Pair<>("curse_spear_melee", damager.getUniqueId()));
+                        game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("curse_spear_melee", damager.getUniqueId()));
                     }
                 }
                 else {
@@ -114,7 +115,7 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                     player.setHealth(0);
                     game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, true);
                     game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
-                    game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new Pair<>("curse_spear_throw", shooter.getUniqueId()));
+                    game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("curse_spear_throw", shooter.getUniqueId()));
                 }
             }
             else {

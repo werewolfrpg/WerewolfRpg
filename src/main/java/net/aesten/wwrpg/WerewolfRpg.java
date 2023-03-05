@@ -1,12 +1,9 @@
 package net.aesten.wwrpg;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.wwrpg.commands.WerewolfCommand;
-import net.aesten.wwrpg.commands.subcommands.*;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.events.GeneralEvents;
 import net.aesten.wwrpg.map.WerewolfMap;
-import net.aesten.wwrpg.packets.HideTabListSpectatorsPacket;
 import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
 import net.azalealibrary.configuration.Configurable;
@@ -28,7 +25,6 @@ import java.util.List;
 @Author("Aesten")
 @LogPrefix("WerewolfRPG")
 @ApiVersion(ApiVersion.Target.v1_19)
-@Dependency("ProtocolLib")
 @Dependency("AzaleaConfiguration")
 @Dependency("AzaleaCommand")
 public final class WerewolfRpg extends JavaPlugin {
@@ -37,7 +33,6 @@ public final class WerewolfRpg extends JavaPlugin {
 
     private static final List<WerewolfMap> mapsDuplicate = new ArrayList<>();
     private static org.bukkit.plugin.Plugin plugin;
-    private static HideTabListSpectatorsPacket packetListener;
 
     @Override
     public void onLoad() {
@@ -59,10 +54,6 @@ public final class WerewolfRpg extends JavaPlugin {
         //load worlds & maps
         WerewolfGame.initMapManager();
 
-        //ProtocolLib
-        packetListener = new HideTabListSpectatorsPacket(this);
-        ProtocolLibrary.getProtocolManager().addPacketListener(packetListener);
-
         //Register event listeners
         getServer().getPluginManager().registerEvents(new GeneralEvents(), this);
     }
@@ -77,9 +68,6 @@ public final class WerewolfRpg extends JavaPlugin {
         AzaleaConfigurationApi.save(this, skeleton);
 
         mapsDuplicate.forEach(map -> AzaleaConfigurationApi.save(this, map));
-
-        //ProtocolLib
-        ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
 
         //Unregister teams
         WerewolfGame.getTeamsManager().unregisterAll();

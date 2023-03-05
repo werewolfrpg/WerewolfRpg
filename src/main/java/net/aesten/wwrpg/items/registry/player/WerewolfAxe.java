@@ -1,6 +1,5 @@
 package net.aesten.wwrpg.items.registry.player;
 
-import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
@@ -17,6 +16,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.AbstractMap;
 
 public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
     @Override
@@ -73,7 +74,7 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
                     target.setHealth(0);
                     game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(true);
                     game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
-                    game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new Pair<>("werewolf_axe_hit", damager.getUniqueId()));
+                    game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("werewolf_axe_hit", damager.getUniqueId()));
                 }
             }
         }

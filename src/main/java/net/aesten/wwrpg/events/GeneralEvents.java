@@ -28,6 +28,7 @@ public class GeneralEvents implements Listener {
     //change join message
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        event.getPlayer().setDisplayName("");
         if (WerewolfGame.getInstance().isPlaying()) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
         }
@@ -134,10 +135,10 @@ public class GeneralEvents implements Listener {
                     deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
                 }
                 else {
-                    deathCause = tracker.getSpecificDeathCauses().get(id).getFirst();
+                    deathCause = tracker.getSpecificDeathCauses().get(id).getKey();
                 }
                 tracker.getPlayerStats(id).setDeathCause(deathCause);
-                tracker.getPlayerStats(id).setKiller(tracker.getSpecificDeathCauses().get(id).getSecond().toString());
+                tracker.getPlayerStats(id).setKiller(tracker.getSpecificDeathCauses().get(id).getValue().toString());
             }
              else {
                  player.teleport(WerewolfGame.getInstance().getMap().getMapSpawn());

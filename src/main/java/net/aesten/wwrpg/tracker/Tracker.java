@@ -1,6 +1,5 @@
 package net.aesten.wwrpg.tracker;
 
-import com.comphenix.protocol.wrappers.Pair;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Tracker {
-    private final Map<UUID, Pair<String, UUID>> specificDeathCauses = new HashMap<>();
+    private final Map<UUID, AbstractMap.SimpleEntry<String, UUID>> specificDeathCauses = new HashMap<>();
     private final Map<UUID, PlayerStats> playerStats = new HashMap<>();
 
     public PlayerStats addPlayer(Player player) {
@@ -22,7 +21,7 @@ public class Tracker {
         return playerStats.get(id);
     }
 
-    public Map<UUID, Pair<String, UUID>> getSpecificDeathCauses() {
+    public Map<UUID, AbstractMap.SimpleEntry<String, UUID>> getSpecificDeathCauses() {
         return specificDeathCauses;
     }
 

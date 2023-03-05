@@ -1,6 +1,5 @@
 package net.aesten.wwrpg.items.registry.player;
 
-import com.comphenix.protocol.wrappers.Pair;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.data.Role;
 import net.aesten.wwrpg.data.WerewolfPlayerData;
@@ -16,6 +15,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.AbstractMap;
 
 public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
     @Override
@@ -68,7 +69,7 @@ public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
                 player.setHealth(0);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(true);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
-                game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new Pair<>("arrow_hit", shooter.getUniqueId()));
+                game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("arrow_hit", shooter.getUniqueId()));
             }
         }
         projectile.remove();
