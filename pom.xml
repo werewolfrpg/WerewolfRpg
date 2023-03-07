@@ -50,14 +50,12 @@
         <dependency>
             <groupId>net.azalealibrary</groupId>
             <artifactId>configuration</artifactId>
-            <version>1.0.1</version>
-            <scope>provided</scope>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>net.azalealibrary</groupId>
             <artifactId>command</artifactId>
-            <version>1.0.0</version>
-            <scope>provided</scope>
+            <version>1.0.1</version>
         </dependency>
         <!-- jackson -->
         <dependency>
