@@ -109,7 +109,7 @@ public class GameCommand extends CommandNode {
                     WerewolfUtil.sendErrorText(sender, "There is no such map");
                 } else {
                     WerewolfGame.getInstance().setMap(map);
-                    WerewolfUtil.sendPluginText(sender, "Changed map to " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                    WerewolfUtil.sendPluginText(sender, "Changed map to " + ChatColor.LIGHT_PURPLE + map.getName());
                 }
             }
         }

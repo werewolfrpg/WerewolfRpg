@@ -72,7 +72,7 @@ public class MapCommand extends CommandNode {
             } else {
                 if (sender instanceof Player player) {
                     WerewolfGame.getMapManager().getHelper().selectMap(player, map);
-                    WerewolfUtil.sendPluginText(sender, "Selected map " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                    WerewolfUtil.sendPluginText(sender, "Selected map " + ChatColor.LIGHT_PURPLE + map.getName());
                 }
             }
         }
@@ -122,7 +122,7 @@ public class MapCommand extends CommandNode {
                 org.bukkit.World world = arguments.find(1, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName);
                 if (WerewolfGame.getMapManager().getMapFromName(arguments.get(0)) == null) {
                     if (WerewolfGame.getMapManager().createMap(arguments.get(0), world)) {
-                        WerewolfUtil.sendPluginText(sender, "New map created :" + arguments.get(0));
+                        WerewolfUtil.sendPluginText(sender, "New map created: " + arguments.get(0));
                     } else {
                         WerewolfUtil.sendErrorText(sender, "Map creation failed");
                     }

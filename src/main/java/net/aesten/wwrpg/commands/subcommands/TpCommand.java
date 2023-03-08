@@ -48,7 +48,7 @@ public class TpCommand extends CommandNode {
                 if (map != null) {
                     if (sender instanceof Player player) {
                         player.teleport(map.getMapSpawn());
-                        WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                        WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getName());
                     }
                 } else {
                     WerewolfUtil.sendErrorText(sender, "There is no such map");
@@ -59,12 +59,12 @@ public class TpCommand extends CommandNode {
                     if (arguments.get(1).equals("@a")) {
                         for (Player player : Bukkit.getOnlinePlayers()) {
                             player.teleport(map.getMapSpawn());
-                            WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                            WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getName());
                         }
                     } else if (arguments.get(1).equals("players")) {
                         for (Player player : WerewolfGame.getInstance().getParticipants()) {
                             player.teleport(map.getMapSpawn());
-                            WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getMapName());
+                            WerewolfUtil.sendPluginText(player, "You teleported to " + ChatColor.LIGHT_PURPLE + map.getName());
                         }
                     } else {
                         WerewolfUtil.sendErrorText(sender, "'" + arguments.get(1) + "' is an invalid argument");

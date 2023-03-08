@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,6 @@ public final class WerewolfRpg extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;
     public static final String CHAT_LOG = "[wwrpg] ";
 
-    private static final List<WerewolfMap> mapsDuplicate = new ArrayList<>();
     private static org.bukkit.plugin.Plugin plugin;
 
     @Override
@@ -68,7 +68,7 @@ public final class WerewolfRpg extends JavaPlugin {
         Configurable skeleton = WerewolfGame.getSkeletonManager();
         AzaleaConfigurationApi.save(this, skeleton);
 
-        mapsDuplicate.forEach(map -> AzaleaConfigurationApi.save(this, map));
+        WerewolfGame.getMapManager().saveMaps();
 
         //Unregister teams
         WerewolfGame.getTeamsManager().unregisterAll();
@@ -76,10 +76,6 @@ public final class WerewolfRpg extends JavaPlugin {
 
     public static org.bukkit.plugin.Plugin getPlugin() {
         return plugin;
-    }
-
-    public static List<WerewolfMap> getMapsDuplicate() {
-        return mapsDuplicate;
     }
 
     public static void logConsole(String log) {
