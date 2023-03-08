@@ -2,8 +2,6 @@ package net.aesten.wwrpg.map;
 
 import net.aesten.wwrpg.WerewolfRpg;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 
 import java.io.File;
@@ -44,9 +42,8 @@ public class MapManager {
     }
 
     private void loadLobby() {
-        String lobby = "wwrpg-maps" + File.separator + "lobby";
-        if (maps.get(lobby) == null) {
-            if (createMap(lobby, worldManager.getLobby())) {
+        if (maps.get("wwrpg-maps" + File.separator + "lobby") == null) {
+            if (createMap("lobby", worldManager.getLobby())) {
                 WerewolfRpg.logConsole("Auto-generated lobby map");
             }
         }
