@@ -123,6 +123,10 @@ public class SkeletonManager implements Listener, Configurable {
         skeleton.setLootTable(null);
     }
 
+    public void summonOnlyBasics(WerewolfMap map) {
+        map.getSkeletonSpawnLocations().forEach(spawn -> summonBasicSkeleton(map.getWorld(), spawn));
+    }
+
     public void summonAllSkeletons(WerewolfMap map) {
         List<Vector> spawns = map.getSkeletonSpawnLocations();
         Collections.shuffle(spawns);

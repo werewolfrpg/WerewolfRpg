@@ -172,13 +172,14 @@ public class MapCommand extends CommandNode {
 
     private static final class Shop extends CommandNode {
         public Shop() {
-            super("shop", new Summon());
+            super("shop", new Summon(), new Update());
         }
 
         private void help(CommandSender sender) {
             if (sender instanceof Player player) {
                 WerewolfUtil.sendHelpText(player, "/ww map shop -> help");
                 WerewolfUtil.sendHelpText(player, "/ww map shop summon -> summon a shop villager");
+                WerewolfUtil.sendHelpText(player, "/ww map shop update -> update shop costs with config values");
             }
         }
 
@@ -252,6 +253,22 @@ public class MapCommand extends CommandNode {
                 return "wwrpg.cmd.ww.map.shop.summon";
             }
         }
+
+        private static final class Update extends CommandNode {
+            public Update() {
+                super("update");
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+                WerewolfGame.getShopManager().updatePrices(WerewolfGame.getInstance().getMap().getWorld());
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.shop.update";
+            }
+        }
     }
 
     private static final class Skeleton extends CommandNode {
@@ -292,8 +309,13 @@ public class MapCommand extends CommandNode {
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
                 if (sender instanceof Player player) {
-                    org.bukkit.World world = WerewolfGame.getMapManager().getHelper().getSelectedMap(player).getWorld();
-                    WerewolfGame.getInstance().getMap().getSkeletonSpawnLocations().forEach(v ->  {
+                    WerewolfMap map = WerewolfGame.getMapManager().getHelper().getSelectedMap(player);
+                    org.bukkit.World world = map.getWorld();
+                    if (armorStands.size() != 0) {
+                        armorStands.forEach(Entity::remove);
+                        armorStands.clear();
+                    }
+                    map.getSkeletonSpawnLocations().forEach(v ->  {
                         ArmorStand armorStand = (ArmorStand) world.spawnEntity(v.toLocation(world), EntityType.ARMOR_STAND);
                         armorStand.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 999999, 1));
                         armorStands.add(armorStand);
@@ -332,7 +354,7 @@ public class MapCommand extends CommandNode {
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
                 if (sender instanceof Player player) {
-                    WerewolfGame.getSkeletonManager().summonAllSkeletons(WerewolfGame.getMapManager().getHelper().getSelectedMap(player));
+                    WerewolfGame.getSkeletonManager().summonOnlyBasics(WerewolfGame.getMapManager().getHelper().getSelectedMap(player));
                 }
             }
 

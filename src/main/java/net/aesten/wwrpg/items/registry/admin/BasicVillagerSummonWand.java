@@ -4,11 +4,12 @@ import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.items.base.EntityInteractItem;
 import net.aesten.wwrpg.items.base.ItemStackBuilder;
 import net.aesten.wwrpg.items.base.WerewolfItem;
+import net.aesten.wwrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class BasicVillagerSummonWand extends WerewolfItem implements EntityInteractItem {
@@ -28,7 +29,8 @@ public class BasicVillagerSummonWand extends WerewolfItem implements EntityInter
     }
 
     @Override
-    public void onEntityInteract(PlayerInteractEntityEvent event) {
+    public void onEntityInteract(PlayerInteractAtEntityEvent event) {
+        WerewolfUtil.debugMessage("basic wand inside");
         Entity entity = event.getRightClicked();
         if (entity.getType() == EntityType.ARMOR_STAND) {
             WerewolfGame.getShopManager().summonBasicShopVillager(entity.getLocation());

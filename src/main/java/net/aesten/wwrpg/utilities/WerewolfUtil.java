@@ -14,6 +14,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 public class WerewolfUtil {
     public static void sendPluginText(CommandSender sender, String message) {
         sendPluginText(sender, message, ChatColor.AQUA);
@@ -35,8 +37,8 @@ public class WerewolfUtil {
         player.sendTitle(title, subtitle, 2, 2, 40);
     }
 
-    public static Vector getVectorAbove(Location blockLocation) {
-        return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0, 1, 0));
+    public static Vector getVectorCenterSpawn(Location blockLocation) {
+        return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0.5, 1, 0.5));
     }
 
     public static void updateSkull(World world, Vector skullCoordinates, Player player) {
@@ -94,6 +96,10 @@ public class WerewolfUtil {
     }
 
     public static boolean sameItem(ItemStack item1, ItemStack item2) {
-        return (item1.getItemMeta() == item2.getItemMeta());
+        return (Objects.requireNonNull(item1.getItemMeta()).getAsString().equals(Objects.requireNonNull(item2.getItemMeta()).getAsString()));
+    }
+
+    public static void debugMessage(String message) {
+        Bukkit.getServer().getConsoleSender().sendMessage(message);
     }
 }

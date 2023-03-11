@@ -125,8 +125,11 @@ public class GeneralEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        ItemStack clickItem = event.getPlayer().getInventory().getItem(event.getHand());
+    public void onPlayerInteractEntity(PlayerInteractAtEntityEvent event) {
+        WerewolfUtil.debugMessage("clicked entity");
+        ItemStack clickItem = event.getPlayer().getInventory().getItemInMainHand();
+        if (clickItem.getItemMeta() == null) WerewolfUtil.debugMessage("itemmeta null");
+        if (clickItem.getItemMeta() == null) return;
         Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), clickItem)).findAny();
         if (werewolfItem.isPresent() && werewolfItem.get() instanceof EntityInteractItem entityInteractItem) {
             entityInteractItem.onEntityInteract(event);

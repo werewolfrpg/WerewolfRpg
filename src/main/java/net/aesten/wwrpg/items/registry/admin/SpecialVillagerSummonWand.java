@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SpecialVillagerSummonWand extends WerewolfItem implements EntityInteractItem {
@@ -28,7 +28,7 @@ public class SpecialVillagerSummonWand extends WerewolfItem implements EntityInt
     }
 
     @Override
-    public void onEntityInteract(PlayerInteractEntityEvent event) {
+    public void onEntityInteract(PlayerInteractAtEntityEvent event) {
         Entity entity = event.getRightClicked();
         if (entity.getType() == EntityType.ARMOR_STAND) {
             WerewolfGame.getShopManager().summonSpecialShopVillager(entity.getLocation());

@@ -10,11 +10,11 @@ public class WerewolfCommand extends CommandNode {
     public WerewolfCommand() {
         super("ww",
                 new GameCommand(),
-                new SettingCommand(),
                 new MapCommand(),
                 new WorldCommand(),
                 new TpCommand(),
-                new UtilCommand());
+                new UtilCommand(),
+                new ItemCommand());
     }
 
 

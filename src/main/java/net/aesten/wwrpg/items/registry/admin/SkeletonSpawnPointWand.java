@@ -38,7 +38,7 @@ public class SkeletonSpawnPointWand extends WerewolfItem implements InteractItem
             WerewolfMap map = helper.getSelectedMap(event.getPlayer());
             Block block = event.getClickedBlock();
             if (block != null) {
-                Vector vector = WerewolfUtil.getVectorAbove(block.getLocation());
+                Vector vector = WerewolfUtil.getVectorCenterSpawn(block.getLocation());
                 if (helper.addOrElseRemove(map.getSkeletonSpawnLocations(), vector)) {
                     WerewolfUtil.sendPluginText(event.getPlayer(), "Added (" + vector.getX() + ", " + vector.getY() + ", " + vector.getZ() + ") to spawns");
                 }

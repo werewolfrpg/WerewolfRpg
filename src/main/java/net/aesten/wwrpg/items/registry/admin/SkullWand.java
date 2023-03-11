@@ -37,15 +37,12 @@ public class SkullWand extends WerewolfItem implements InteractItem {
             MapEditingHelper helper = WerewolfGame.getMapManager().getHelper();
             if (helper.hasSelectedMap(event.getPlayer())) {
                 WerewolfMap map = helper.getSelectedMap(event.getPlayer());
-                Block block = event.getClickedBlock();
-                if (block != null) {
-                    Vector vector = WerewolfUtil.getVectorAbove(block.getLocation());
-                    if (helper.addOrElseRemove(map.getSkullLocations(), vector)) {
-                        WerewolfUtil.sendPluginText(event.getPlayer(), "Added (" + vector.getX() + ", " + vector.getY() + ", " + vector.getZ() + ") to skulls");
-                    }
-                    else {
-                        WerewolfUtil.sendPluginText(event.getPlayer(), "Removed (" + vector.getX() + ", " + vector.getY() + ", " + vector.getZ() + ") from skulls");
-                    }
+                Vector vector = WerewolfUtil.getVectorCenterSpawn(event.getClickedBlock().getLocation());
+                if (helper.addOrElseRemove(map.getSkullLocations(), vector)) {
+                    WerewolfUtil.sendPluginText(event.getPlayer(), "Added (" + vector.getX() + ", " + vector.getY() + ", " + vector.getZ() + ") to skulls");
+                }
+                else {
+                    WerewolfUtil.sendPluginText(event.getPlayer(), "Removed (" + vector.getX() + ", " + vector.getY() + ", " + vector.getZ() + ") from skulls");
                 }
             }
             else {
