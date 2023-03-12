@@ -28,7 +28,8 @@ public class MapCommand extends CommandNode {
                 new Create(),
                 new Delete(),
                 new Shop(),
-                new Skeleton()
+                new Skeleton(),
+                new Border()
         );
     }
 
@@ -41,6 +42,7 @@ public class MapCommand extends CommandNode {
             WerewolfUtil.sendHelpText(player, "/ww map delete <map> -> delete map");
             WerewolfUtil.sendHelpText(player, "/ww map shop [...] -> shop spawning commands");
             WerewolfUtil.sendHelpText(player, "/ww map skeleton [...] -> skeleton visualization commands");
+            WerewolfUtil.sendHelpText(player, "/ww map border [set/remove] -> show or remove the border for currently selected map");
         }
     }
 
@@ -361,6 +363,72 @@ public class MapCommand extends CommandNode {
             @Override
             public String getPermission() {
                 return "wwrpg.cmd.ww.map.skeleton.summon";
+            }
+        }
+    }
+
+    private static final class Border extends CommandNode {
+        public Border() {
+            super("border",
+                    new Set(),
+                    new Remove());
+        }
+
+        private void help(CommandSender sender) {
+            if (sender instanceof Player player) {
+                WerewolfUtil.sendHelpText(player, "/ww map border -> help");
+                WerewolfUtil.sendHelpText(player, "/ww map border set -> set the world border to the one of the currently selected map");
+                WerewolfUtil.sendHelpText(player, "/ww map border remove -> set the world border back to (0,0) with 1,000,000");
+            }
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            help(sender);
+        }
+
+        @Override
+        public String getPermission() {
+            return "wwrpg.cmd.ww.map.border";
+        }
+
+        private static final class Set extends CommandNode {
+            public Set() {
+                super("set");
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+                if (sender instanceof Player player) {
+                    WerewolfMap map = WerewolfGame.getMapManager().getHelper().getSelectedMap(player);
+                    map.getWorld().getWorldBorder().setCenter(map.getBorderCenter().toLocation(map.getWorld()));
+                    map.getWorld().getWorldBorder().setSize(map.getBorderSize());
+                }
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.border.set";
+            }
+        }
+
+        private static final class Remove extends CommandNode {
+            public Remove() {
+                super("remove");
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+                if (sender instanceof Player player) {
+                    WerewolfMap map = WerewolfGame.getMapManager().getHelper().getSelectedMap(player);
+                    map.getWorld().getWorldBorder().setCenter(new Location(map.getWorld(), 0,0,0));
+                    map.getWorld().getWorldBorder().setSize(1000000);
+                }
+            }
+
+            @Override
+            public String getPermission() {
+                return "wwrpg.cmd.ww.map.border.remove";
             }
         }
     }

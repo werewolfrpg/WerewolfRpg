@@ -1,6 +1,7 @@
 package net.aesten.wwrpg.map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
@@ -26,7 +27,10 @@ public class WorldManager {
             Properties props = new Properties();
             props.load(is);
             is.close();
-            worlds.put("lobby", Bukkit.getWorld(props.getProperty("level-name")));
+            World lobby = Bukkit.getWorld(props.getProperty("level-name"));
+            worlds.put("lobby", lobby);
+            assert lobby != null;
+            setGameRule(lobby);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,6 +61,7 @@ public class WorldManager {
     public void createWorld(String worldName) {
         World world = new WorldCreator("wwrpg_worlds/" + worldName).createWorld();
         if (world != null) {
+            setGameRule(world);
             worlds.put(world.getName(), world);
         }
     }
@@ -72,5 +77,28 @@ public class WorldManager {
 
     public Map<String, World> getWorlds() {
         return worlds;
+    }
+
+    private void setGameRule(World world) {
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+        world.setGameRule(GameRule.DO_MOB_LOOT, false);
+        world.setGameRule(GameRule.DO_ENTITY_DROPS, false);
+        world.setGameRule(GameRule.DO_TILE_DROPS, false);
+        world.setGameRule(GameRule.DISABLE_RAIDS, true);
+        world.setGameRule(GameRule.DO_FIRE_TICK, false);
+        world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.KEEP_INVENTORY, true);
+        world.setGameRule(GameRule.MOB_GRIEFING, false);
+        world.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
+        world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        world.setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, true);
+        world.setGameRule(GameRule.DO_INSOMNIA, false);
+        world.setGameRule(GameRule.NATURAL_REGENERATION, true);
+        world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
     }
 }
