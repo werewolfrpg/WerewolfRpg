@@ -201,14 +201,18 @@ public class WerewolfGame {
                     instance.tracker.addPlayer(player).setRole(role);
 
                     //update skulls and put name
-                    WerewolfUtil.updateSkull(instance.map.getWorld(),
+                    WerewolfUtil.updateSkull(
+                            instance.map.getWorld(),
                             instance.map.getSkullLocations().get(count),
-                            player);
+                            player
+                    );
                     instance.displayNameArmorStands.add(
-                            WerewolfUtil.summonNameTagArmorStand(instance.map.getWorld(),
-                            instance.map.getSkullLocations().get(count),
-                            new Vector(0, 0.4, 0),
-                            player.getName())
+                            WerewolfUtil.summonNameTagArmorStand(
+                                    instance.map.getWorld(),
+                                    instance.map.getSkullLocations().get(count),
+                                    new Vector(0.5, -0.5, 0.5),
+                                    player.getName()
+                            )
                     );
 
                     //add player to correct team and set roles
@@ -226,16 +230,20 @@ public class WerewolfGame {
                     player.setGameMode(GameMode.ADVENTURE);
                     player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
+
+                    //increment
+                    count++;
                 }
                 else {
                     teamsManager.registerPlayerRole(player, Role.SPECTATOR);
                 }
             }
+
         }
 
         if (teamsManager.getTeam(Role.WEREWOLF).getSize() > 1) {
             String werewolves = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
-            for (Player player : teamsManager.getFaction(Role.WEREWOLF).stream().map(Bukkit::getPlayer).toList()) {
+            for (Player player : teamsManager.getTeam(Role.WEREWOLF).getEntries().stream().map(Bukkit::getPlayerExact).toList()) {
                 player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RESET +
                         "The werewolves are " + Role.WEREWOLF.color + werewolves);
             }
@@ -320,7 +328,6 @@ public class WerewolfGame {
         String vampirePlayers = String.join(", ", teamsManager.getTeam(Role.VAMPIRE).getEntries());
         String possessedPlayers = String.join(", ", teamsManager.getTeam(Role.POSSESSED).getEntries());
 
-        Bukkit.broadcastMessage("\n");
         Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
         Bukkit.broadcastMessage(ChatColor.GREEN + "Villagers:");
         Bukkit.broadcastMessage(ChatColor.GREEN + villagerPlayers);
@@ -333,6 +340,5 @@ public class WerewolfGame {
         Bukkit.broadcastMessage(ChatColor.YELLOW + "Possessed:");
         Bukkit.broadcastMessage(ChatColor.YELLOW + possessedPlayers);
         Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
-        Bukkit.broadcastMessage("\n");
     }
 }

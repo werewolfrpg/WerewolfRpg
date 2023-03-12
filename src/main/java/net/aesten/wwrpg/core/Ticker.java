@@ -27,7 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Ticker {
-    private final BossBar bar;
+    private BossBar bar;
     private BukkitTask task;
     private int days;
 
@@ -43,6 +43,8 @@ public class Ticker {
 
     public void stop() {
         task.cancel();
+        bar.removeAll();
+        bar = null;
     }
 
 
@@ -116,8 +118,7 @@ public class Ticker {
 
     private void tick(WerewolfGame game) {
         TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        if ((teamsManager.getFaction(Role.VILLAGER).size() == 0 && teamsManager.getFaction(Role.POSSESSED).size() == 0) ||
-                teamsManager.getFaction(Role.WEREWOLF).size() == 0) {
+        if ((teamsManager.getFaction(Role.VILLAGER).size() == 0 || teamsManager.getFaction(Role.WEREWOLF).size() == 0)) {
             WerewolfGame.endGame();
         }
         else {

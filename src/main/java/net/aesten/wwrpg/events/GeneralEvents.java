@@ -6,7 +6,7 @@ import net.aesten.wwrpg.items.base.EntityInteractItem;
 import net.aesten.wwrpg.items.base.InteractItem;
 import net.aesten.wwrpg.items.base.WerewolfItem;
 import net.aesten.wwrpg.items.registry.AdminItem;
-import net.aesten.wwrpg.items.registry.PlayerItem;
+import net.aesten.wwrpg.map.WerewolfMap;
 import net.aesten.wwrpg.tracker.Result;
 import net.aesten.wwrpg.tracker.Tracker;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
 import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,12 +24,13 @@ import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.AbstractMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 public class GeneralEvents implements Listener {
-    //change join message
+    //change join message & max health
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (WerewolfGame.getInstance().isPlaying()) {
@@ -36,6 +38,8 @@ public class GeneralEvents implements Listener {
         }
         event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
                 ChatColor.GREEN + event.getPlayer().getName() + ChatColor.GOLD + " joined the server!");
+
+        Objects.requireNonNull(event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
     }
 
     //handle player disconnect
@@ -138,28 +142,36 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-             if (WerewolfGame.getInstance().isPlaying()) {
-                UUID id = player.getUniqueId();
-                WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
-                WerewolfGame.getTeamsManager().unregisterPlayer(player);
-                player.setGameMode(GameMode.SPECTATOR);
-                player.getInventory().clear();
-                player.getActivePotionEffects().clear();
+            WerewolfMap map = WerewolfGame.getInstance().getMap();
+             if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
+                 UUID id = player.getUniqueId();
+                 WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
+                 WerewolfGame.getTeamsManager().unregisterPlayer(player);
+                 player.setGameMode(GameMode.SPECTATOR);
+                 player.getInventory().clear();
+                 player.getActivePotionEffects().clear();
+                 player.teleport(map.getMapSpawn());
 
-                //stats
-                Tracker tracker = WerewolfGame.getInstance().getTracker();
-                String deathCause;
-                if (tracker.getSpecificDeathCauses().get(id) == null) {
-                    deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
-                }
-                else {
-                    deathCause = tracker.getSpecificDeathCauses().get(id).getKey();
-                }
-                tracker.getPlayerStats(id).setDeathCause(deathCause);
-                tracker.getPlayerStats(id).setKiller(tracker.getSpecificDeathCauses().get(id).getValue().toString());
-            }
-             else {
-                 player.teleport(WerewolfGame.getInstance().getMap().getMapSpawn());
+                 //stats
+                 Tracker tracker = WerewolfGame.getInstance().getTracker();
+                 String deathCause;
+                 if (tracker.getSpecificDeathCauses().get(id) == null) {
+                     deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
+                 }
+                 else {
+                     deathCause = tracker.getSpecificDeathCauses().get(id).getKey();
+                 }
+                 tracker.getPlayerStats(id).setDeathCause(deathCause);
+                 AbstractMap.SimpleEntry<String, UUID> deathData = tracker.getSpecificDeathCauses().get(id);
+                 if (deathData != null) {
+                     tracker.getPlayerStats(id).setKiller(deathData.getValue().toString());
+                 }
+             } else {
+                 if (map != null) {
+                     player.teleport(map.getMapSpawn());
+                 } else {
+                     player.teleport(WerewolfGame.getMapManager().getMapFromName("lobby").getMapSpawn());
+                 }
              }
         }
     }

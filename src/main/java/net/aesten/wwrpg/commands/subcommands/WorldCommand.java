@@ -1,6 +1,7 @@
 package net.aesten.wwrpg.commands.subcommands;
 
 import net.aesten.wwrpg.core.WerewolfGame;
+import net.aesten.wwrpg.map.WorldManager;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.azalealibrary.command.Arguments;
 import net.azalealibrary.command.CommandNode;
@@ -67,11 +68,20 @@ public class WorldCommand extends CommandNode {
 
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
-            if (WerewolfGame.getMapManager().getWorldManager().getWorldFromName(arguments.get(0)) == null) {
-                WerewolfGame.getMapManager().getWorldManager().createWorld(arguments.get(0));
-                WerewolfUtil.sendPluginText(sender, "World loaded");
+            if (arguments.size() == 1) {
+                WorldManager manager = WerewolfGame.getMapManager().getWorldManager();
+                if (manager.worldContainerExists(arguments.get(0))) {
+                    if (manager.getWorldFromName(arguments.get(0)) == null) {
+                        manager.createWorld(arguments.get(0));
+                        WerewolfUtil.sendPluginText(sender, "World loaded");
+                    } else {
+                        WerewolfUtil.sendErrorText(sender, "World already existing");
+                    }
+                } else {
+                    WerewolfUtil.sendErrorText(sender, "No such folder found");
+                }
             } else {
-                WerewolfUtil.sendErrorText(sender, "World already existing");
+                WerewolfUtil.sendErrorText(sender, "Arguments length is incorrect");
             }
         }
 

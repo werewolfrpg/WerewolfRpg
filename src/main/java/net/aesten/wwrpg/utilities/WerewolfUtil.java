@@ -4,7 +4,9 @@ import net.aesten.wwrpg.WerewolfRpg;
 import net.aesten.wwrpg.data.Role;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -41,22 +43,28 @@ public class WerewolfUtil {
         return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0.5, 1, 0.5));
     }
 
-    public static void updateSkull(World world, Vector skullCoordinates, Player player) {
+    public static void updateSkull(World world, Vector skullCoordinates, Player player) { //todo skull rotation fix
         Block block = world.getBlockAt(skullCoordinates.toLocation(world));
+        BlockFace rotation = ((Rotatable) block.getBlockData()).getRotation();
         block.setType(Material.PLAYER_HEAD);
         if (block.getState() instanceof Skull skull) {
             skull.setOwningPlayer(player);
+            Rotatable rotatable = (Rotatable) skull.getBlockData();
+            rotatable.setRotation(rotation);
             skull.update();
         }
     }
 
     public static void resetSkull(World world, Vector skullCoordinates) {
         Block block = world.getBlockAt(skullCoordinates.toLocation(world));
+        BlockFace rotation = ((Rotatable) block.getBlockData()).getRotation();
         block.setType(Material.SKELETON_SKULL);
+        Rotatable rotatable = (Rotatable) block.getBlockData();
+        rotatable.setRotation(rotation);
     }
 
     public static ArmorStand summonNameTagArmorStand(World world, Vector coordinates, Vector offset, String name) {
-        ArmorStand armorStand = (ArmorStand) world.spawnEntity(coordinates.add(offset).toLocation(world), EntityType.ARMOR_STAND);
+        ArmorStand armorStand = (ArmorStand) world.spawnEntity(coordinates.clone().add(offset).toLocation(world), EntityType.ARMOR_STAND);
         armorStand.setVisible(false);
         armorStand.setInvulnerable(true);
         armorStand.setGravity(false);

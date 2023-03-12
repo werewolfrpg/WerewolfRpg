@@ -10,7 +10,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.*;
 
 public class TeamsManager {
-    private final Map<Role, List<UUID>> factions = initFactions();
+    private final Map<Role, List<UUID>> factions;
     private final Team villagers;
     private final Team werewolves;
     private final Team traitors;
@@ -19,6 +19,7 @@ public class TeamsManager {
     private final Team spectators;
 
     public TeamsManager() {
+        factions = initFactions();
         Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard();
 
         villagers = board.registerNewTeam("Villager");
@@ -71,12 +72,12 @@ public class TeamsManager {
 
     public void registerPlayerRole(Player player, Role role) {
         getTeam(role).addEntry(player.getName());
-        getFaction(role).add(player.getUniqueId());
+        getFaction(role.factionRole()).add(player.getUniqueId());
     }
 
     public void unregisterPlayer(Player player) {
         Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
-        getFaction(role).remove(player.getUniqueId());
+        getFaction(role.factionRole()).remove(player.getUniqueId());
     }
 
     public void clear() {
@@ -98,7 +99,8 @@ public class TeamsManager {
         return Map.of(
                 Role.VILLAGER, new ArrayList<>(),
                 Role.WEREWOLF, new ArrayList<>(),
-                Role.VAMPIRE, new ArrayList<>());
+                Role.VAMPIRE, new ArrayList<>()
+        );
     }
 
     public List<UUID> getFaction(Role role) {

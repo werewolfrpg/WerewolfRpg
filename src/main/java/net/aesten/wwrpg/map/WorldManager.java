@@ -79,6 +79,10 @@ public class WorldManager {
         return worlds;
     }
 
+    public boolean worldContainerExists(String folderName) {
+        return new File("wwrpg_worlds" + File.separator + folderName).exists();
+    }
+
     private void setGameRule(World world) {
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);

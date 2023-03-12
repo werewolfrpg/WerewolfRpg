@@ -90,8 +90,8 @@ public class SkeletonManager implements Listener, Configurable {
 
     private void summonBasicSkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
-        skeleton.setCustomName("basic_skeleton");
-        skeleton.setCustomNameVisible(false);
+        skeleton.addScoreboardTag("basic_skeleton");
+        Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(WerewolfGame.getSkeletonManager().basicSkeletonHealth.get());
         skeleton.setHealth(WerewolfGame.getSkeletonManager().basicSkeletonHealth.get());
         Objects.requireNonNull(skeleton.getEquipment()).setItemInMainHand(null);
         Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(WerewolfGame.getSkeletonManager().basicSkeletonDamage.get());
@@ -101,8 +101,8 @@ public class SkeletonManager implements Listener, Configurable {
 
     private void summonLuckySkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
-        skeleton.setCustomName("lucky_skeleton");
-        skeleton.setCustomNameVisible(false);
+        skeleton.addScoreboardTag("lucky_skeleton");
+        Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(WerewolfGame.getSkeletonManager().luckySkeletonHealth.get());
         skeleton.setHealth(WerewolfGame.getSkeletonManager().luckySkeletonHealth.get());
         Objects.requireNonNull(skeleton.getEquipment()).setItemInMainHand(null);
         Objects.requireNonNull(skeleton.getEquipment()).setHelmet(new ItemStack(Material.GOLDEN_HELMET, 1));
@@ -113,8 +113,8 @@ public class SkeletonManager implements Listener, Configurable {
 
     private void summonSpecialSkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
-        skeleton.setCustomName("special_skeleton");
-        skeleton.setCustomNameVisible(false);
+        skeleton.addScoreboardTag("special_skeleton");
+        Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(WerewolfGame.getSkeletonManager().specialSkeletonHealth.get());
         skeleton.setHealth(WerewolfGame.getSkeletonManager().specialSkeletonHealth.get());
         Objects.requireNonNull(skeleton.getEquipment()).setItemInMainHand(null);
         Objects.requireNonNull(skeleton.getEquipment()).setHelmet(new ItemStack(Material.DIAMOND_HELMET, 1));
@@ -158,16 +158,16 @@ public class SkeletonManager implements Listener, Configurable {
         if (entity.getType() == EntityType.SKELETON) {
             if (entity.getKiller() != null) {
                 Player player = entity.getKiller();
-                if (Objects.equals(entity.getCustomName(), "basic_skeleton") && rnd.nextDouble() < basicSkeletonEmeraldDropRate.get()) {
+                if (entity.getScoreboardTags().contains("basic_skeleton") && rnd.nextDouble() < basicSkeletonEmeraldDropRate.get()) {
                     player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
                     WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledBasicSkeletons();
                     WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addBasicSkeletonEmeraldDrops();
                 }
-                else if (Objects.equals(entity.getCustomName(), "lucky_skeleton")) {
+                else if (entity.getScoreboardTags().contains("lucky_skeleton")) {
                     player.getInventory().addItem(new ItemStack(Material.EMERALD, luckySkeletonEmeraldDropNumber.get()));
                     WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledLuckySkeletons();
                 }
-                else if (Objects.equals(entity.getCustomName(), "special_skeleton")) {
+                else if (entity.getScoreboardTags().contains("special_skeleton")) {
                     ShopWerewolfItem drop = specialSkeletonDrops.get().get(rnd.nextInt(specialSkeletonDrops.get().size()));
                     player.getInventory().addItem(drop.getItem());
                     WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledSpecialSkeletons();

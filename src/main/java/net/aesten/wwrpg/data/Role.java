@@ -38,4 +38,10 @@ public enum Role {
             return this;
         }
     }
+
+    public Role factionRole() {
+        if (this == POSSESSED) return VILLAGER;
+        if (this == TRAITOR) return WEREWOLF;
+        return this;
+    }
 }
