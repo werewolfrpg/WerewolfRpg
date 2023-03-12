@@ -30,7 +30,6 @@ public class BasicVillagerSummonWand extends WerewolfItem implements EntityInter
 
     @Override
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
-        WerewolfUtil.debugMessage("basic wand inside");
         Entity entity = event.getRightClicked();
         if (entity.getType() == EntityType.ARMOR_STAND) {
             WerewolfGame.getShopManager().summonBasicShopVillager(entity.getLocation());
