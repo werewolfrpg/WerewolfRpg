@@ -64,10 +64,18 @@ public class SkeletonManager implements Listener, Configurable {
     private static final List<ShopWerewolfItem> defaultSpecialSkeletonDropTable = defaultSpecialSkeletonDropTableIds.stream().map(PlayerItem::getItemFromId).filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).toList();
 
     //basic skeleton properties
-    private final Property<Integer> basicSkeletonSpawnNumberPerPlayer = new Property<>(PropertyType.INTEGER, () -> 12, "skeleton.basic.spawn_number_per_player", "number basic skeletons spawning per player", POSITIVE_INTEGER);
-    private final Property<Double> basicSkeletonDamage = new Property<>(PropertyType.DOUBLE, () -> 4.0, "skeleton.basic.damage", "basic skeleton damage", POSITIVE_DOUBLE);
-    private final Property<Double> basicSkeletonHealth = new Property<>(PropertyType.DOUBLE, () -> 12.0, "skeleton.basic.health", "basic skeleton health", POSITIVE_DOUBLE);
-    private final Property<Double> basicSkeletonEmeraldDropRate = new Property<>(PropertyType.DOUBLE, () -> 0.5, "skeleton.basic.emerald_drop_rate", "skeleton emerald drop rate", PROPORTION);
+    private final Property<Integer> basicSkeletonSpawnNumberPerPlayer = Property.create("skeleton.basic.spawn_number_per_player", PropertyType.INTEGER, () -> 12)
+            .addPolicy(POSITIVE_INTEGER)
+            .done();
+    private final Property<Double> basicSkeletonDamage = Property.create("skeleton.basic.damage", PropertyType.DOUBLE, () -> 4.0)
+            .addPolicy(POSITIVE_DOUBLE)
+            .done();
+    private final Property<Double> basicSkeletonHealth = Property.create("skeleton.basic.health", PropertyType.DOUBLE, () -> 12.0)
+            .addPolicy(POSITIVE_DOUBLE)
+            .done();
+    private final Property<Double> basicSkeletonEmeraldDropRate = Property.create("skeleton.basic.emerald_drop_rate", PropertyType.DOUBLE, () -> 0.5)
+            .addPolicy(PROPORTION)
+            .done();
 
     //lucky skeleton properties
     private final Property<Boolean> luckySkeletonEnable = new Property<>(PropertyType.BOOLEAN, () -> true, "skeleton.lucky.enable", "enable lucky skeleton spawns");
