@@ -88,7 +88,7 @@ public class SkeletonManager implements Listener, Configurable {
 
     private final Random rnd = new Random();
 
-    private void summonBasicSkeleton(World world, Vector coordinates) {
+    public void summonBasicSkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
         skeleton.addScoreboardTag("basic_skeleton");
         Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(WerewolfGame.getSkeletonManager().basicSkeletonHealth.get());
@@ -99,7 +99,7 @@ public class SkeletonManager implements Listener, Configurable {
         skeleton.setLootTable(null);
     }
 
-    private void summonLuckySkeleton(World world, Vector coordinates) {
+    public void summonLuckySkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
         skeleton.addScoreboardTag("lucky_skeleton");
         Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(WerewolfGame.getSkeletonManager().luckySkeletonHealth.get());
@@ -111,7 +111,7 @@ public class SkeletonManager implements Listener, Configurable {
         skeleton.setLootTable(null);
     }
 
-    private void summonSpecialSkeleton(World world, Vector coordinates) {
+    public void summonSpecialSkeleton(World world, Vector coordinates) {
         Skeleton skeleton = (Skeleton) world.spawnEntity(coordinates.toLocation(world), EntityType.SKELETON);
         skeleton.addScoreboardTag("special_skeleton");
         Objects.requireNonNull(skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(WerewolfGame.getSkeletonManager().specialSkeletonHealth.get());

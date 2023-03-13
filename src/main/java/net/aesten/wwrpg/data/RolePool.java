@@ -26,8 +26,9 @@ public class RolePool {
         return list;
     }
 
-    public List<Role> getRoles() {
+    public List<Role> getRoles(int participants) {
         List<Role> list = getPonderedSpecialRoles();
+        list.addAll(Collections.nCopies(participants - list.size(), Role.VILLAGER));
         Collections.shuffle(list);
         return list;
     }

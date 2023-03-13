@@ -172,7 +172,7 @@ public class WerewolfGame {
 
         //role pool
         int count = 0;
-        List<Role> specialRoles = instance.pool.getRoles();
+        List<Role> specialRoles = instance.pool.getRoles(instance.participants.size());
 
         for (Entity entity : instance.map.getWorld().getEntities()) {
             if (entity.getType() == EntityType.DROPPED_ITEM) {
@@ -210,7 +210,7 @@ public class WerewolfGame {
                             WerewolfUtil.summonNameTagArmorStand(
                                     instance.map.getWorld(),
                                     instance.map.getSkullLocations().get(count),
-                                    new Vector(0.5, -0.5, 0.5),
+                                    new Vector(0.5, 0, 0.5),
                                     player.getName()
                             )
                     );
@@ -258,14 +258,13 @@ public class WerewolfGame {
 
         //prepare and send stats
         instance.tracker.setResults(role);
-        instance.tracker.sendJsonData();
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
         instance.displayNameArmorStands.forEach(ArmorStand::remove);
 
-        //show roles to players
-        showMatchRoles();
+        //get role list (before resetting)
+        String rolesList = getMatchText();
 
         //reset all values
         instance = new WerewolfGame(instance);
@@ -284,10 +283,14 @@ public class WerewolfGame {
             }
             else if (entity instanceof Player player) {
                 WerewolfUtil.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
+                player.sendMessage(rolesList);
                 player.getInventory().clear();
                 player.sendTitle(getEndString(role), ChatColor.GOLD + "GAME END", 2, 2, 40);
                 player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + getEndString(role));
                 player.setGameMode(GameMode.SPECTATOR);
+                player.setHealth(40);
+                player.setFoodLevel(20);
+                player.setSaturation(20);
             }
         }
 
@@ -321,7 +324,7 @@ public class WerewolfGame {
         return role.color + role.name + " Victory!";
     }
 
-    private static void showMatchRoles() {
+    private static String getMatchText() {
         TeamsManager teamsManager = WerewolfGame.getTeamsManager();
         String villagerPlayers = String.join(", ", teamsManager.getTeam(Role.VILLAGER).getEntries());
         String werewolfPlayer = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
@@ -329,17 +332,17 @@ public class WerewolfGame {
         String vampirePlayers = String.join(", ", teamsManager.getTeam(Role.VAMPIRE).getEntries());
         String possessedPlayers = String.join(", ", teamsManager.getTeam(Role.POSSESSED).getEntries());
 
-        Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Villagers:");
-        Bukkit.broadcastMessage(ChatColor.GREEN + villagerPlayers);
-        Bukkit.broadcastMessage(ChatColor.DARK_RED + "Werewolves:");
-        Bukkit.broadcastMessage(ChatColor.DARK_RED + werewolfPlayer);
-        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Traitor:");
-        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + traitorPlayers);
-        Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "Vampire:");
-        Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + vampirePlayers);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Possessed:");
-        Bukkit.broadcastMessage(ChatColor.YELLOW + possessedPlayers);
-        Bukkit.broadcastMessage(ChatColor.AQUA + "======WWRPG Match Role======");
+        return ChatColor.AQUA + "======WWRPG Match Role======" + "\n" +
+                ChatColor.GREEN + ChatColor.UNDERLINE +"Villagers:" + "\n" +
+                ChatColor.RESET + ChatColor.GREEN + villagerPlayers + "\n" +
+                ChatColor.DARK_RED + ChatColor.UNDERLINE + "Werewolves:" + "\n" +
+                ChatColor.RESET + ChatColor.DARK_RED + werewolfPlayer + "\n" +
+                ChatColor.LIGHT_PURPLE + ChatColor.UNDERLINE + "Traitor:" + "\n" +
+                ChatColor.RESET + ChatColor.LIGHT_PURPLE + traitorPlayers + "\n" +
+                ChatColor.DARK_PURPLE + ChatColor.UNDERLINE + "Vampire:" + "\n" +
+                ChatColor.RESET + ChatColor.DARK_PURPLE + vampirePlayers + "\n" +
+                ChatColor.YELLOW + ChatColor.UNDERLINE + "Possessed:" + "\n" +
+                ChatColor.RESET + ChatColor.YELLOW + possessedPlayers + "\n" +
+                ChatColor.AQUA + "======WWRPG Match Role======" + "\n";
     }
 }

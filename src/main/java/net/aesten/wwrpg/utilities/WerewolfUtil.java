@@ -68,6 +68,7 @@ public class WerewolfUtil {
 
     public static ArmorStand summonNameTagArmorStand(World world, Vector coordinates, Vector offset, String name) {
         ArmorStand armorStand = (ArmorStand) world.spawnEntity(coordinates.clone().add(offset).toLocation(world), EntityType.ARMOR_STAND);
+        armorStand.setSmall(true);
         armorStand.setVisible(false);
         armorStand.setInvulnerable(true);
         armorStand.setGravity(false);
