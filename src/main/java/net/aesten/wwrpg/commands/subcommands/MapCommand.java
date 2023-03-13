@@ -421,8 +421,8 @@ public class MapCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 if (sender instanceof Player player) {
                     WerewolfMap map = WerewolfGame.getMapManager().getHelper().getSelectedMap(player);
-                    map.getWorld().getWorldBorder().setCenter(new Location(map.getWorld(), 0,0,0));
-                    map.getWorld().getWorldBorder().setSize(1000000);
+                    map.getWorld().getWorldBorder().setCenter(map.getWorld().getSpawnLocation());
+                    map.getWorld().getWorldBorder().setSize(1000000d);
                 }
             }
 
