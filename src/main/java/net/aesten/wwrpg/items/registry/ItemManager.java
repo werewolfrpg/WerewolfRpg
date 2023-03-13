@@ -22,6 +22,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -30,7 +31,7 @@ import java.util.*;
 public class ItemManager implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getItem() == null) return;
+        if (event.getHand() == EquipmentSlot.OFF_HAND || event.getItem() == null) return;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), event.getItem())).findAny();
             if (werewolfItem.isPresent() && werewolfItem.get() instanceof InteractItem interactItem) {
@@ -102,6 +103,7 @@ public class ItemManager implements Listener {
 
     @EventHandler
     public void onSkullClick(PlayerInteractEvent event) {
+        if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         WerewolfGame game = WerewolfGame.getInstance();
         Player player = event.getPlayer();
         WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
@@ -109,11 +111,11 @@ public class ItemManager implements Listener {
             if (!game.isNight()) {
                 WerewolfUtil.sendPluginText(player, "You cannot use a divination during day time", ChatColor.RED);
             }
-            else if (data.getRemainingDivinations() < 1) {
-                WerewolfUtil.sendPluginText(player, "You don't have any divinations left", ChatColor.RED);
-            }
             else if (data.hasAlreadyUsedDivination()) {
                 WerewolfUtil.sendPluginText(player, "You have already used a divination this night", ChatColor.RED);
+            }
+            else if (data.getRemainingDivinations() < 1) {
+                WerewolfUtil.sendPluginText(player, "You don't have any divinations left", ChatColor.RED);
             }
             else {
                 OfflinePlayer offlinePlayer = ((Skull) event.getClickedBlock().getState()).getOwningPlayer();
