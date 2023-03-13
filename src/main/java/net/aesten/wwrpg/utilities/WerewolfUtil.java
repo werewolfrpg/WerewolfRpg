@@ -109,8 +109,4 @@ public class WerewolfUtil {
     public static boolean sameItem(ItemStack item1, ItemStack item2) {
         return (Objects.requireNonNull(item1.getItemMeta()).getAsString().equals(Objects.requireNonNull(item2.getItemMeta()).getAsString()));
     }
-
-    public static void debugMessage(String message) {
-        Bukkit.getServer().getConsoleSender().sendMessage(message);
-    }
 }
