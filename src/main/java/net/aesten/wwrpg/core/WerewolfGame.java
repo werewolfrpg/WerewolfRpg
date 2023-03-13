@@ -256,10 +256,11 @@ public class WerewolfGame {
         //stop ticker
         instance.ticker.stop();
 
-        //todo send data to database
+        //prepare and send stats
         instance.tracker.setResults(role);
+        instance.tracker.sendJsonData();
 
-        //clear skulls todo check if skull operations work
+        //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
         instance.displayNameArmorStands.forEach(ArmorStand::remove);
 
