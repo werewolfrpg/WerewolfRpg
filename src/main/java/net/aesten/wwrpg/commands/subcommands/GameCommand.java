@@ -9,6 +9,7 @@ import net.azalealibrary.command.Arguments;
 import net.azalealibrary.command.CommandNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,7 @@ public class GameCommand extends CommandNode {
         super("game",
                 new Start(),
                 new Stop(),
+                new Gather(),
                 new Map(),
                 new Players(),
                 new Roles()
@@ -32,6 +34,7 @@ public class GameCommand extends CommandNode {
             WerewolfUtil.sendHelpText(player, "/ww game -> help");
             WerewolfUtil.sendHelpText(player, "/ww game start -> start game");
             WerewolfUtil.sendHelpText(player, "/ww game stop -> interrupt game");
+            WerewolfUtil.sendHelpText(player, "/ww game gather -> teleport all participants to selected map");
             WerewolfUtil.sendHelpText(player, "/ww game map <map> -> change map");
             WerewolfUtil.sendHelpText(player, "/ww game roles [...] -> change the number of each role");
             WerewolfUtil.sendHelpText(player, "/ww game players [...] -> manage players");
@@ -90,6 +93,35 @@ public class GameCommand extends CommandNode {
         @Override
         public String getPermission() {
             return "wwrpg.cmd.ww.game.stop";
+        }
+    }
+
+    private static final class Gather extends CommandNode {
+        public Gather() {
+            super("gather");
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            if (WerewolfGame.getInstance().isPlaying()) {
+                WerewolfUtil.sendErrorText(sender, "You cannot use this command during a game");
+            } else if (WerewolfGame.getInstance().getMap() == null) {
+                WerewolfUtil.sendErrorText(sender, "No map has been set for the minigame");
+            } else {
+                WerewolfGame.getInstance().getParticipants().forEach(player -> {
+                    player.teleport(WerewolfGame.getInstance().getMap().getMapSpawn());
+                    player.setGameMode(GameMode.ADVENTURE);
+                    player.setHealth(40);
+                    player.setFoodLevel(20);
+                    player.setSaturation(20);
+                });
+                WerewolfUtil.sendPluginText(sender, "All players have been gathered to the selected map");
+            }
+        }
+
+        @Override
+        public String getPermission() {
+            return "wwrpg.cmd.ww.game.gather";
         }
     }
 
