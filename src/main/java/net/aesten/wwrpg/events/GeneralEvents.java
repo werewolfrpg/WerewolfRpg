@@ -9,7 +9,6 @@ import net.aesten.wwrpg.items.registry.AdminItem;
 import net.aesten.wwrpg.map.WerewolfMap;
 import net.aesten.wwrpg.tracker.PlayerStats;
 import net.aesten.wwrpg.tracker.Result;
-import net.aesten.wwrpg.tracker.Tracker;
 import net.aesten.wwrpg.utilities.WerewolfUtil;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
 import net.minecraft.server.network.PlayerConnection;
@@ -111,7 +110,7 @@ public class GeneralEvents implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isOp()) {
             if (event.getClickedBlock() != null) {
                 switch (event.getClickedBlock().getType()) {
-                    case BARREL, LEVER, CAKE, CHEST, TRAPPED_CHEST ->
+                    case BARREL, LEVER, CAKE, CHEST, TRAPPED_CHEST, SPRUCE_TRAPDOOR ->
                             event.setCancelled(true);
                 }
             }
@@ -144,7 +143,6 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-            WerewolfMap map = WerewolfGame.getInstance().getMap();
              if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
                  UUID id = player.getUniqueId();
                  WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
@@ -164,13 +162,17 @@ public class GeneralEvents implements Listener {
                      stats.setKiller(deathData.getValue().toString());
                  }
                  stats.setDeathCause(deathCause);
-             } else {
-                 if (map != null) {
-                     player.teleport(map.getMapSpawn());
-                 } else {
-                     player.teleport(Objects.requireNonNull(player.getLocation().getWorld()).getSpawnLocation());
-                 }
              }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        WerewolfMap map = WerewolfGame.getInstance().getMap();
+        if (map == null) {
+            event.setRespawnLocation(WerewolfGame.getMapManager().getMapFromName("lobby").getMapSpawn());
+        } else {
+            event.setRespawnLocation(map.getMapSpawn());
         }
     }
 }
