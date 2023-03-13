@@ -43,7 +43,7 @@ public class WerewolfUtil {
         return new Vector(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()).add(new Vector(0.5, 1, 0.5));
     }
 
-    public static void updateSkull(World world, Vector skullCoordinates, Player player) { //todo skull rotation fix
+    public static void updateSkull(World world, Vector skullCoordinates, Player player) {
         Block block = world.getBlockAt(skullCoordinates.toLocation(world));
         BlockFace rotation = ((Rotatable) block.getBlockData()).getRotation();
         block.setType(Material.PLAYER_HEAD);
@@ -51,6 +51,7 @@ public class WerewolfUtil {
             skull.setOwningPlayer(player);
             Rotatable rotatable = (Rotatable) skull.getBlockData();
             rotatable.setRotation(rotation);
+            skull.setBlockData(rotatable);
             skull.update();
         }
     }
@@ -61,6 +62,8 @@ public class WerewolfUtil {
         block.setType(Material.SKELETON_SKULL);
         Rotatable rotatable = (Rotatable) block.getBlockData();
         rotatable.setRotation(rotation);
+        block.setBlockData(rotatable);
+
     }
 
     public static ArmorStand summonNameTagArmorStand(World world, Vector coordinates, Vector offset, String name) {
