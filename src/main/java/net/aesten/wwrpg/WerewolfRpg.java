@@ -3,7 +3,6 @@ package net.aesten.wwrpg;
 import net.aesten.wwrpg.commands.WerewolfCommand;
 import net.aesten.wwrpg.core.WerewolfGame;
 import net.aesten.wwrpg.events.GeneralEvents;
-import net.aesten.wwrpg.map.WerewolfMap;
 import net.azalealibrary.command.AzaleaCommandApi;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
 import net.azalealibrary.configuration.Configurable;
@@ -16,11 +15,6 @@ import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Plugin(name = "WerewolfRPG", version = "2.0")
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional RPG elements.")
