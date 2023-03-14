@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.tracker;
 
+import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import org.bukkit.entity.Player;
@@ -39,5 +40,9 @@ public class Tracker {
                     }
                 }
             );
+    }
+
+    public void sendDataToDatabase(String matchId) {
+        playerStats.values().forEach(stats -> QueryManager.addMatchRecord(matchId, stats));
     }
 }

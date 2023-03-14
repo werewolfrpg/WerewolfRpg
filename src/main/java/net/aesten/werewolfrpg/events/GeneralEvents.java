@@ -41,6 +41,8 @@ public class GeneralEvents implements Listener {
                 ChatColor.GREEN + event.getPlayer().getName() + ChatColor.AQUA + " joined the server!");
 
         Objects.requireNonNull(event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
+
+        //todo check if player registered in database, else check, else stay spectator and removed any permission
     }
 
     //handle player disconnect

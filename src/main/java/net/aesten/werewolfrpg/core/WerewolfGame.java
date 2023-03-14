@@ -34,6 +34,7 @@ public class WerewolfGame {
     private static final TeamsManager teamsManager = new TeamsManager();
     private static MapManager mapManager;
     private static String statusMessage;
+    private final String matchId;
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Ticker ticker;
@@ -45,6 +46,7 @@ public class WerewolfGame {
     private final List<ArmorStand> displayNameArmorStands;
 
     public WerewolfGame() {
+        this.matchId = UUID.randomUUID().toString();
         this.participants = new ArrayList<>();
         this.dataMap = new HashMap<>();
         this.pool = new RolePool(1,0,0,0);
@@ -57,6 +59,7 @@ public class WerewolfGame {
     }
 
     public WerewolfGame(WerewolfGame previousGame) {
+        this.matchId = UUID.randomUUID().toString();
         previousGame.participants.removeIf(p -> !Bukkit.getOnlinePlayers().contains(p));
         this.participants = previousGame.participants;
         this.dataMap = new HashMap<>();
@@ -95,7 +98,12 @@ public class WerewolfGame {
     }
 
     public static void initMapManager() {
+        WerewolfRpg.logConsole("Initializing worlds and maps");
         mapManager = new MapManager(new WorldManager());
+    }
+
+    public String getMatchId() {
+        return matchId;
     }
 
     public Map<UUID, WerewolfPlayerData> getDataMap() {
@@ -258,6 +266,7 @@ public class WerewolfGame {
 
         //prepare and send stats
         instance.tracker.setResults(role);
+        instance.tracker.sendDataToDatabase(instance.matchId);
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));

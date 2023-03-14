@@ -100,11 +100,7 @@ public class WerewolfUtil {
     }
 
     public static boolean areSameFaction(Role role1, Role role2) {
-        if (role1 == role2) return true;
-        else return (role1 == Role.WEREWOLF && role2 == Role.TRAITOR) ||
-                (role1 == Role.TRAITOR && role2 == Role.WEREWOLF) ||
-                (role1 == Role.VILLAGER && role2 == Role.POSSESSED) ||
-                (role1 == Role.POSSESSED && role2 == Role.VILLAGER);
+        return role1.factionRole() == role2.factionRole();
     }
 
     public static boolean sameItem(ItemStack item1, ItemStack item2) {
