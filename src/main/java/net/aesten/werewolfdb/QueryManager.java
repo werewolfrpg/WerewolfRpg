@@ -12,12 +12,12 @@ import java.util.List;
 
 public class QueryManager {
     public static List<String> requestGuildIdList() {
-        String sql = "SELECT GUILDID FROM GUILDS";
+        String sql = "SELECT GUILDID FROM GUILDS;";
         return getResultList(sql);
     }
 
     public static void removeGuild(String guildId) {
-        String sql = "DELETE FROM GUILDS WHERE GUILID=" + guildId;
+        String sql = "DELETE FROM GUILDS WHERE GUILID=" + guildId + ";";
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -27,7 +27,7 @@ public class QueryManager {
     }
 
     public static void addGuild(String guildId) {
-        String sql = "INSERT INTO GUILDS (" + guildId + ")";
+        String sql = "INSERT INTO GUILDS (" + guildId + ");";
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -37,12 +37,12 @@ public class QueryManager {
     }
 
     public static List<String> getDiscordIdsOfPlayer(String mcId) {
-        String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID=" + mcId;
+        String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID=" + mcId + ";";
         return getResultList(sql);
     }
 
     public static void addIdBinding(String mcId, String dcId) {
-        String sql = "INSERT INTO IDBINDINGS (" + dcId + ", " + mcId + ")";
+        String sql = "INSERT INTO IDBINDINGS (" + dcId + ", " + mcId + ");";
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -52,7 +52,7 @@ public class QueryManager {
     }
 
     public static void removeBinding(String mcId, String dcId) {
-        String sql = "DELETE FROM IDBINDINGS WHERE MCID=" + mcId + " AND DCID=" + dcId;
+        String sql = "DELETE FROM IDBINDINGS WHERE MCID=" + mcId + " AND DCID=" + dcId + ";";
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -67,13 +67,13 @@ public class QueryManager {
             sql = "INSERT INTO MATCHES (" +
                     matchId + "," +
                     start + "," +
-                    end + ")";
+                    end + ");";
         } else {
             sql = "INSERT INTO MATCHES (" +
                     matchId + "," +
                     start + "," +
                     end + "," +
-                    role.name + ")";
+                    role.name + ");";
         }
         try {
             WerewolfDatabase.getInstance().query(sql).close();
@@ -125,7 +125,7 @@ public class QueryManager {
                 stats.getSneakNoticeTriggered() + "," +
                 stats.getWerewolfAxeUsed() + "," +
                 stats.getWerewolfAxeKills() + "," +
-                ")";
+                ");";
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -133,10 +133,6 @@ public class QueryManager {
             WerewolfRpg.logConsole("SQL: " + sql);
         }
     }
-
-
-
-
 
 
     private static List<String> getResultList(String sql) {

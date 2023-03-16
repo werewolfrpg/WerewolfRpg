@@ -10,7 +10,7 @@ import java.sql.*;
 public class WerewolfDatabase {
     private static WerewolfDatabase INSTANCE;
     private static final String JDBC_DRIVER = "org.h2.Driver";
-    private static final String DB_URL = "jdbc:h2:file:./database/wwdb";
+    private static final String DB_URL = "jdbc:h2:file:./plugins/WerewolfRPG/database/wwdb";
     private static final String DB_USER = "sa";
     private static final String DB_PASSWORD = "wwrpgsa";
     private Connection conn;
