@@ -1,7 +1,7 @@
 package net.aesten.werewolfbot;
 
 import net.aesten.werewolfbot.commands.GlobalCommands;
-import net.aesten.werewolfbot.events.CommandEvent;
+import net.aesten.werewolfbot.commands.CommandManager;
 import net.aesten.werewolfdb.QueryManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,7 +23,7 @@ public class WerewolfBot {
         builder.setActivity(Activity.playing("WerewolfRPG"));
         builder.enableIntents(List.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS));
         jda = builder.build();
-        jda.addEventListener(new CommandEvent());
+        jda.addEventListener(new CommandManager());
         jda.updateCommands().addCommands(GlobalCommands.subscribeCommand).queue();
 
         subscribedGuilds = new ArrayList<>(QueryManager.requestGuildIdList().stream().map(jda::getGuildById).toList());
