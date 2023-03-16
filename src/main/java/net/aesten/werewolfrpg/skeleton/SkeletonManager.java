@@ -21,7 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -31,12 +30,12 @@ public class SkeletonManager implements Listener, Configurable {
     private static final AssignmentPolicy<Double> PROPORTION = AssignmentPolicy.create(d -> d >= 0 && d <= 1, "Proportions should be between 0 and 1");
     private static final PropertyType<ShopWerewolfItem> WEREWOLF_ITEM = new PropertyType<>(ShopWerewolfItem.class) {
         @Override
-        public List<String> complete(CommandSender sender, Arguments arguments, @Nullable ShopWerewolfItem currentValue) {
+        public List<String> complete(CommandSender sender, Arguments arguments) {
             return WerewolfGame.getShopManager().getAllShopItems().stream().map(ShopWerewolfItem::getId).toList();
         }
 
         @Override
-        public ShopWerewolfItem parse(CommandSender sender, Arguments arguments, @Nullable ShopWerewolfItem currentValue) {
+        public ShopWerewolfItem parse(CommandSender sender, Arguments arguments) {
             WerewolfItem item = PlayerItem.getItemFromId(arguments.getLast());
             if (item instanceof ShopWerewolfItem shopItem) return shopItem;
             else return null;
@@ -64,54 +63,54 @@ public class SkeletonManager implements Listener, Configurable {
     private static final List<ShopWerewolfItem> defaultSpecialSkeletonDropTable = defaultSpecialSkeletonDropTableIds.stream().map(PlayerItem::getItemFromId).filter(item -> item instanceof ShopWerewolfItem).map(ShopWerewolfItem.class::cast).toList();
 
     //basic skeleton properties
-    private final Property<Integer> basicSkeletonSpawnNumberPerPlayer = Property.create("skeleton.basic.spawn_number_per_player", PropertyType.INTEGER, () -> 12)
+    private final Property<Integer> basicSkeletonSpawnNumberPerPlayer = Property.create(PropertyType.INTEGER, "skeleton.basic.spawn_number_per_player", () -> 12)
             .addPolicy(POSITIVE_INTEGER)
             .done();
-    private final Property<Double> basicSkeletonDamage = Property.create("skeleton.basic.damage", PropertyType.DOUBLE, () -> 4.0)
+    private final Property<Double> basicSkeletonDamage = Property.create(PropertyType.DOUBLE, "skeleton.basic.damage", () -> 4.0)
             .addPolicy(POSITIVE_DOUBLE)
             .done();
-    private final Property<Double> basicSkeletonHealth = Property.create("skeleton.basic.health", PropertyType.DOUBLE, () -> 12.0)
+    private final Property<Double> basicSkeletonHealth = Property.create(PropertyType.DOUBLE, "skeleton.basic.health", () -> 12.0)
             .addPolicy(POSITIVE_DOUBLE)
             .done();
-    private final Property<Double> basicSkeletonEmeraldDropRate = Property.create("skeleton.basic.emerald_drop_rate", PropertyType.DOUBLE, () -> 0.5)
+    private final Property<Double> basicSkeletonEmeraldDropRate = Property.create(PropertyType.DOUBLE, "skeleton.basic.emerald_drop_rate", () -> 0.5)
             .addPolicy(PROPORTION)
             .done();
 
     //lucky skeleton properties
-    private final Property<Boolean> luckySkeletonEnable = Property.create("skeleton.lucky.enable", PropertyType.BOOLEAN, () -> true)
+    private final Property<Boolean> luckySkeletonEnable = Property.create(PropertyType.BOOLEAN, "skeleton.lucky.enable", () -> true)
             .done();
-    private final Property<Integer> luckySkeletonMaxSpawnNumber = Property.create("skeleton.lucky.max_spawn_number", PropertyType.INTEGER, () -> 4)
+    private final Property<Integer> luckySkeletonMaxSpawnNumber = Property.create(PropertyType.INTEGER, "skeleton.lucky.max_spawn_number", () -> 4)
             .addPolicy(POSITIVE_INTEGER)
             .done();
-    private final Property<Double> luckySkeletonSpawnChance = Property.create("skeleton.lucky.spawn_chance", PropertyType.DOUBLE, () -> 0.5)
+    private final Property<Double> luckySkeletonSpawnChance = Property.create(PropertyType.DOUBLE, "skeleton.lucky.spawn_chance", () -> 0.5)
             .addPolicy(PROPORTION)
             .done();
-    private final Property<Double> luckySkeletonDamage = Property.create("skeleton.lucky.damage", PropertyType.DOUBLE, () -> 3.0)
+    private final Property<Double> luckySkeletonDamage = Property.create(PropertyType.DOUBLE, "skeleton.lucky.damage", () -> 3.0)
             .addPolicy(POSITIVE_DOUBLE)
             .done();
-    private final Property<Double> luckySkeletonHealth = Property.create("skeleton.lucky.health", PropertyType.DOUBLE, () -> 20.0)
+    private final Property<Double> luckySkeletonHealth = Property.create(PropertyType.DOUBLE, "skeleton.lucky.health", () -> 20.0)
             .addPolicy(POSITIVE_DOUBLE)
             .done();
-    private final Property<Integer> luckySkeletonEmeraldDropNumber = Property.create("skeleton.lucky.emerald_drop_number", PropertyType.INTEGER, () -> 2)
+    private final Property<Integer> luckySkeletonEmeraldDropNumber = Property.create(PropertyType.INTEGER, "skeleton.lucky.emerald_drop_number", () -> 2)
             .addPolicy(POSITIVE_INTEGER)
             .done();
 
     //special skeleton properties
-    private final Property<Boolean> specialSkeletonEnable = Property.create("skeleton.special.enable", PropertyType.BOOLEAN, () -> true)
+    private final Property<Boolean> specialSkeletonEnable = Property.create(PropertyType.BOOLEAN, "skeleton.special.enable", () -> true)
             .done();
-    private final Property<Integer> specialSkeletonMaxSpawnNumber = Property.create("skeleton.special.max_spawn_number", PropertyType.INTEGER, () -> 1)
+    private final Property<Integer> specialSkeletonMaxSpawnNumber = Property.create(PropertyType.INTEGER, "skeleton.special.max_spawn_number", () -> 1)
             .addPolicy(POSITIVE_INTEGER)
             .done();
-    private final Property<Double> specialSkeletonSpawnChance = Property.create("skeleton.special.spawn_chance", PropertyType.DOUBLE, () -> 0.4)
+    private final Property<Double> specialSkeletonSpawnChance = Property.create(PropertyType.DOUBLE, "skeleton.special.spawn_chance", () -> 0.4)
             .addPolicy(PROPORTION)
             .done();
-    private final Property<Double> specialSkeletonDamage = Property.create("skeleton.special.damage", PropertyType.DOUBLE, () -> 5.0)
+    private final Property<Double> specialSkeletonDamage = Property.create(PropertyType.DOUBLE, "skeleton.special.damage", () -> 5.0)
             .addPolicy(POSITIVE_DOUBLE)
             .done();
-    private final Property<Double> specialSkeletonHealth = Property.create("skeleton.special.health", PropertyType.DOUBLE, () -> 32.0)
+    private final Property<Double> specialSkeletonHealth = Property.create(PropertyType.DOUBLE, "skeleton.special.health", () -> 32.0)
             .addPolicy(POSITIVE_DOUBLE)
             .done();
-    private final ListProperty<ShopWerewolfItem> specialSkeletonDrops = ListProperty.create("skeleton.special.drop_table", WEREWOLF_ITEM, () -> defaultSpecialSkeletonDropTable)
+    private final ListProperty<ShopWerewolfItem> specialSkeletonDrops = ListProperty.create(WEREWOLF_ITEM, "skeleton.special.drop_table", () -> defaultSpecialSkeletonDropTable)
             .done();
 
     public void summonBasicSkeleton(World world, Vector coordinates) {

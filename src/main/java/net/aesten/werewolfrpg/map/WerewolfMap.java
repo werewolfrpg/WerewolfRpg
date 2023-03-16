@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +26,12 @@ public class WerewolfMap implements Configurable {
 
     public WerewolfMap(String mapName, World world) {
         this.name = mapName;
-        this.world = Property.create("world", CUSTOM_WORLD, () -> world).done();
-        this.mapSpawn = Property.create("spawn", PropertyType.LOCATION, world::getSpawnLocation).done();
-        this.borderCenter = Property.create("border.center", PropertyType.VECTOR, () -> world.getWorldBorder().getCenter().toVector()).done();
-        this.borderSize = Property.create("border.size", PropertyType.DOUBLE, () -> world.getWorldBorder().getSize()).addPolicy(POSITIVE_DOUBLE).done();
-        this.skullLocations = ListProperty.create("player_head_positions", PropertyType.VECTOR, ArrayList::new).done();
-        this.skeletonSpawnLocations = ListProperty.create("skeleton_spawn_locations", PropertyType.VECTOR, ArrayList::new).done();
+        this.world = Property.create(CUSTOM_WORLD, "world", () -> world).done();
+        this.mapSpawn = Property.create(PropertyType.LOCATION, "spawn", world::getSpawnLocation).done();
+        this.borderCenter = Property.create(PropertyType.VECTOR, "border.center", () -> world.getWorldBorder().getCenter().toVector()).done();
+        this.borderSize = Property.create(PropertyType.DOUBLE, "border.size", () -> world.getWorldBorder().getSize()).addPolicy(POSITIVE_DOUBLE).done();
+        this.skullLocations = ListProperty.create(PropertyType.VECTOR, "player_head_positions", ArrayList::new).done();
+        this.skeletonSpawnLocations = ListProperty.create(PropertyType.VECTOR, "skeleton_spawn_locations", ArrayList::new).done();
     }
 
     public WerewolfMap(WerewolfMap map) {
@@ -81,12 +80,12 @@ public class WerewolfMap implements Configurable {
 
     private static final PropertyType<World> CUSTOM_WORLD = new PropertyType<>(World.class) {
         @Override
-        public List<String> complete(CommandSender sender, Arguments arguments, @Nullable World currentValue) {
+        public List<String> complete(CommandSender sender, Arguments arguments) {
             return WerewolfGame.getMapManager().getWorldManager().getWorlds().keySet().stream().toList();
         }
 
         @Override
-        public World parse(CommandSender sender, Arguments arguments, @Nullable World currentValue) {
+        public World parse(CommandSender sender, Arguments arguments) {
             return WerewolfGame.getMapManager().getWorldManager().getWorldFromName(arguments.getLast());
         }
 

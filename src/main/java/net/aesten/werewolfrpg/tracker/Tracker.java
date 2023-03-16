@@ -1,6 +1,8 @@
 package net.aesten.werewolfrpg.tracker;
 
 import net.aesten.werewolfdb.QueryManager;
+import net.aesten.werewolfrpg.WerewolfRpg;
+import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import org.bukkit.entity.Player;
@@ -42,7 +44,9 @@ public class Tracker {
             );
     }
 
-    public void sendDataToDatabase(String matchId) {
-        playerStats.values().forEach(stats -> QueryManager.addMatchRecord(matchId, stats));
+    public void sendDataToDatabase(WerewolfGame game, Role winner) {
+        QueryManager.addMatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner);
+        playerStats.values().forEach(stats -> QueryManager.addPlayerMatchRecord(game.getMatchId(), stats));
+        WerewolfRpg.logConsole("Saved match " + game.getMatchId() + " in database");
     }
 }

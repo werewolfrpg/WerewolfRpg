@@ -1,10 +1,8 @@
 package net.aesten.werewolfbot;
 
-import net.aesten.config.GlobalConfig;
 import net.aesten.werewolfbot.commands.GlobalCommands;
 import net.aesten.werewolfbot.events.CommandEvent;
 import net.aesten.werewolfdb.QueryManager;
-import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -17,7 +15,6 @@ import java.util.List;
 
 public class WerewolfBot {
     private final List<Guild> subscribedGuilds;
-    private
     private final JDA jda;
 
     public WerewolfBot(String botToken) {
@@ -29,7 +26,6 @@ public class WerewolfBot {
         jda.addEventListener(new CommandEvent());
         jda.updateCommands().addCommands(GlobalCommands.subscribeCommand).queue();
 
-        //todo read db to fill guild list
         subscribedGuilds = new ArrayList<>(QueryManager.requestGuildIdList().stream().map(jda::getGuildById).toList());
     }
 
@@ -40,5 +36,4 @@ public class WerewolfBot {
     public List<Guild> getSubscribedGuilds() {
         return subscribedGuilds;
     }
-
 }

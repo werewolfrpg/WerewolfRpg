@@ -1,10 +1,12 @@
 package net.aesten.werewolfdb;
 
 import net.aesten.werewolfrpg.WerewolfRpg;
+import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.tracker.PlayerStats;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +61,29 @@ public class QueryManager {
         }
     }
 
-    public static void addMatchRecord(String matchId, PlayerStats stats) {
+    public static void addMatchRecord(String matchId, Timestamp start, Timestamp end, Role role) {
+        String sql;
+        if (role == null) {
+            sql = "INSERT INTO MATCHES (" +
+                    matchId + "," +
+                    start + "," +
+                    end + ")";
+        } else {
+            sql = "INSERT INTO MATCHES (" +
+                    matchId + "," +
+                    start + "," +
+                    end + "," +
+                    role.name + ")";
+        }
+        try {
+            WerewolfDatabase.getInstance().query(sql).close();
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Failed to execute database query");
+            WerewolfRpg.logConsole("SQL: " + sql);
+        }
+    }
+
+    public static void addPlayerMatchRecord(String matchId, PlayerStats stats) {
         String sql = "INSERT INTO RECORDS (" +
                 matchId + "," +
                 stats.getPlayerId() + "," +

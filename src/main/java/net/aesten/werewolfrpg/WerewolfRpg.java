@@ -56,18 +56,8 @@ public final class WerewolfRpg extends JavaPlugin {
         //register event listeners
         getServer().getPluginManager().registerEvents(new GeneralEvents(), this);
 
-        //enable discord bot
-        try {
-            String token = getBotToken();
-            if (token.equals("")) {
-                logConsole("Discord bot not enabled");
-                bot = null;
-            } else {
-                bot = new WerewolfBot(token);
-            }
-        } catch (IOException e) {
-            logConsole("Failed to read bot token");
-        }
+        //enable discord bot if configured
+        initBot();
     }
 
     @Override
@@ -85,10 +75,7 @@ public final class WerewolfRpg extends JavaPlugin {
         WerewolfGame.getTeamsManager().unregisterAll();
 
         //shutdown bot
-        if (bot != null) {
-            logConsole("Shutting down discord bot");
-            bot.getJda().shutdown();
-        }
+        shutDownBot();
     }
 
     public static org.bukkit.plugin.Plugin getPlugin() {
@@ -110,6 +97,27 @@ public final class WerewolfRpg extends JavaPlugin {
             return "";
         } else {
             return new BufferedReader(new FileReader(file)).readLine();
+        }
+    }
+
+    private void initBot() {
+        try {
+            String token = getBotToken();
+            if (token.equals("")) {
+                logConsole("Discord bot not enabled");
+                bot = null;
+            } else {
+                bot = new WerewolfBot(token);
+            }
+        } catch (IOException e) {
+            logConsole("Failed to read bot token");
+        }
+    }
+
+    private void shutDownBot() {
+        if (bot != null) {
+            logConsole("Shutting down discord bot");
+            bot.getJda().shutdown();
         }
     }
 }

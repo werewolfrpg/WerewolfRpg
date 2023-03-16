@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class ShopWerewolfItem extends WerewolfItem implements ShopItem {
     protected ItemStack itemStack;
     private static final AssignmentPolicy<Integer> SHOP_COST = AssignmentPolicy.create(i -> i > 0 && i <= 64, "Item costs should be between 1 and 64");
-    protected final Property<Integer> cost = Property.create("shop." + getId(), PropertyType.INTEGER, this::getDefaultCost)
+    protected final Property<Integer> cost = Property.create(PropertyType.INTEGER, "shop." + getId(), this::getDefaultCost)
             .addPolicy(SHOP_COST)
             .onChange(cost -> WerewolfGame.getShopManager().updatePrices(WerewolfGame.getInstance().getMap().getWorld()))
             .done();

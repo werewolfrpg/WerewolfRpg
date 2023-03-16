@@ -25,6 +25,7 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.*;
+import java.sql.Timestamp;
 
 public class WerewolfGame {
     private static WerewolfGame instance = new WerewolfGame();
@@ -43,6 +44,8 @@ public class WerewolfGame {
     private WerewolfMap map;
     private boolean isPlaying;
     private boolean isNight;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private final List<ArmorStand> displayNameArmorStands;
 
     public WerewolfGame() {
@@ -128,6 +131,14 @@ public class WerewolfGame {
 
     public boolean isPlaying() {
         return isPlaying;
+    }
+
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
     }
 
     public WerewolfMap getMap() {
@@ -258,15 +269,17 @@ public class WerewolfGame {
         }
 
         instance.ticker.start();
+        instance.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     private static void stop(Role role) {
         //stop ticker
         instance.ticker.stop();
+        instance.endTime = new Timestamp(System.currentTimeMillis());
 
         //prepare and send stats
         instance.tracker.setResults(role);
-        instance.tracker.sendDataToDatabase(instance.matchId);
+        instance.tracker.sendDataToDatabase(instance, role);
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
