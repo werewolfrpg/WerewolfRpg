@@ -1,6 +1,6 @@
 package net.aesten.werewolfbot.commands;
 
-import net.aesten.werewolfrpg.WerewolfRpg;
+import net.aesten.werewolfbot.commands.implementations.SubscribeCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
@@ -15,7 +15,7 @@ public class CommandManager extends ListenerAdapter {
 
     public CommandManager() {
         commands = new ArrayList<>();
-        commands.add();
+        commands.add(new SubscribeCommand());
     }
 
     @Override
