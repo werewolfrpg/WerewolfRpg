@@ -1,6 +1,8 @@
 package net.aesten.werewolfrpg;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.werewolfbot.WerewolfBot;
+import net.aesten.werewolfrpg.packets.SpecInfoPacket;
 import net.aesten.werewolfrpg.commands.WerewolfCommand;
 import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.events.GeneralEvents;
@@ -33,6 +35,8 @@ public final class WerewolfRpg extends JavaPlugin {
     private static org.bukkit.plugin.Plugin plugin;
     private static WerewolfBot bot;
 
+    private SpecInfoPacket specInfoPacket;
+
     @Override
     public void onLoad() {
         plugin = this;
@@ -56,6 +60,10 @@ public final class WerewolfRpg extends JavaPlugin {
         //register event listeners
         getServer().getPluginManager().registerEvents(new GeneralEvents(), this);
 
+        //protocol manager initialization
+        specInfoPacket = new SpecInfoPacket(this);
+        ProtocolLibrary.getProtocolManager().addPacketListener(specInfoPacket);
+
         //enable discord bot if configured
         initBot();
     }
@@ -73,6 +81,9 @@ public final class WerewolfRpg extends JavaPlugin {
 
         //unregister teams
         WerewolfGame.getTeamsManager().unregisterAll();
+
+        //unregister packet
+        ProtocolLibrary.getProtocolManager().removePacketListener(specInfoPacket);
 
         //shutdown bot
         shutDownBot();
@@ -121,3 +132,6 @@ public final class WerewolfRpg extends JavaPlugin {
         }
     }
 }
+
+//todo review spectator system
+
