@@ -2,6 +2,7 @@ package net.aesten.werewolfrpg.data;
 
 public class WerewolfPlayerData {
     private Role role;
+    private boolean forceMute;
     private boolean isAlive;
     private boolean isCursed;
     private boolean isStunned;
@@ -13,6 +14,7 @@ public class WerewolfPlayerData {
     private int remainingDivinations;
 
     public WerewolfPlayerData() {
+        this.forceMute = false;
         this.isAlive = true;
         this.isCursed = false;
         this.isStunned = false;
@@ -40,6 +42,13 @@ public class WerewolfPlayerData {
         this.role = role;
     }
 
+    public boolean isForceMute() {
+        return forceMute;
+    }
+
+    public void setForceMute(boolean forceMute) {
+        this.forceMute = forceMute;
+    }
 
     public boolean isAlive() {
         return isAlive;

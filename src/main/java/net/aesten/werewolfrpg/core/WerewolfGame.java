@@ -252,9 +252,8 @@ public class WerewolfGame {
 
                     //increment
                     count++;
-                }
-                else {
-                    teamsManager.registerPlayerRole(player, Role.SPECTATOR);
+                } else {
+                    teamsManager.addPlayerToSpectator(player);
                 }
             }
 
@@ -280,6 +279,7 @@ public class WerewolfGame {
         //prepare and send stats
         instance.tracker.setResults(role);
         instance.tracker.sendDataToDatabase(instance, role);
+        instance.tracker.logMatchResult(instance, role);
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));

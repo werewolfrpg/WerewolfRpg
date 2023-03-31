@@ -7,8 +7,7 @@ public enum Role {
     WEREWOLF("Werewolf", ChatColor.DARK_RED),
     TRAITOR("Traitor", ChatColor.LIGHT_PURPLE),
     VAMPIRE("Vampire", ChatColor.DARK_PURPLE),
-    POSSESSED("Possessed", ChatColor.YELLOW),
-    SPECTATOR("Spectator", ChatColor.GRAY);
+    POSSESSED("Possessed", ChatColor.YELLOW);
 
     public final String name;
     public final ChatColor color;

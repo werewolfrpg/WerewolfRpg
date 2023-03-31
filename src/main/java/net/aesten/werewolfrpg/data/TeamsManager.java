@@ -59,6 +59,10 @@ public class TeamsManager {
         spectators.setColor(ChatColor.RED);
     }
 
+    public List<Team> getTeams() {
+        return List.of(villagers, werewolves, traitors, vampires, possessed);
+    }
+
     public Team getTeam(Role role) {
         return switch(role) {
             case WEREWOLF -> werewolves;
@@ -66,8 +70,11 @@ public class TeamsManager {
             case VAMPIRE -> vampires;
             case POSSESSED -> possessed;
             case VILLAGER -> villagers;
-            default -> spectators;
         };
+    }
+
+    public Team getSpectators() {
+        return spectators;
     }
 
     public void registerPlayerRole(Player player, Role role) {
@@ -75,7 +82,11 @@ public class TeamsManager {
         getFaction(role.factionRole()).add(player.getUniqueId());
     }
 
-    public void unregisterPlayer(Player player) {
+    public void addPlayerToSpectator(Player player) {
+        spectators.addEntry(player.getName());
+    }
+
+    public void playerDied(Player player) {
         Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
         getFaction(role.factionRole()).remove(player.getUniqueId());
     }

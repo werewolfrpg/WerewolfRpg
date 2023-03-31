@@ -68,7 +68,7 @@ public class WorldManager {
 
     public boolean deleteWorld(World world) {
         if (world == null) return false;
-        if (world.getName().equals("lobby")) return false;
+        if (world.getName().equals(worlds.get("lobby").getName())) return false;
         Bukkit.unloadWorld(world, false);
         String serverDir = Bukkit.getServer().getWorldContainer().getAbsolutePath();
         File worldDir = new File(serverDir + File.separator + "wwrpg_worlds" + File.separator + world.getName());

@@ -1,5 +1,7 @@
 package net.aesten.werewolfrpg.events;
 
+import net.aesten.werewolfbot.WerewolfBot;
+import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.items.base.EntityInteractItem;
@@ -10,12 +12,11 @@ import net.aesten.werewolfrpg.map.WerewolfMap;
 import net.aesten.werewolfrpg.tracker.PlayerStats;
 import net.aesten.werewolfrpg.tracker.Result;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
-import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
-import net.minecraft.server.network.PlayerConnection;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -25,24 +26,33 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.AbstractMap;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class GeneralEvents implements Listener {
     //change join message & max health
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
         if (WerewolfGame.getInstance().isPlaying()) {
+            if (!WerewolfGame.getInstance().isParticipant(player)) {
+                WerewolfGame.getTeamsManager().addPlayerToSpectator(player);
+            }
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
         }
         event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
-                ChatColor.GREEN + event.getPlayer().getName() + ChatColor.AQUA + " joined the server!");
+                ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
 
-        Objects.requireNonNull(event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
 
-        //todo check if player registered in database, else check, else stay spectator and removed any permission
+        if (WerewolfRpg.getBot() == null) return;
+        List<String> discordIds = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
+        List<Guild> guilds = WerewolfRpg.getBot().getSubscribedGuilds();
+
+        if (discordIds.stream().noneMatch(id -> guilds.stream().anyMatch(guild -> guild.isMember(UserSnowflake.fromId(id))))) {
+            WerewolfUtil.sendErrorText(player, "You are not registered as a player for this server!");
+            WerewolfUtil.sendPluginText(player, "Join a valid discord server and register yourself");
+        }
     }
 
     //handle player disconnect
@@ -52,12 +62,12 @@ public class GeneralEvents implements Listener {
 
         if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
             event.setQuitMessage(null);
-            WerewolfGame.getTeamsManager().unregisterPlayer(player);
+            WerewolfGame.getTeamsManager().playerDied(player);
             WerewolfGame.getInstance().getDataMap().remove(player.getUniqueId());
             WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
         }
         else {
-            event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.GREEN + player.getName() + ChatColor.AQUA + " left the server!");
+            event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " left the server!");
         }
     }
 
@@ -88,21 +98,6 @@ public class GeneralEvents implements Listener {
                 event.getPlayer().sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RED + "You cannot use this command in-game!");
                 event.setCancelled(true);
             }
-        }
-    }
-
-    //hide spectator mode
-    @EventHandler
-    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
-        Player player = event.getPlayer();
-        GameMode gameMode = event.getNewGameMode();
-
-        if (gameMode == GameMode.SPECTATOR) {
-            player.setPlayerListName(player.getName());
-
-            PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
-            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.d, ((CraftPlayer) player).getHandle());
-            connection.a(packet);
         }
     }
 
@@ -148,7 +143,7 @@ public class GeneralEvents implements Listener {
              if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
                  UUID id = player.getUniqueId();
                  WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
-                 WerewolfGame.getTeamsManager().unregisterPlayer(player);
+                 WerewolfGame.getTeamsManager().playerDied(player);
                  player.setGameMode(GameMode.SPECTATOR);
                  player.getInventory().clear();
                  player.getActivePotionEffects().clear();
