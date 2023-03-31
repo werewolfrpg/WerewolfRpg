@@ -16,6 +16,16 @@ public class QueryManager {
         return getResultList(sql);
     }
 
+    public static String requestGuildVoiceChannel(String guildId) {
+        String sql = "SELECT VCID FROM GUILDS WHERE GUILID=" + guildId;
+        return getResult(sql);
+    }
+
+    public static String requestGuildLogChannel(String guildId) {
+        String sql = "SELECT LOGCHID FROM GUILDS WHERE GUILID=" + guildId;
+        return getResult(sql);
+    }
+
     public static void removeGuild(String guildId) {
         String sql = "DELETE FROM GUILDS WHERE GUILID=" + guildId;
         try {
@@ -26,8 +36,8 @@ public class QueryManager {
         }
     }
 
-    public static void addGuild(String guildId) {
-        String sql = "INSERT INTO GUILDS (GUILDID) VALUES (" + guildId + ")";
+    public static void addGuild(String guildId, String vcId, String lcId) {
+        String sql = "INSERT INTO GUILDS VALUES (" + guildId + ", " + vcId + ", " + lcId + ")";
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -41,6 +51,11 @@ public class QueryManager {
         return getResultList(sql);
     }
 
+    public static String getMcIdOfDiscordUser(String dcId) {
+        String sql = "SELECT MCID FROM IDBINDINGS WHERE DCID=" + dcId;
+        return getResult(sql);
+    }
+
     public static void addIdBinding(String mcId, String dcId) {
         String sql = "INSERT INTO IDBINDINGS (DCID, MCID) VALUES (" + dcId + ", " + mcId + ")";
         try {
@@ -51,8 +66,8 @@ public class QueryManager {
         }
     }
 
-    public static void removeBinding(String mcId, String dcId) {
-        String sql = "DELETE FROM IDBINDINGS WHERE MCID=" + mcId + " AND DCID=" + dcId;
+    public static void removeBinding(String dcId) {
+        String sql = "DELETE FROM IDBINDINGS WHERE DCID=" + dcId;
         try {
             WerewolfDatabase.getInstance().query(sql).close();
         } catch (SQLException e) {
@@ -149,5 +164,17 @@ public class QueryManager {
             WerewolfRpg.logConsole("SQL: " + sql);
             return list;
         }
+    }
+
+    private static String getResult(String sql) {
+        try {
+            ResultSet rs = WerewolfDatabase.getInstance().query(sql);
+            if (rs.next()) return rs.getString(1);
+            rs.close();
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Failed to read database query result");
+            WerewolfRpg.logConsole("SQL: " + sql);
+        }
+        return "";
     }
 }
