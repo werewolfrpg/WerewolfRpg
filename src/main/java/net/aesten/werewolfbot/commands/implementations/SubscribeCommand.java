@@ -1,28 +1,73 @@
 package net.aesten.werewolfbot.commands.implementations;
 
-import net.aesten.werewolfbot.commands.AbstractCommand;
-import net.aesten.werewolfbot.commands.GlobalCommands;
+import net.aesten.werewolfbot.commands.DiscordCommand;
+import net.dv8tion.jda.api.entities.Guild;
+import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-public class SubscribeCommand extends AbstractCommand {
+import java.util.List;
+import java.util.Objects;
+
+public class SubscribeCommand extends DiscordCommand {
+    private static final List<OptionData> options = List.of(
+            new OptionData(OptionType.CHANNEL, "voice-channel", "The voice channel used to play the minigame", true, true),
+            new OptionData(OptionType.CHANNEL, "log-channel", "The channel which logs game history and bot actions", true, true)
+    );
+
     public SubscribeCommand() {
-        super("subscribe", "Register the server for the bot to enable guild commands", true, DefaultMemberPermissions.DISABLED);
+        super("subscribe", "Register the server for the bot to enable other commands", DefaultMemberPermissions.DISABLED, options);
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         if (event.isFromGuild()) {
-            if (WerewolfRpg.getBot().getSubscribedGuilds().contains(event.getGuild())) {
-                event.getHook().sendMessage("This guild is already registered").queue();
-            } else {
-                GlobalCommands.subscribe(event.getGuild());
-                event.getHook().sendMessage("Subscription succeeded").queue();
+            OptionMapping vcOpt = event.getOption("voice-channel");
+            OptionMapping lcOpt = event.getOption("log-channel");
+
+            if (vcOpt == null || lcOpt == null) {
+                event.reply("Missing arguments").queue();
+                return;
             }
-        } else {
-            event.getHook().sendMessage("You can only register servers!").queue();
+
+            String vcId = vcOpt.getAsChannel().asVoiceChannel().getId();
+            String lcId = lcOpt.getAsChannel().asTextChannel().getId();
+
+            if (WerewolfRpg.getBot().getJda().getGuildChannelById(vcId) == null || WerewolfRpg.getBot().getJda().getGuildChannelById(lcId) == null) {
+                event.reply("Invalid channels").queue();
+                return;
+            }
+
+            if (WerewolfRpg.getBot().isSubscribed(event.getGuild())) {
+                event.reply("This guild is already registered").queue();
+            } else {
+                subscribe(event.getGuild(), vcId, lcId);
+                event.reply("Subscription succeeded").queue();
+            }
         }
+    }
+
+    @Override
+    public List<String> complete(CommandAutoCompleteInteractionEvent event) {
+        if (event.isFromGuild()) {
+            if (event.getFocusedOption().getName().equals("voice-channel")) {
+                return Objects.requireNonNull(event.getGuild()).getVoiceChannels().stream().map(VoiceChannel::getName).toList();
+            } else if (event.getFocusedOption().getName().equals("log-channel")) {
+                return Objects.requireNonNull(event.getGuild()).getTextChannels().stream().map(TextChannel::getName).toList();
+            }
+        }
+        return null;
+    }
+
+    private void subscribe(Guild guild, String vcId, String lcId) {
+        WerewolfRpg.getBot().getSubscribedGuilds().add(guild);
+        QueryManager.addGuild(guild.getId(), vcId, lcId);
     }
 }

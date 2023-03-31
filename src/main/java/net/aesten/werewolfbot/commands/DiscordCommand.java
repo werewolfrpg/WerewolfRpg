@@ -1,21 +1,25 @@
 package net.aesten.werewolfbot.commands;
 
 
+
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-public abstract class AbstractCommand implements BotCommand {
+import java.util.List;
+
+public abstract class DiscordCommand implements BotCommand {
     private final String name;
     private final String description;
-    private final boolean isGuildOnly;
     private final DefaultMemberPermissions permissions;
+    private final List<OptionData> options;
 
-    public AbstractCommand(String name, String description, boolean isGuildOnly, DefaultMemberPermissions permissions) {
+    public DiscordCommand(String name, String description, DefaultMemberPermissions permissions, List<OptionData> options) {
         this.name = name;
         this.description = description;
-        this.isGuildOnly = isGuildOnly;
         this.permissions = permissions;
+        this.options = options;
     }
 
     @Override
@@ -23,20 +27,8 @@ public abstract class AbstractCommand implements BotCommand {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isGuildOnly() {
-        return isGuildOnly;
-    }
-
-    public DefaultMemberPermissions getPermissions() {
-        return permissions;
-    }
-
     @Override
     public CommandData getCommand() {
-        return Commands.slash(name, description).setDefaultPermissions(permissions).setGuildOnly(isGuildOnly);
+        return Commands.slash(name, description).setDefaultPermissions(permissions).setGuildOnly(true).addOptions(options);
     }
 }
