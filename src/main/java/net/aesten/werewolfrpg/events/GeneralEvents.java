@@ -1,6 +1,5 @@
 package net.aesten.werewolfrpg.events;
 
-import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;

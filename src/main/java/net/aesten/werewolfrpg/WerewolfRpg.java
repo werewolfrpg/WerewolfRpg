@@ -133,5 +133,3 @@ public final class WerewolfRpg extends JavaPlugin {
     }
 }
 
-//todo review spectator system
-
