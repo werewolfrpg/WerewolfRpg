@@ -51,6 +51,7 @@ public class GeneralEvents implements Listener {
         if (discordIds.stream().noneMatch(id -> guilds.stream().anyMatch(guild -> guild.isMember(UserSnowflake.fromId(id))))) {
             WerewolfUtil.sendErrorText(player, "You are not registered as a player for this server!");
             WerewolfUtil.sendPluginText(player, "Join a valid discord server and register yourself");
+            event.getPlayer().setGameMode(GameMode.SPECTATOR);
         }
     }
 

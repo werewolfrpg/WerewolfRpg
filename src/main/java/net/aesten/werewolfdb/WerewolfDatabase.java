@@ -2,10 +2,13 @@ package net.aesten.werewolfdb;
 
 import net.aesten.werewolfrpg.WerewolfRpg;
 import org.h2.tools.RunScript;
+import org.h2.tools.Server;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WerewolfDatabase {
     private static WerewolfDatabase INSTANCE;
@@ -24,7 +27,6 @@ public class WerewolfDatabase {
 
     public WerewolfDatabase() {
         try {
-            openConnection();
             InputStream script = getClass().getClassLoader().getResourceAsStream("init.sql");
             if (script == null) {
                 WerewolfRpg.logConsole("Failed to load initialization script for h2 database");
@@ -59,18 +61,35 @@ public class WerewolfDatabase {
         }
     }
 
-    public ResultSet query(String query) {
+    public List<String> query(String query) {
+        List<String> results = new ArrayList<>();
         openConnection();
-        ResultSet rs;
         try {
             PreparedStatement stmt = conn.prepareStatement(query);
-            rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                results.add(rs.getString(1));
+            }
+            rs.close();
             stmt.close();
         } catch (SQLException sqlException) {
             WerewolfRpg.logConsole("Failed to query h2 database");
-            rs = null;
+            sqlException.printStackTrace();
         }
         closeConnection();
-        return rs;
+        return results;
+    }
+
+    public void execute(String query) {
+        openConnection();
+        try {
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException sqlException) {
+            WerewolfRpg.logConsole("Failed to query h2 database");
+            sqlException.printStackTrace();
+        }
+        closeConnection();
     }
 }

@@ -1,19 +1,15 @@
 package net.aesten.werewolfdb;
 
-import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.tracker.PlayerStats;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueryManager {
     public static List<String> requestGuildIdList() {
         String sql = "SELECT GUILDID FROM GUILDS";
-        return getResultList(sql);
+        return WerewolfDatabase.getInstance().query(sql);
     }
 
     public static String requestGuildVoiceChannel(String guildId) {
@@ -28,27 +24,17 @@ public class QueryManager {
 
     public static void removeGuild(String guildId) {
         String sql = "DELETE FROM GUILDS WHERE GUILID=" + guildId;
-        try {
-            WerewolfDatabase.getInstance().query(sql).close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to execute database query");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
+        WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static void addGuild(String guildId, String vcId, String lcId) {
         String sql = "INSERT INTO GUILDS VALUES (" + guildId + ", " + vcId + ", " + lcId + ")";
-        try {
-            WerewolfDatabase.getInstance().query(sql).close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to execute database query");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
+        WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static List<String> getDiscordIdsOfPlayer(String mcId) {
         String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID=" + mcId;
-        return getResultList(sql);
+        return WerewolfDatabase.getInstance().query(sql);
     }
 
     public static String getMcIdOfDiscordUser(String dcId) {
@@ -58,22 +44,12 @@ public class QueryManager {
 
     public static void addIdBinding(String mcId, String dcId) {
         String sql = "INSERT INTO IDBINDINGS (DCID, MCID) VALUES (" + dcId + ", " + mcId + ")";
-        try {
-            WerewolfDatabase.getInstance().query(sql).close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to execute database query");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
+        WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static void removeBinding(String dcId) {
         String sql = "DELETE FROM IDBINDINGS WHERE DCID=" + dcId;
-        try {
-            WerewolfDatabase.getInstance().query(sql).close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to execute database query");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
+        WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static void addMatchRecord(String matchId, Timestamp start, Timestamp end, Role role) {
@@ -90,12 +66,7 @@ public class QueryManager {
                     end + "," +
                     role.name + ")";
         }
-        try {
-            WerewolfDatabase.getInstance().query(sql).close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to execute database query");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
+        WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static void addPlayerMatchRecord(String matchId, PlayerStats stats) {
@@ -141,40 +112,12 @@ public class QueryManager {
                 stats.getWerewolfAxeUsed() + "," +
                 stats.getWerewolfAxeKills() + "," +
                 ")";
-        try {
-            WerewolfDatabase.getInstance().query(sql).close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to execute database query");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
-    }
-
-
-    private static List<String> getResultList(String sql) {
-        List<String> list = new ArrayList<>();
-        try {
-            ResultSet rs = WerewolfDatabase.getInstance().query(sql);
-            while (rs.next()) {
-                list.add(rs.getString(1));
-            }
-            rs.close();
-            return list;
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to read database query result");
-            WerewolfRpg.logConsole("SQL: " + sql);
-            return list;
-        }
+        WerewolfDatabase.getInstance().execute(sql);
     }
 
     private static String getResult(String sql) {
-        try {
-            ResultSet rs = WerewolfDatabase.getInstance().query(sql);
-            if (rs.next()) return rs.getString(1);
-            rs.close();
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Failed to read database query result");
-            WerewolfRpg.logConsole("SQL: " + sql);
-        }
-        return "";
+        List<String> result = WerewolfDatabase.getInstance().query(sql);
+        if (result.size() > 0) return result.get(0);
+        else return "";
     }
 }
