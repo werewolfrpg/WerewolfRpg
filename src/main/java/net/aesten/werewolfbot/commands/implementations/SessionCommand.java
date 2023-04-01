@@ -29,6 +29,11 @@ public class SessionCommand extends DiscordCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
+            if (!WerewolfRpg.getBot().isSubscribed(event.getGuild())) {
+                event.reply("This server is not subscribed, ask an admin to subscribe the server").setEphemeral(true).queue();
+                return;
+            }
+
             OptionMapping opt = event.getOption("action");
 
             if (opt == null) {

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.aesten.werewolfbot.commands.DiscordCommand;
 import net.aesten.werewolfdb.QueryManager;
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -30,6 +31,11 @@ public class BindCommand extends DiscordCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
+            if (!WerewolfRpg.getBot().isSubscribed(event.getGuild())) {
+                event.reply("This server is not subscribed, ask an admin to subscribe the server").setEphemeral(true).queue();
+                return;
+            }
+
             OptionMapping opt = event.getOption("mcid");
 
             if (opt == null) {
