@@ -3,6 +3,7 @@ package net.aesten.werewolfbot;
 import net.aesten.werewolfbot.commands.DiscordCommand;
 import net.aesten.werewolfbot.commands.CommandManager;
 import net.aesten.werewolfdb.QueryManager;
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -14,9 +15,10 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class WerewolfBot {
-    private final List<Guild> subscribedGuilds;
+    private final List<String> subscribedGuilds;
     private final JDA jda;
     private Session currentSession;
 
@@ -29,19 +31,25 @@ public class WerewolfBot {
         CommandManager manager = new CommandManager();
         jda.addEventListener(manager);
         jda.updateCommands().addCommands(manager.getCommands().stream().map(DiscordCommand::getCommand).toList()).queue();
-        subscribedGuilds = new ArrayList<>(QueryManager.requestGuildIdList().stream().map(jda::getGuildById).toList());
+        try {
+            jda.awaitReady();
+            subscribedGuilds = new ArrayList<>(QueryManager.requestGuildIdList());
+            WerewolfRpg.logConsole("Registered guilds: " + subscribedGuilds.stream().map(jda::getGuildById).filter(Objects::nonNull).map(Guild::getName).toList());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public JDA getJda() {
         return jda;
     }
 
-    public List<Guild> getSubscribedGuilds() {
+    public List<String> getSubscribedGuilds() {
         return subscribedGuilds;
     }
 
     public boolean isSubscribed(Guild guild) {
-        return subscribedGuilds.contains(guild);
+        return subscribedGuilds.contains(guild.getId());
     }
 
     public void newSession(VoiceChannel vc, TextChannel lc) {

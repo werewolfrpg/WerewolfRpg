@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class BindCommand extends DiscordCommand {
     private static final List<OptionData> options = List.of(
@@ -31,7 +32,7 @@ public class BindCommand extends DiscordCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
-            if (!WerewolfRpg.getBot().isSubscribed(event.getGuild())) {
+            if (!WerewolfRpg.getBot().isSubscribed(Objects.requireNonNull(event.getGuild()))) {
                 event.reply("This server is not subscribed, ask an admin to subscribe the server").setEphemeral(true).queue();
                 return;
             }

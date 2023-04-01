@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SubscribeCommand extends DiscordCommand {
     private static final List<OptionData> options = List.of(
@@ -42,7 +43,7 @@ public class SubscribeCommand extends DiscordCommand {
                 return;
             }
 
-            if (WerewolfRpg.getBot().isSubscribed(event.getGuild())) {
+            if (WerewolfRpg.getBot().isSubscribed(Objects.requireNonNull(event.getGuild()))) {
                 event.reply("This guild is already registered").queue();
             } else {
                 subscribe(event.getGuild(), vcId, lcId);
@@ -57,7 +58,7 @@ public class SubscribeCommand extends DiscordCommand {
     }
 
     private void subscribe(Guild guild, String vcId, String lcId) {
-        WerewolfRpg.getBot().getSubscribedGuilds().add(guild);
+        WerewolfRpg.getBot().getSubscribedGuilds().add(guild.getId());
         QueryManager.addGuild(guild.getId(), vcId, lcId);
     }
 }

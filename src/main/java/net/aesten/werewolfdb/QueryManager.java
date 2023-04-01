@@ -28,12 +28,12 @@ public class QueryManager {
     }
 
     public static void addGuild(String guildId, String vcId, String lcId) {
-        String sql = "INSERT INTO GUILDS VALUES (" + guildId + ", " + vcId + ", " + lcId + ")";
+        String sql = "INSERT INTO GUILDS VALUES (" + guildId + "," + vcId + "," + lcId + ")";
         WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static List<String> getDiscordIdsOfPlayer(String mcId) {
-        String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID=" + mcId;
+        String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID='" + mcId + "'";
         return WerewolfDatabase.getInstance().query(sql);
     }
 
@@ -42,8 +42,13 @@ public class QueryManager {
         return getResult(sql);
     }
 
+    public static List<String> getAllMcIds() {
+        String sql = "SELECT MCID FROM IDBINDINGS";
+        return WerewolfDatabase.getInstance().query(sql);
+    }
+
     public static void addIdBinding(String mcId, String dcId) {
-        String sql = "INSERT INTO IDBINDINGS (DCID, MCID) VALUES (" + dcId + ", " + mcId + ")";
+        String sql = "INSERT INTO IDBINDINGS (DCID, MCID) VALUES (" + dcId + ",'" + mcId + "')";
         WerewolfDatabase.getInstance().execute(sql);
     }
 
@@ -55,29 +60,29 @@ public class QueryManager {
     public static void addMatchRecord(String matchId, Timestamp start, Timestamp end, Role role) {
         String sql;
         if (role == null) {
-            sql = "INSERT INTO MATCHES (MATCH_ID, START_TIME, END_TIME) VALUES (" +
-                    matchId + "," +
-                    start + "," +
-                    end + ")";
+            sql = "INSERT INTO MATCHES (MATCH_ID, START_TIME, END_TIME) VALUES ('" +
+                    matchId + "','" +
+                    start + "','" +
+                    end + "')";
         } else {
-            sql = "INSERT INTO MATCHES (" +
-                    matchId + "," +
-                    start + "," +
-                    end + "," +
-                    role.name + ")";
+            sql = "INSERT INTO MATCHES ('" +
+                    matchId + "','" +
+                    start + "','" +
+                    end + "','" +
+                    role.name + "')";
         }
         WerewolfDatabase.getInstance().execute(sql);
     }
 
     public static void addPlayerMatchRecord(String matchId, PlayerStats stats) {
-        String sql = "INSERT INTO RECORDS VALUES (" +
-                matchId + "," +
-                stats.getPlayerId() + "," +
-                stats.getRole().toString() + "," +
-                stats.getResult().toString() + "," +
-                stats.getKills() + "," +
-                stats.getKillerId() + "," +
-                stats.getDeathCause() + "," +
+        String sql = "INSERT INTO RECORDS VALUES ('" +
+                matchId + "','" +
+                stats.getPlayerId() + "','" +
+                stats.getRole().toString() + "','" +
+                stats.getResult().toString() + "'," +
+                stats.getKills() + ",'" +
+                stats.getKillerId() + "','" +
+                stats.getDeathCause() + "'," +
                 stats.getKilledBasicSkeletons() + "," +
                 stats.getKilledLuckySkeletons() + "," +
                 stats.getKilledSpecialSkeletons() + "," +

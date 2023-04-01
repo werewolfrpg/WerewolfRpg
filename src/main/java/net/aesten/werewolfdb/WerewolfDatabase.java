@@ -36,6 +36,7 @@ public class WerewolfDatabase {
             closeConnection();
         } catch (SQLException sqlException) {
             WerewolfRpg.logConsole("Failed to run SQL init script on h2 database");
+            throw new RuntimeException(sqlException);
         }
     }
 
@@ -45,8 +46,10 @@ public class WerewolfDatabase {
             conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (SQLException sqlException) {
             WerewolfRpg.logConsole("Failed to open SQL connection to h2 database");
+            throw new RuntimeException(sqlException);
         } catch (ClassNotFoundException classNotFoundException) {
             WerewolfRpg.logConsole("Failed to load h2 database drivers: 'org.h2.Driver'");
+            classNotFoundException.printStackTrace();
         }
     }
 
@@ -57,6 +60,7 @@ public class WerewolfDatabase {
                 conn = null;
             } catch (SQLException sqlException) {
                 WerewolfRpg.logConsole("Failed to close SQL connection to h2 database");
+                throw new RuntimeException(sqlException);
             }
         }
     }
@@ -74,7 +78,7 @@ public class WerewolfDatabase {
             stmt.close();
         } catch (SQLException sqlException) {
             WerewolfRpg.logConsole("Failed to query h2 database");
-            sqlException.printStackTrace();
+            throw new RuntimeException(sqlException);
         }
         closeConnection();
         return results;
@@ -88,7 +92,7 @@ public class WerewolfDatabase {
             stmt.close();
         } catch (SQLException sqlException) {
             WerewolfRpg.logConsole("Failed to query h2 database");
-            sqlException.printStackTrace();
+            throw new RuntimeException(sqlException);
         }
         closeConnection();
     }

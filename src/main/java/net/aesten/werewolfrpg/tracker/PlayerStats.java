@@ -51,7 +51,7 @@ public class PlayerStats {
     private int werewolfAxeKills = 0;
 
     public PlayerStats(String playerId) {
-        this.playerId = playerId;
+        this.playerId = playerId.replace("-", "");
     }
 
     public void setRole(Role role) {

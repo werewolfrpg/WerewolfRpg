@@ -20,7 +20,7 @@ public class UnsubscribeCommand extends DiscordCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
-            if (WerewolfRpg.getBot().isSubscribed(event.getGuild())) {
+            if (WerewolfRpg.getBot().isSubscribed(Objects.requireNonNull(event.getGuild()))) {
                 unsubscribe(Objects.requireNonNull(event.getGuild()));
                 event.reply("Unsubscription succeeded").queue();
             } else {
@@ -35,7 +35,7 @@ public class UnsubscribeCommand extends DiscordCommand {
     }
 
     private void unsubscribe(Guild guild) {
-        WerewolfRpg.getBot().getSubscribedGuilds().remove(guild);
+        WerewolfRpg.getBot().getSubscribedGuilds().remove(guild.getId());
         QueryManager.removeGuild(guild.getId());
     }
 }

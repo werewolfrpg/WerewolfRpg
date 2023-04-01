@@ -51,8 +51,8 @@ public class Tracker {
     }
 
     public void sendDataToDatabase(WerewolfGame game, Role winner) {
-        QueryManager.addMatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner);
-        playerStats.values().forEach(stats -> QueryManager.addPlayerMatchRecord(game.getMatchId(), stats));
+        QueryManager.addMatchRecord(game.getMatchId().replace("-", ""), game.getStartTime(), game.getEndTime(), winner);
+        playerStats.values().forEach(stats -> QueryManager.addPlayerMatchRecord(game.getMatchId().replace("-", ""), stats));
         WerewolfRpg.logConsole("Saved match " + game.getMatchId() + " in database");
     }
 

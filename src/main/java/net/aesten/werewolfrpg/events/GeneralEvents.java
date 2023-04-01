@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.events;
 
+import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
@@ -11,6 +12,7 @@ import net.aesten.werewolfrpg.map.WerewolfMap;
 import net.aesten.werewolfrpg.tracker.PlayerStats;
 import net.aesten.werewolfrpg.tracker.Result;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.bukkit.ChatColor;
@@ -43,12 +45,14 @@ public class GeneralEvents implements Listener {
                 ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
 
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
+        event.getPlayer().setGameMode(GameMode.ADVENTURE);
 
-        if (WerewolfRpg.getBot() == null) return;
-        List<String> discordIds = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-        List<Guild> guilds = WerewolfRpg.getBot().getSubscribedGuilds();
+        WerewolfBot bot = WerewolfRpg.getBot();
+        if (bot == null) return;
 
-        if (discordIds.stream().noneMatch(id -> guilds.stream().anyMatch(guild -> guild.isMember(UserSnowflake.fromId(id))))) {
+        List<String> mcIds = QueryManager.getAllMcIds();
+
+        if (!mcIds.contains(player.getUniqueId().toString().replace("-", ""))) {
             WerewolfUtil.sendErrorText(player, "You are not registered as a player for this server!");
             WerewolfUtil.sendPluginText(player, "Join a valid discord server and register yourself");
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
