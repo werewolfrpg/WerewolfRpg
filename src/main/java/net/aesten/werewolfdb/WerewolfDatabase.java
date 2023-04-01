@@ -26,6 +26,7 @@ public class WerewolfDatabase {
 
     public WerewolfDatabase() {
         try {
+            openConnection();
             InputStream script = getClass().getClassLoader().getResourceAsStream("init.sql");
             if (script == null) {
                 WerewolfRpg.logConsole("Failed to load initialization script for h2 database");
