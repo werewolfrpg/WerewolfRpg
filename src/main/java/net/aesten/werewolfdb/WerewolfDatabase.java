@@ -2,7 +2,6 @@ package net.aesten.werewolfdb;
 
 import net.aesten.werewolfrpg.WerewolfRpg;
 import org.h2.tools.RunScript;
-import org.h2.tools.Server;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
