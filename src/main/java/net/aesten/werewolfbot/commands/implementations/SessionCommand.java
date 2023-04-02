@@ -57,12 +57,14 @@ public class SessionCommand extends BotCommand {
 
                 bot.newSession(vc, lc);
                 vc.getGuild().getAudioManager().openAudioConnection(vc);
+                event.reply("Starting session").setEphemeral(true).queue();
             } else if (action.equals("end") && bot.getCurrentSession() != null) {
                 VoiceChannel vc = bot.getCurrentSession().getVc();
                 bot.endSession();
                 vc.getGuild().getAudioManager().closeAudioConnection();
+                event.reply("Ending session").setEphemeral(true).queue();
             } else {
-                event.reply("Could not resolve command arguments").queue();
+                event.reply("Could not resolve command arguments").setEphemeral(true).queue();
             }
         }
     }
