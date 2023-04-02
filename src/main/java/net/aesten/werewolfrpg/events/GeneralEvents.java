@@ -42,7 +42,7 @@ public class GeneralEvents implements Listener {
                 ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
 
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
-        event.getPlayer().setGameMode(GameMode.ADVENTURE);
+        if (!event.getPlayer().isOp()) event.getPlayer().setGameMode(GameMode.ADVENTURE);
 
         WerewolfBot bot = WerewolfRpg.getBot();
         if (bot == null) return;
@@ -50,7 +50,7 @@ public class GeneralEvents implements Listener {
         List<String> mcIds = QueryManager.getAllMcIds();
 
         if (!mcIds.contains(player.getUniqueId().toString().replace("-", ""))) {
-            event.getPlayer().kickPlayer("You are not registered as a player! Ask an admin to register through a Discord server");
+            event.getPlayer().kickPlayer("You are not registered as a player!\n You need to link your Minecraft account through a Discord server");
         }
     }
 

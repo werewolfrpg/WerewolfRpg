@@ -24,9 +24,9 @@ public class RegisterButtonCommand extends DiscordCommand {
                 return;
             }
 
-            event.reply("To register as a WerewolfRPG player, you have to bind your Discord account to a Minecraft account")
+            event.getChannel().sendMessage("To register as a WerewolfRPG player, you have to bind your Discord account to a Minecraft account")
                     .addActionRow(
-                            Button.primary("register-button", "Register"),
+                            Button.success("register-button", "Register"),
                             Button.danger("unregister-button", "Unregister"))
                     .queue();
         }

@@ -30,6 +30,7 @@ public class WerewolfBot {
         jda = builder.build();
         CommandManager manager = new CommandManager();
         jda.addEventListener(manager);
+        jda.addEventListener(new RegistrationListener());
         jda.updateCommands().addCommands(manager.getCommands().stream().map(DiscordCommand::getCommand).toList()).queue();
         try {
             jda.awaitReady();

@@ -3,19 +3,16 @@ package net.aesten.werewolfbot;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.aesten.werewolfdb.QueryManager;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,7 +24,7 @@ public class RegistrationListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (event.getComponentId().equals("register-button")) {
-            TextInput subject = TextInput.create("minecraft", "Minecraft ID", TextInputStyle.SHORT)
+            TextInput subject = TextInput.create("minecraft-id", "Minecraft ID", TextInputStyle.SHORT)
                     .setPlaceholder("MyMinecraftUserName123")
                     .setRequiredRange(3, 16)
                     .build();
@@ -38,8 +35,12 @@ public class RegistrationListener extends ListenerAdapter {
 
             event.replyModal(modal).queue();
         } else if (event.getComponentId().equals("unregister-button")) {
-            QueryManager.removeBinding(event.getUser().getId());
-            event.reply("Your registration has been successfully canceled").queue();
+            if (QueryManager.getMcIdOfDiscordUser(event.getUser().getId()).equals("")) {
+                event.reply("You are not registered").setEphemeral(true).queue();
+            } else {
+                QueryManager.removeBinding(event.getUser().getId()); //todo add role
+                event.reply("Your registration has been successfully canceled").setEphemeral(true).queue();
+            }
         }
     }
 
@@ -53,7 +54,7 @@ public class RegistrationListener extends ListenerAdapter {
                 event.reply("Account not found...").setEphemeral(true).queue();
             } else {
                 if (!QueryManager.getMcIdOfDiscordUser(event.getUser().getId()).equals("")) {
-                    event.reply("Your already have a registered Minecraft ID").setEphemeral(true).queue();
+                    event.reply("You already have a registered Minecraft ID").setEphemeral(true).queue();
                 } else {
                     QueryManager.addIdBinding(uuid, event.getUser().getId());
                     event.reply("You are now registered!").setEphemeral(true).queue();

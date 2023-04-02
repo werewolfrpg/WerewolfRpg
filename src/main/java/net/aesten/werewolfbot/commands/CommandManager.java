@@ -22,7 +22,6 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new UnsubscribeCommand());
         commands.add(new SessionCommand());
         commands.add(new RegisterButtonCommand());
-        commands.add(new UnbindCommand());
     }
 
     public List<DiscordCommand> getCommands() {

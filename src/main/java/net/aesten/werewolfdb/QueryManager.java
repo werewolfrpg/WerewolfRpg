@@ -20,7 +20,7 @@ public class QueryManager {
     }
 
     public static String requestGuildVoiceChannel(String guildId) {
-        String sql = "SELECT VCID FROM GUILDS WHERE GUILID=" + guildId;
+        String sql = "SELECT VCID FROM GUILDS WHERE GUILDID=" + guildId;
         try {
             return getResult(sql);
         } catch (SQLException e) {
@@ -30,7 +30,7 @@ public class QueryManager {
     }
 
     public static String requestGuildLogChannel(String guildId) {
-        String sql = "SELECT LOGCHID FROM GUILDS WHERE GUILID=" + guildId;
+        String sql = "SELECT LOGCHID FROM GUILDS WHERE GUILDID=" + guildId;
         try {
             return getResult(sql);
         } catch (SQLException e) {
@@ -40,7 +40,7 @@ public class QueryManager {
     }
 
     public static void removeGuild(String guildId) {
-        String sql = "DELETE FROM GUILDS WHERE GUILID=" + guildId;
+        String sql = "DELETE FROM GUILDS WHERE GUILDID=" + guildId;
         try {
             WerewolfDatabase.getInstance().execute(sql);
         } catch (SQLException e) {
