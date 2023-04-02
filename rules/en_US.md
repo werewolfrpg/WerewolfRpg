@@ -27,13 +27,13 @@ This game implements a handful of new items.
 > A stick which is given to all players when the game starts.
 > It deals extra damage to skeletons.
 
-> `Exquisite Meat` 
+> `Exquisite Meat`
 > This steak is your only food source which is necessary for healing and running around.
 
-> `Skeleton Slicer` 
+> `Skeleton Slicer`
 > A sword with limited durability which can kill basic skeletons in one-hit with a charged attack.
 
-> `Powerful Bow` 
+> `Powerful Bow`
 > A bow which kills your target in one hit.
 > The bow breaks after one usage.
 
