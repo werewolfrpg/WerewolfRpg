@@ -21,7 +21,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new SubscribeCommand());
         commands.add(new UnsubscribeCommand());
         commands.add(new SessionCommand());
-        commands.add(new BindCommand());
+        commands.add(new RegisterButtonCommand());
         commands.add(new UnbindCommand());
     }
 
@@ -38,9 +38,12 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent event) {
         Optional<DiscordCommand> abstractCommand = commands.stream().filter(cmd -> cmd.getName().equals(event.getName())).findAny();
-        abstractCommand.ifPresent(cmd -> event.replyChoices(
-                sortPartialMatches(event.getFocusedOption().getValue(), cmd.complete(event))
-                        .stream().map(s -> new Command.Choice(s, s)).toList()
+        abstractCommand.ifPresent(cmd ->
+                event.replyChoices(
+                        sortPartialMatches(event.getFocusedOption().getValue(), cmd.complete(event))
+                        .stream()
+                        .map(s -> new Command.Choice(s, s))
+                        .toList()
                 ).queue());
     }
 

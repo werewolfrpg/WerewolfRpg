@@ -50,9 +50,7 @@ public class GeneralEvents implements Listener {
         List<String> mcIds = QueryManager.getAllMcIds();
 
         if (!mcIds.contains(player.getUniqueId().toString().replace("-", ""))) {
-            WerewolfUtil.sendErrorText(player, "You are not registered as a player for this server!");
-            WerewolfUtil.sendPluginText(player, "Join a valid discord server and register yourself");
-            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            event.getPlayer().kickPlayer("You are not registered as a player! Ask an admin to register through a Discord server");
         }
     }
 
@@ -70,6 +68,11 @@ public class GeneralEvents implements Listener {
         else {
             event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " left the server!");
         }
+    }
+
+    @EventHandler
+    public void onKick(PlayerKickEvent event) {
+        event.setLeaveMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + event.getPlayer().getName() + ChatColor.AQUA + " was kicked from server!");
     }
 
     //split chat between spectators and players when in-game

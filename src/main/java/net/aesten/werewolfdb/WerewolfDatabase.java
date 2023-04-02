@@ -49,7 +49,7 @@ public class WerewolfDatabase {
             throw new RuntimeException(sqlException);
         } catch (ClassNotFoundException classNotFoundException) {
             WerewolfRpg.logConsole("Failed to load h2 database drivers: 'org.h2.Driver'");
-            classNotFoundException.printStackTrace();
+            throw new RuntimeException(classNotFoundException);
         }
     }
 
@@ -65,35 +65,25 @@ public class WerewolfDatabase {
         }
     }
 
-    public List<String> query(String query) {
+    public List<String> query(String query) throws SQLException {
         List<String> results = new ArrayList<>();
         openConnection();
-        try {
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                results.add(rs.getString(1));
-            }
-            rs.close();
-            stmt.close();
-        } catch (SQLException sqlException) {
-            WerewolfRpg.logConsole("Failed to query h2 database");
-            throw new RuntimeException(sqlException);
+        PreparedStatement stmt = conn.prepareStatement(query);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            results.add(rs.getString(1));
         }
+        rs.close();
+        stmt.close();
         closeConnection();
         return results;
     }
 
-    public void execute(String query) {
+    public void execute(String query) throws SQLException {
         openConnection();
-        try {
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.executeUpdate();
-            stmt.close();
-        } catch (SQLException sqlException) {
-            WerewolfRpg.logConsole("Failed to query h2 database");
-            throw new RuntimeException(sqlException);
-        }
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.executeUpdate();
+        stmt.close();
         closeConnection();
     }
 }

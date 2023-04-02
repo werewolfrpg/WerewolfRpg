@@ -1,60 +1,112 @@
 package net.aesten.werewolfdb;
 
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.tracker.PlayerStats;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
 public class QueryManager {
     public static List<String> requestGuildIdList() {
         String sql = "SELECT GUILDID FROM GUILDS";
-        return WerewolfDatabase.getInstance().query(sql);
+        try {
+            return WerewolfDatabase.getInstance().query(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to fetch list of guild ids failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static String requestGuildVoiceChannel(String guildId) {
         String sql = "SELECT VCID FROM GUILDS WHERE GUILID=" + guildId;
-        return getResult(sql);
+        try {
+            return getResult(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to get vc channel from guild failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static String requestGuildLogChannel(String guildId) {
         String sql = "SELECT LOGCHID FROM GUILDS WHERE GUILID=" + guildId;
-        return getResult(sql);
+        try {
+            return getResult(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to get log channel from guild failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static void removeGuild(String guildId) {
         String sql = "DELETE FROM GUILDS WHERE GUILID=" + guildId;
-        WerewolfDatabase.getInstance().execute(sql);
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to remove a guild failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static void addGuild(String guildId, String vcId, String lcId) {
         String sql = "INSERT INTO GUILDS VALUES (" + guildId + "," + vcId + "," + lcId + ")";
-        WerewolfDatabase.getInstance().execute(sql);
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to add a guild failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<String> getDiscordIdsOfPlayer(String mcId) {
         String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID='" + mcId + "'";
-        return WerewolfDatabase.getInstance().query(sql);
+        try {
+            return WerewolfDatabase.getInstance().query(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to get Discord ids from Minecraft id failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static String getMcIdOfDiscordUser(String dcId) {
         String sql = "SELECT MCID FROM IDBINDINGS WHERE DCID=" + dcId;
-        return getResult(sql);
+        try {
+            return getResult(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to get Minecraft id from Discord id failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<String> getAllMcIds() {
         String sql = "SELECT MCID FROM IDBINDINGS";
-        return WerewolfDatabase.getInstance().query(sql);
+        try {
+            return WerewolfDatabase.getInstance().query(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to get all registered Minecraft ids failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static void addIdBinding(String mcId, String dcId) {
-        String sql = "INSERT INTO IDBINDINGS (DCID, MCID) VALUES (" + dcId + ",'" + mcId + "')";
-        WerewolfDatabase.getInstance().execute(sql);
+        String sql = "INSERT INTO IDBINDINGS (MCID, DCID) VALUES ('" + mcId + "'," + dcId + ")";
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to register a Discord id to Minecraft id binding failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static void removeBinding(String dcId) {
         String sql = "DELETE FROM IDBINDINGS WHERE DCID=" + dcId;
-        WerewolfDatabase.getInstance().execute(sql);
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to unregister an id binding failed failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static void addMatchRecord(String matchId, Timestamp start, Timestamp end, Role role) {
@@ -71,7 +123,12 @@ public class QueryManager {
                     end + "','" +
                     role.name + "')";
         }
-        WerewolfDatabase.getInstance().execute(sql);
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to record match failed");
+            throw new RuntimeException(e);
+        }
     }
 
     public static void addPlayerMatchRecord(String matchId, PlayerStats stats) {
@@ -117,11 +174,17 @@ public class QueryManager {
                 stats.getWerewolfAxeUsed() + "," +
                 stats.getWerewolfAxeKills() + "," +
                 ")";
-        WerewolfDatabase.getInstance().execute(sql);
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to insert match statistics failed");
+            throw new RuntimeException(e);
+        }
     }
 
-    private static String getResult(String sql) {
-        List<String> result = WerewolfDatabase.getInstance().query(sql);
+    private static String getResult(String sql) throws SQLException {
+        List<String> result;
+        result = WerewolfDatabase.getInstance().query(sql);
         if (result.size() > 0) return result.get(0);
         else return "";
     }

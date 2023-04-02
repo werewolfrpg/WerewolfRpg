@@ -56,9 +56,12 @@ public class SessionCommand extends DiscordCommand {
                 }
 
                 bot.newSession(vc, lc);
+                vc.getGuild().getAudioManager().openAudioConnection(vc);
                 event.reply("Session started").queue();
             } else if (action.equals("end") && bot.getCurrentSession() != null) {
+                VoiceChannel vc = bot.getCurrentSession().getVc();
                 bot.endSession();
+                vc.getGuild().getAudioManager().closeAudioConnection();
                 event.reply("Session terminated").queue();
             } else {
                 event.reply("Could not execute command").queue();
