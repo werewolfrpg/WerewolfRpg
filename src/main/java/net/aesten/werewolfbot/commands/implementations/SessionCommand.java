@@ -1,7 +1,7 @@
 package net.aesten.werewolfbot.commands.implementations;
 
 import net.aesten.werewolfbot.WerewolfBot;
-import net.aesten.werewolfbot.commands.DiscordCommand;
+import net.aesten.werewolfbot.commands.BotCommand;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SessionCommand extends DiscordCommand {
+public class SessionCommand extends BotCommand {
     private static final List<OptionData> options = List.of(
             new OptionData(OptionType.STRING, "action", "Begin or end a session", true, true)
     );
@@ -57,14 +57,12 @@ public class SessionCommand extends DiscordCommand {
 
                 bot.newSession(vc, lc);
                 vc.getGuild().getAudioManager().openAudioConnection(vc);
-                event.reply("Session started").queue();
             } else if (action.equals("end") && bot.getCurrentSession() != null) {
                 VoiceChannel vc = bot.getCurrentSession().getVc();
                 bot.endSession();
                 vc.getGuild().getAudioManager().closeAudioConnection();
-                event.reply("Session terminated").queue();
             } else {
-                event.reply("Could not execute command").queue();
+                event.reply("Could not resolve command arguments").queue();
             }
         }
     }

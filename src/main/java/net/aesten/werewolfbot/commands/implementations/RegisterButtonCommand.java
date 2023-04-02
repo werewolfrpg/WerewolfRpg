@@ -1,6 +1,6 @@
 package net.aesten.werewolfbot.commands.implementations;
 
-import net.aesten.werewolfbot.commands.DiscordCommand;
+import net.aesten.werewolfbot.commands.BotCommand;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class RegisterButtonCommand extends DiscordCommand {
+public class RegisterButtonCommand extends BotCommand {
     public RegisterButtonCommand() {
         super("rbutton", "Generates a button to register/unregister on WerewolfRPG", DefaultMemberPermissions.DISABLED, Collections.emptyList());
     }
@@ -29,6 +29,8 @@ public class RegisterButtonCommand extends DiscordCommand {
                             Button.success("register-button", "Register"),
                             Button.danger("unregister-button", "Unregister"))
                     .queue();
+
+            event.reply("You have now enabled anyone on the server to register as a player").setEphemeral(true).queue();
         }
     }
 

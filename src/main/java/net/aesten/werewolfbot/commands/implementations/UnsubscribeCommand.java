@@ -1,6 +1,6 @@
 package net.aesten.werewolfbot.commands.implementations;
 
-import net.aesten.werewolfbot.commands.DiscordCommand;
+import net.aesten.werewolfbot.commands.BotCommand;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class UnsubscribeCommand extends DiscordCommand {
+public class UnsubscribeCommand extends BotCommand {
     public UnsubscribeCommand() {
         super("unsubscribe", "Unregister the server for the bot to disable other commands", DefaultMemberPermissions.DISABLED, Collections.emptyList());
     }

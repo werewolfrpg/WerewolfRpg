@@ -50,7 +50,7 @@ public class GeneralEvents implements Listener {
         List<String> mcIds = QueryManager.getAllMcIds();
 
         if (!mcIds.contains(player.getUniqueId().toString().replace("-", ""))) {
-            event.getPlayer().kickPlayer("You are not registered as a player!\n You need to link your Minecraft account through a Discord server");
+            event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!");
         }
     }
 

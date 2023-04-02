@@ -31,11 +31,11 @@ public class Session {
     }
 
     private void init() {
-        lc.sendMessage("**NEW SESSION" + timestamp + "**").queue();
+        lc.sendMessage("**WerewolfRPG Session Start** " + timestamp).queue();
     }
 
     public void terminate() {
-        lc.sendMessage("**END SESSION" + Timestamp.from(Instant.now()) + "**").queue();
+        lc.sendMessage("**WerewolfRPG Session End** " + Timestamp.from(Instant.now())).queue();
         vc.getMembers().forEach(member -> member.mute(false).queue());
     }
 }

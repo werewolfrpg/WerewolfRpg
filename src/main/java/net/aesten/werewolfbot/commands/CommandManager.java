@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommandManager extends ListenerAdapter {
-    private final List<DiscordCommand> commands;
+    private final List<BotCommand> commands;
 
     public CommandManager() {
         commands = new ArrayList<>();
@@ -22,21 +22,22 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new UnsubscribeCommand());
         commands.add(new SessionCommand());
         commands.add(new RegisterButtonCommand());
+        commands.add(new ReadRulesCommand());
     }
 
-    public List<DiscordCommand> getCommands() {
+    public List<BotCommand> getCommands() {
         return commands;
     }
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        Optional<DiscordCommand> abstractCommand = commands.stream().filter(cmd -> cmd.getName().equals(event.getName())).findAny();
+        Optional<BotCommand> abstractCommand = commands.stream().filter(cmd -> cmd.getName().equals(event.getName())).findAny();
         abstractCommand.ifPresent(cmd -> cmd.execute(event));
     }
 
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent event) {
-        Optional<DiscordCommand> abstractCommand = commands.stream().filter(cmd -> cmd.getName().equals(event.getName())).findAny();
+        Optional<BotCommand> abstractCommand = commands.stream().filter(cmd -> cmd.getName().equals(event.getName())).findAny();
         abstractCommand.ifPresent(cmd ->
                 event.replyChoices(
                         sortPartialMatches(event.getFocusedOption().getValue(), cmd.complete(event))

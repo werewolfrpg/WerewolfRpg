@@ -1,6 +1,6 @@
 package net.aesten.werewolfbot;
 
-import net.aesten.werewolfbot.commands.DiscordCommand;
+import net.aesten.werewolfbot.commands.BotCommand;
 import net.aesten.werewolfbot.commands.CommandManager;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
@@ -31,7 +31,7 @@ public class WerewolfBot {
         CommandManager manager = new CommandManager();
         jda.addEventListener(manager);
         jda.addEventListener(new RegistrationListener());
-        jda.updateCommands().addCommands(manager.getCommands().stream().map(DiscordCommand::getCommand).toList()).queue();
+        jda.updateCommands().addCommands(manager.getCommands().stream().map(BotCommand::getCommand).toList()).queue();
         try {
             jda.awaitReady();
             subscribedGuilds = new ArrayList<>(QueryManager.requestGuildIdList());

@@ -1,9 +1,10 @@
 package net.aesten.werewolfbot.commands.implementations;
 
-import net.aesten.werewolfbot.commands.DiscordCommand;
+import net.aesten.werewolfbot.commands.BotCommand;
 import net.dv8tion.jda.api.entities.Guild;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -11,10 +12,11 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
-public class SubscribeCommand extends DiscordCommand {
+public class SubscribeCommand extends BotCommand {
     private static final List<OptionData> options = List.of(
             new OptionData(OptionType.CHANNEL, "voice-channel", "The voice channel used to play the minigame", true, false),
             new OptionData(OptionType.CHANNEL, "log-channel", "The channel which logs game history and bot actions", true, false)
@@ -60,5 +62,17 @@ public class SubscribeCommand extends DiscordCommand {
     private void subscribe(Guild guild, String vcId, String lcId) {
         WerewolfRpg.getBot().getSubscribedGuilds().add(guild.getId());
         QueryManager.addGuild(guild.getId(), vcId, lcId);
+        createPlayerRoleIfNotExists(guild);
+    }
+
+    private void createPlayerRoleIfNotExists(Guild guild) {
+        List<Role> role = guild.getRolesByName("WWRPG Player", true);
+        if (role.size() == 0) {
+            guild.createRole()
+                    .setName("WWRPG Player")
+                    .setColor(Color.GREEN)
+                    .setHoisted(true)
+                    .complete();
+        }
     }
 }
