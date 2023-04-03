@@ -62,7 +62,7 @@ public class GeneralEvents implements Listener {
         if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
             event.setQuitMessage(null);
             WerewolfGame.getTeamsManager().playerDied(player);
-            WerewolfGame.getInstance().getDataMap().remove(player.getUniqueId());
+            WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
             WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
         }
         else {
