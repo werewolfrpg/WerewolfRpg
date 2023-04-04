@@ -49,8 +49,8 @@ public class GeneralEvents implements Listener {
 
         List<String> mcIds = QueryManager.getAllMcIds();
 
-        if (!mcIds.contains(player.getUniqueId().toString().replace("-", ""))) {
-            event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!");
+        if (!mcIds.contains(player.getUniqueId().toString())) {
+            event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!\nYou're Minecraft username to register is: " + player.getName());
         }
     }
 
@@ -72,7 +72,7 @@ public class GeneralEvents implements Listener {
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
-        event.setLeaveMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + event.getPlayer().getName() + ChatColor.AQUA + " was kicked from server!");
+        event.setLeaveMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + event.getPlayer().getName() + ChatColor.AQUA + " tried to join server!");
     }
 
     //split chat between spectators and players when in-game

@@ -3,6 +3,7 @@ package net.aesten.werewolfbot;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.aesten.werewolfdb.QueryManager;
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -21,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class RegistrationListener extends ListenerAdapter {
     @Override
@@ -73,6 +75,7 @@ public class RegistrationListener extends ListenerAdapter {
                 }
 
                 event.reply("You are now registered!").setEphemeral(true).queue();
+                WerewolfRpg.logConsole("Player " + uuid + " registered in server: " + event.getGuild().getName());
             }
         }
     }
@@ -93,7 +96,7 @@ public class RegistrationListener extends ListenerAdapter {
 
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(response.toString(), JsonObject.class);
-            return jsonObject.get("id").getAsString();
+            return jsonObject.get("id").getAsString().replaceAll("(.{8})(.{4})(.{4})(.{4})(.+)", "$1-$2-$3-$4-$5");
         } catch (IOException e) {
             e.printStackTrace();
             return "";

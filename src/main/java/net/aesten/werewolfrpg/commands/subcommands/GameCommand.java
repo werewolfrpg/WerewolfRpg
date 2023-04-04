@@ -61,7 +61,6 @@ public class GameCommand extends CommandNode {
             if (!WerewolfGame.getInstance().isPlaying()) {
                 if (WerewolfGame.isReady()) {
                     WerewolfGame.start();
-                    WerewolfUtil.sendPluginText(sender, "Starting game");
                 } else {
                     WerewolfUtil.sendErrorText(sender, WerewolfGame.getStatusMessage());
                 }

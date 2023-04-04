@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tracker {
     private final Map<UUID, AbstractMap.SimpleEntry<String, UUID>> specificDeathCauses = new HashMap<>();
@@ -76,26 +77,38 @@ public class Tracker {
         String duration = DurationFormatUtils.formatDuration(time, "HH:mm:ss");
 
         embed.setAuthor("WerewolfRPG");
-        embed.setTitle("Match Result: " + result);
+        embed.setTitle(result);
         embed.setDescription("Duration: " + duration);
         embed.setFooter("MatchId: " + game.getMatchId());
 
+        AtomicInteger c = new AtomicInteger();
         for (Team team : WerewolfGame.getTeamsManager().getTeams()) {
             Set<String> entries = team.getEntries();
             if (entries.size() > 0) {
-                embed.addField(team.getName() + "(" + entries.size() + ")", "", false);
+                embed.addField("===============", "", true);
+                embed.addField(team.getName() + " (" + entries.size() + ")", "", true);
+                embed.addField("===============", "", true);
                 entries.forEach(s -> {
                     Player player = Bukkit.getPlayerExact(s);
-                    String status = "Disconnected";
+                    String status = "*Disconnected*";
                     if (player != null) {
-                        if (game.getDataMap().get(player.getUniqueId()).isAlive()) status = "Alive";
-                        else status = "Dead";
+                        if (game.getDataMap().get(player.getUniqueId()).isAlive()) status = "*Alive*";
+                        else status = "*Dead*";
                     }
                     embed.addField(s, status, true);
+                    c.getAndIncrement();
                 });
+                if (c.get() % 3 != 0) {
+                    embed.addField("", "", true);
+                }
+                if (c.get() % 3 == 1) {
+                    embed.addField("", "", true);
+                }
             }
         }
 
-        bot.getCurrentSession().getLc().sendMessage("===============").setEmbeds(embed.build()).queue();
+        //embed.setImage(); todo add per map image and url?
+
+        bot.getCurrentSession().getLc().sendMessage("").setEmbeds(embed.build()).queue();
     }
 }

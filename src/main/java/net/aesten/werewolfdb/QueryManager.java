@@ -117,7 +117,7 @@ public class QueryManager {
                     start + "','" +
                     end + "')";
         } else {
-            sql = "INSERT INTO MATCHES ('" +
+            sql = "INSERT INTO MATCHES VALUES ('" +
                     matchId + "','" +
                     start + "','" +
                     end + "','" +
@@ -172,8 +172,7 @@ public class QueryManager {
                 stats.getSneakNoticeUsed() + "," +
                 stats.getSneakNoticeTriggered() + "," +
                 stats.getWerewolfAxeUsed() + "," +
-                stats.getWerewolfAxeKills() + "," +
-                ")";
+                stats.getWerewolfAxeKills() + ")";
         try {
             WerewolfDatabase.getInstance().execute(sql);
         } catch (SQLException e) {

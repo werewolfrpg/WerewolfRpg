@@ -279,7 +279,10 @@ public class WerewolfGame {
         //prepare and send stats
         instance.tracker.setResults(role);
         instance.tracker.sendDataToDatabase(instance, role);
-        instance.tracker.logMatchResult(instance, role);
+        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
+            instance.tracker.logMatchResult(instance, role);
+        }
+
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
@@ -348,23 +351,36 @@ public class WerewolfGame {
 
     private static String getMatchText() {
         TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        String villagerPlayers = String.join(", ", teamsManager.getTeam(Role.VILLAGER).getEntries());
-        String werewolfPlayer = String.join(", ", teamsManager.getTeam(Role.WEREWOLF).getEntries());
-        String traitorPlayers = String.join(", ", teamsManager.getTeam(Role.TRAITOR).getEntries());
-        String vampirePlayers = String.join(", ", teamsManager.getTeam(Role.VAMPIRE).getEntries());
-        String possessedPlayers = String.join(", ", teamsManager.getTeam(Role.POSSESSED).getEntries());
+        Set<String> villagers = teamsManager.getTeam(Role.VILLAGER).getEntries();
+        Set<String> werewolves = teamsManager.getTeam(Role.WEREWOLF).getEntries();
+        Set<String> traitors = teamsManager.getTeam(Role.TRAITOR).getEntries();
+        Set<String> vampires = teamsManager.getTeam(Role.VAMPIRE).getEntries();
+        Set<String> possessed = teamsManager.getTeam(Role.POSSESSED).getEntries();
 
-        return ChatColor.AQUA + "======WWRPG Match Role======" + "\n" +
-                ChatColor.GREEN + ChatColor.UNDERLINE +"Villagers:" + "\n" +
-                ChatColor.RESET + ChatColor.GREEN + villagerPlayers + "\n" +
-                ChatColor.DARK_RED + ChatColor.UNDERLINE + "Werewolves:" + "\n" +
-                ChatColor.RESET + ChatColor.DARK_RED + werewolfPlayer + "\n" +
-                ChatColor.LIGHT_PURPLE + ChatColor.UNDERLINE + "Traitor:" + "\n" +
-                ChatColor.RESET + ChatColor.LIGHT_PURPLE + traitorPlayers + "\n" +
-                ChatColor.DARK_PURPLE + ChatColor.UNDERLINE + "Vampire:" + "\n" +
-                ChatColor.RESET + ChatColor.DARK_PURPLE + vampirePlayers + "\n" +
-                ChatColor.YELLOW + ChatColor.UNDERLINE + "Possessed:" + "\n" +
-                ChatColor.RESET + ChatColor.YELLOW + possessedPlayers + "\n" +
-                ChatColor.AQUA + "======WWRPG Match Role======" + "\n";
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(ChatColor.AQUA + "======WWRPG Match Role======" + "\n");
+        builder.append(ChatColor.GREEN + "Villagers:" + "\n");
+        builder.append("> " + String.join(", ", villagers) + "\n");
+        builder.append(ChatColor.DARK_RED + "Werewolves:" + "\n");
+        builder.append("> " + String.join(", ", werewolves) + "\n");
+
+        if (traitors.size() > 0) {
+            builder.append(ChatColor.LIGHT_PURPLE + "Traitors:" + "\n");
+            builder.append("> " + String.join(", ", traitors) + "\n");
+        }
+        if (traitors.size() > 0) {
+            builder.append(ChatColor.DARK_PURPLE + "Vampire:" + "\n");
+            builder.append("> " + String.join(", ", vampires) + "\n");
+        }
+        if (traitors.size() > 0) {
+            builder.append(ChatColor.YELLOW + "Possessed:" + "\n");
+            builder.append("> " + String.join(", ", possessed) + "\n");
+        }
+
+        builder.append(ChatColor.AQUA + "======WWRPG Match Role======" + "\n");
+
+
+        return builder.toString();
     }
 }

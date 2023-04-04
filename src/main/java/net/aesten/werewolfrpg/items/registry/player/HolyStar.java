@@ -48,18 +48,16 @@ public class HolyStar extends ShopWerewolfItem implements EntityDamageItem {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
         if ((event.getDamager() instanceof Player damager) && (event.getEntity() instanceof Player target)) {
-            ItemStack item = damager.getInventory().getItemInMainHand();
-            if (item.getType().equals(Material.NETHER_STAR)) {
-                game.getMap().getWorld().playSound(damager.getLocation(), Sound.ITEM_SHIELD_BREAK, 1,1);
-                item.setAmount(item.getAmount() - 1);
+        ItemStack item = damager.getInventory().getItemInMainHand();
+            game.getMap().getWorld().playSound(damager.getLocation(), Sound.ITEM_SHIELD_BREAK, 1,1);
+            item.setAmount(item.getAmount() - 1);
 
-                if (game.getDataMap().get(target.getUniqueId()).getRole() == Role.VAMPIRE) {
-                    target.setHealth(0);
-                    game.getTracker().getPlayerStats(damager.getUniqueId()).addHolyStarUsed(true);
-                }
-                else {
-                    game.getTracker().getPlayerStats(damager.getUniqueId()).addHolyStarUsed(false);
-                }
+            if (game.getDataMap().get(target.getUniqueId()).getRole() == Role.VAMPIRE) {
+                target.setHealth(0);
+                game.getTracker().getPlayerStats(damager.getUniqueId()).addHolyStarUsed(true);
+            }
+            else {
+                game.getTracker().getPlayerStats(damager.getUniqueId()).addHolyStarUsed(false);
             }
         }
     }
