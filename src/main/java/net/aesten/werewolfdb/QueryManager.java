@@ -112,7 +112,7 @@ public class QueryManager {
     public static void addMatchRecord(String matchId, Timestamp start, Timestamp end, Role role) {
         String sql;
         if (role == null) {
-            sql = "INSERT INTO MATCHES (MATCH_ID, START_TIME, END_TIME) VALUES ('" +
+            sql = "INSERT INTO MATCHES (MATCHID, START_TIME, END_TIME) VALUES ('" +
                     matchId + "','" +
                     start + "','" +
                     end + "')";

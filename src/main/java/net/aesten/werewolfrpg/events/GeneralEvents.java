@@ -4,6 +4,7 @@ import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
+import net.aesten.werewolfrpg.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.items.base.EntityInteractItem;
 import net.aesten.werewolfrpg.items.base.InteractItem;
 import net.aesten.werewolfrpg.items.base.WerewolfItem;
@@ -27,23 +28,23 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class GeneralEvents implements Listener {
-    //change join message & max health
+    //handle player connection
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
 
         if (WerewolfGame.getInstance().isPlaying()) {
             if (!WerewolfGame.getInstance().isParticipant(player)) {
                 WerewolfGame.getTeamsManager().addPlayerToSpectator(player);
             }
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
+        } else {
+            event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
+                    ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
         }
-        event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
-                ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
 
-        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
-        if (!event.getPlayer().isOp()) event.getPlayer().setGameMode(GameMode.ADVENTURE);
-
+        //check if user is registered
         WerewolfBot bot = WerewolfRpg.getBot();
         if (bot == null) return;
 
@@ -60,10 +61,13 @@ public class GeneralEvents implements Listener {
         Player player = event.getPlayer();
 
         if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
-            event.setQuitMessage(null);
-            WerewolfGame.getTeamsManager().playerDied(player);
-            WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
-            WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
+            WerewolfPlayerData data = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId());
+            if (data.isAlive()) {
+                event.setQuitMessage(null);
+                WerewolfGame.getTeamsManager().playerDied(player);
+                WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
+                WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
+            }
         }
         else {
             event.setQuitMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " left the server!");
@@ -86,7 +90,7 @@ public class GeneralEvents implements Listener {
                 }
             }
         }
-        else {
+        else if (!WerewolfGame.getInstance().isNight()) {
             for (Player receiver : event.getRecipients()) {
                 receiver.sendMessage(ChatColor.GREEN + "<" + event.getPlayer().getName() + "> " + ChatColor.RESET + event.getMessage());
             }

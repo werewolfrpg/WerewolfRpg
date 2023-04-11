@@ -44,7 +44,8 @@ public class ItemManager implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player player) {
             ItemStack eventItem = player.getInventory().getItemInMainHand();
-            Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> item.getItem().getItemMeta() == Objects.requireNonNull(eventItem).getItemMeta()).findAny();
+            if (eventItem.getType() == Material.AIR) return;
+            Optional<WerewolfItem> werewolfItem = PlayerItem.getRegistry().values().stream().filter(item -> WerewolfUtil.sameItem(item.getItem(), eventItem)).findAny();
             if (werewolfItem.isPresent() && werewolfItem.get() instanceof EntityDamageItem entityDamageItem) {
                 entityDamageItem.onEntityDamage(event);
             }

@@ -79,5 +79,7 @@ public class Muter extends WerewolfItem implements InteractItem {
             dcMember.forEach(member -> member.mute(true).queue());
             WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN);
         }
+
+        user.setCooldown(Material.ALLIUM, 200);
     }
 }

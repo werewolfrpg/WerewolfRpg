@@ -134,4 +134,4 @@ public final class WerewolfRpg extends JavaPlugin {
 }
 
 //todo later: add a prompt to create roles and assign 'MMR' value to get role
-
+//todo IMPORTANT: fix melee weapons

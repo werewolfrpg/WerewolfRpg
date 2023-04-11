@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.core;
 
+import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
@@ -14,6 +15,8 @@ import net.aesten.werewolfrpg.tracker.Tracker;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import net.aesten.werewolfrpg.data.RolePool;
 import net.aesten.werewolfrpg.map.WerewolfMap;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -283,7 +286,6 @@ public class WerewolfGame {
             instance.tracker.logMatchResult(instance, role);
         }
 
-
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
         instance.displayNameArmorStands.forEach(ArmorStand::remove);
@@ -301,6 +303,12 @@ public class WerewolfGame {
         HandlerList.unregisterAll(listener);
         HandlerList.unregisterAll(skeletonManager);
 
+        //get voice channel to unmute
+        VoiceChannel vc = null;
+        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
+            vc = WerewolfRpg.getBot().getCurrentSession().getVc();
+        }
+
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {
             if (entity.getType().equals(EntityType.SKELETON) || entity.getType().equals(EntityType.DROPPED_ITEM)) {
@@ -316,6 +324,12 @@ public class WerewolfGame {
                 player.setHealth(40);
                 player.setFoodLevel(20);
                 player.setSaturation(20);
+
+                if (vc != null) {
+                    List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
+                    List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
+                    dcMember.forEach(member -> member.mute(false).queue());
+                }
             }
         }
 
