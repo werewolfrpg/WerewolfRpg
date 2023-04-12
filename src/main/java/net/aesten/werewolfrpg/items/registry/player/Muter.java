@@ -17,10 +17,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Muter extends WerewolfItem implements InteractItem {
+    private final Map<Player, Instant> cooldowns = new HashMap<>();
+
     @Override
     public String getId() {
         return "muter";
@@ -59,6 +65,15 @@ public class Muter extends WerewolfItem implements InteractItem {
             return;
         }
 
+        int cooldown = 5;
+
+        if (cooldowns.get(user) != null) {
+            if (ChronoUnit.SECONDS.between(cooldowns.get(user), Instant.now()) < cooldown) {
+                WerewolfUtil.sendPluginText(user, "Wait for the end of the cooldown", ChatColor.RED);
+                return;
+            }
+        }
+
         List<String> str = QueryManager.getDiscordIdsOfPlayer(user.getUniqueId().toString());
         VoiceChannel vc = bot.getCurrentSession().getVc();
         List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
@@ -80,6 +95,7 @@ public class Muter extends WerewolfItem implements InteractItem {
             WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN);
         }
 
-        user.setCooldown(Material.ALLIUM, 100);
+        user.setCooldown(Material.ALLIUM, cooldown*20);
+        cooldowns.put(user, Instant.now());
     }
 }

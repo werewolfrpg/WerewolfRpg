@@ -252,6 +252,7 @@ public class WerewolfGame {
                     player.setGameMode(GameMode.ADVENTURE);
                     player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
+                    player.getInventory().addItem(PlayerItem.MUTER.getItem());
 
                     //increment
                     count++;
