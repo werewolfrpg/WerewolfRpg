@@ -1,7 +1,5 @@
 package net.aesten.werewolfrpg.events;
 
-import net.aesten.werewolfbot.WerewolfBot;
-import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
@@ -10,8 +8,6 @@ import net.aesten.werewolfrpg.items.base.InteractItem;
 import net.aesten.werewolfrpg.items.base.WerewolfItem;
 import net.aesten.werewolfrpg.items.registry.AdminItem;
 import net.aesten.werewolfrpg.map.WerewolfMap;
-import net.aesten.werewolfrpg.tracker.PlayerStats;
-import net.aesten.werewolfrpg.tracker.Result;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -43,16 +39,6 @@ public class GeneralEvents implements Listener {
             event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
                     ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
         }
-
-        //check if user is registered
-        WerewolfBot bot = WerewolfRpg.getBot();
-        if (bot == null) return;
-
-        List<String> mcIds = QueryManager.getAllMcIds();
-
-        if (!mcIds.contains(player.getUniqueId().toString())) {
-            event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!\nYou're Minecraft username to register is: " + player.getName());
-        }
     }
 
     //handle player disconnect
@@ -66,7 +52,6 @@ public class GeneralEvents implements Listener {
                 event.setQuitMessage(null);
                 WerewolfGame.getTeamsManager().playerDied(player);
                 WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
-                WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
             }
         }
         else {
@@ -155,18 +140,6 @@ public class GeneralEvents implements Listener {
                  player.setGameMode(GameMode.SPECTATOR);
                  player.getInventory().clear();
                  player.getActivePotionEffects().clear();
-
-                 //stats
-                 AbstractMap.SimpleEntry<String, UUID> deathData = WerewolfGame.getInstance().getTracker().getSpecificDeathCauses().get(id);
-                 PlayerStats stats = WerewolfGame.getInstance().getTracker().getPlayerStats(id);
-                 String deathCause;
-                 if (deathData == null) {
-                     deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
-                 } else {
-                     deathCause = deathData.getKey();
-                     stats.setKiller(deathData.getValue().toString());
-                 }
-                 stats.setDeathCause(deathCause);
              }
         }
     }

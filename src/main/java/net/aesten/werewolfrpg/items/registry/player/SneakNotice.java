@@ -63,7 +63,6 @@ public class SneakNotice extends ShopWerewolfItem implements InteractItem {
             game.getDataMap().get(user.getUniqueId()).setHasActiveSneakNotice(true);
             game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 0.8f,1);
             WerewolfUtil.sendPluginText(user, "You will be notified during this night when divinated", ChatColor.GREEN);
-            game.getTracker().getPlayerStats(user.getUniqueId()).addSneakNoticeUsed();
         }
     }
 }

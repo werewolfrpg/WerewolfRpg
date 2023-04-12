@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum PlayerItem {
-    MUTER(new Muter()),
     SKELETON_PUNISHER(new SkeletonPunisher()),
     EXQUISITE_MEAT(new ExquisiteMeat()),
     HUNTERS_BOW(new HuntersBow()),

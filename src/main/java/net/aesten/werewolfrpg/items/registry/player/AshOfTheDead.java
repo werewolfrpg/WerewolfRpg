@@ -64,7 +64,5 @@ public class AshOfTheDead extends ShopWerewolfItem implements InteractItem {
                 WerewolfUtil.sendPluginText(user, player.getName(), ChatColor.RED);
             }
         }
-
-        game.getTracker().getPlayerStats(user.getUniqueId()).addAsheUsed();
     }
 }

@@ -47,36 +47,27 @@ public class StunGrenade extends ShopWerewolfItem implements ProjectileItem, Pla
     public void onProjectileHit(ProjectileHitEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
         Location landingPosition;
-        if (event.getEntity().getShooter() instanceof Player shooter) {
+
+        if (event.getEntity().getShooter() instanceof Player) {
             if (event.getHitEntity() instanceof Player player) {
                 landingPosition = player.getLocation();
-            }
-            else if (event.getHitBlock() != null) {
+            } else if (event.getHitBlock() != null) {
                 landingPosition = event.getHitBlock().getLocation();
-            }
-            else {
+            } else {
                 return;
             }
-        }
-        else {
-            return;
-        }
 
-        World world = game.getMap().getWorld();
-        world.playSound(landingPosition, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1,1);
-        world.spawnParticle(Particle.FIREWORKS_SPARK, landingPosition, 300);
+            World world = game.getMap().getWorld();
+            world.playSound(landingPosition, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1,1);
+            world.spawnParticle(Particle.FIREWORKS_SPARK, landingPosition, 300);
 
-        int affected = 0;
-        for (Entity entity : world.getNearbyEntities(landingPosition, 2, 2, 2)) {
-            if (entity instanceof Player player && game.isParticipant(player)) {
-                affected++;
-                game.getDataMap().get(player.getUniqueId()).setStunned(true);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 0,false, false, false));
-                WerewolfUtil.runDelayedTask(100, () -> game.getDataMap().get(player.getUniqueId()).setStunned(false));
+            for (Entity entity : world.getNearbyEntities(landingPosition, 2, 2, 2)) {
+                if (entity instanceof Player player && game.isParticipant(player)) {
+                    game.getDataMap().get(player.getUniqueId()).setStunned(true);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 0,false, false, false));
+                    WerewolfUtil.runDelayedTask(100, () -> game.getDataMap().get(player.getUniqueId()).setStunned(false));
+                }
             }
-        }
-        if (affected != 0) {
-            game.getTracker().getPlayerStats(shooter.getUniqueId()).addStunGrenadeHits(affected);
         }
     }
 

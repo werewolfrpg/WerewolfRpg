@@ -15,8 +15,7 @@ public class WerewolfCommand extends CommandNode {
                 new TpCommand(),
                 new UtilCommand(),
                 new ItemCommand(),
-                new SummonCommand(),
-                new BotCommand()
+                new SummonCommand()
                 );
     }
 

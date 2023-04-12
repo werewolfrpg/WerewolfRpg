@@ -1,14 +1,11 @@
 package net.aesten.werewolfrpg.core;
 
-import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.TeamsManager;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.items.registry.PlayerItem;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -28,8 +25,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.util.List;
 
 public class Ticker {
     private BossBar bar;
@@ -86,11 +81,6 @@ public class Ticker {
 
         WerewolfGame.getSkeletonManager().summonAllSkeletons(game.getMap());
 
-        VoiceChannel vc = null;
-        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
-            vc = WerewolfRpg.getBot().getCurrentSession().getVc();
-        }
-
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (game.getParticipants().contains(player)) {
                 WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
@@ -98,11 +88,6 @@ public class Ticker {
                     if (data.getRole() == Role.VAMPIRE) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
                                         2400, 5,false, false, false));
-                    }
-                    if (vc != null) {
-                        List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-                        List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
-                        dcMember.forEach(member -> member.mute(true).queue());
                     }
                 }
 
@@ -117,11 +102,6 @@ public class Ticker {
         game.getMap().getWorld().setTime(6000L);
         game.switchDayNight();
 
-        VoiceChannel vc = null;
-        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
-            vc = WerewolfRpg.getBot().getCurrentSession().getVc();
-        }
-
         for (Entity entity : game.getMap().getWorld().getEntities()) {
             if (entity.getType() == EntityType.SKELETON) {
                 entity.remove();
@@ -131,12 +111,6 @@ public class Ticker {
                     WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
                     player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     data.resetTemporaryValues();
-
-                    if (data.isAlive() && vc != null && !data.isForceMute()) {
-                        List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-                        List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
-                        dcMember.forEach(member -> member.mute(false).queue());
-                    }
                 }
                 WerewolfUtil.sendTitle(player, ChatColor.YELLOW + "DAY TIME", ChatColor.GOLD + "Day " + days);
             }
@@ -195,7 +169,6 @@ public class Ticker {
                 if (data.hasActiveSneakNotice() && data.hasBeenDivinated()) {
                     WerewolfUtil.sendPluginText(player, "(Sneak Notice) Your identity has been unveiled", ChatColor.DARK_RED);
                     data.setHasBeenDivinated(false);
-                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addSneakNoticeTriggered();
                 }
             }
         }

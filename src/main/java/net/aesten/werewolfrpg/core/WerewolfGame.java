@@ -1,6 +1,5 @@
 package net.aesten.werewolfrpg.core;
 
-import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
@@ -11,12 +10,9 @@ import net.aesten.werewolfrpg.map.MapManager;
 import net.aesten.werewolfrpg.map.WorldManager;
 import net.aesten.werewolfrpg.shop.ShopManager;
 import net.aesten.werewolfrpg.skeleton.SkeletonManager;
-import net.aesten.werewolfrpg.tracker.Tracker;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import net.aesten.werewolfrpg.data.RolePool;
 import net.aesten.werewolfrpg.map.WerewolfMap;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -38,21 +34,16 @@ public class WerewolfGame {
     private static final TeamsManager teamsManager = new TeamsManager();
     private static MapManager mapManager;
     private static String statusMessage;
-    private final String matchId;
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Ticker ticker;
     private final RolePool pool;
-    private final Tracker tracker = new Tracker();
     private WerewolfMap map;
     private boolean isPlaying;
     private boolean isNight;
-    private Timestamp startTime;
-    private Timestamp endTime;
     private final List<ArmorStand> displayNameArmorStands;
 
     public WerewolfGame() {
-        this.matchId = UUID.randomUUID().toString();
         this.participants = new ArrayList<>();
         this.dataMap = new HashMap<>();
         this.pool = new RolePool(1,0,0,0);
@@ -65,7 +56,6 @@ public class WerewolfGame {
     }
 
     public WerewolfGame(WerewolfGame previousGame) {
-        this.matchId = UUID.randomUUID().toString();
         previousGame.participants.removeIf(p -> !Bukkit.getOnlinePlayers().contains(p));
         this.participants = previousGame.participants;
         this.dataMap = new HashMap<>();
@@ -108,9 +98,6 @@ public class WerewolfGame {
         mapManager = new MapManager(new WorldManager());
     }
 
-    public String getMatchId() {
-        return matchId;
-    }
 
     public Map<UUID, WerewolfPlayerData> getDataMap() {
         return dataMap;
@@ -118,10 +105,6 @@ public class WerewolfGame {
 
     public RolePool getPool() {
         return pool;
-    }
-
-    public Tracker getTracker() {
-        return tracker;
     }
 
     public boolean isNight() {
@@ -134,14 +117,6 @@ public class WerewolfGame {
 
     public boolean isPlaying() {
         return isPlaying;
-    }
-
-    public Timestamp getStartTime() {
-        return startTime;
-    }
-
-    public Timestamp getEndTime() {
-        return endTime;
     }
 
     public WerewolfMap getMap() {
@@ -219,9 +194,6 @@ public class WerewolfGame {
                         role = Role.VILLAGER;
                     }
 
-                    //prepare stats tracker
-                    instance.tracker.addPlayer(player).setRole(role);
-
                     //update skulls and put name
                     WerewolfUtil.updateSkull(
                             instance.map.getWorld(),
@@ -271,20 +243,11 @@ public class WerewolfGame {
         }
 
         instance.ticker.start();
-        instance.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     private static void stop(Role role) {
         //stop ticker
         instance.ticker.stop();
-        instance.endTime = new Timestamp(System.currentTimeMillis());
-
-        //prepare and send stats
-        instance.tracker.setResults(role);
-        instance.tracker.sendDataToDatabase(instance, role);
-        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
-            instance.tracker.logMatchResult(instance, role);
-        }
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
@@ -303,12 +266,6 @@ public class WerewolfGame {
         HandlerList.unregisterAll(listener);
         HandlerList.unregisterAll(skeletonManager);
 
-        //get voice channel to unmute
-        VoiceChannel vc = null;
-        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
-            vc = WerewolfRpg.getBot().getCurrentSession().getVc();
-        }
-
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {
             if (entity.getType().equals(EntityType.SKELETON) || entity.getType().equals(EntityType.DROPPED_ITEM)) {
@@ -324,12 +281,6 @@ public class WerewolfGame {
                 player.setHealth(40);
                 player.setFoodLevel(20);
                 player.setSaturation(20);
-
-                if (vc != null) {
-                    List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-                    List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
-                    dcMember.forEach(member -> member.mute(false).queue());
-                }
             }
         }
 

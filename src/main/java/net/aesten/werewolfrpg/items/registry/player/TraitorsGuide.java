@@ -61,7 +61,5 @@ public class TraitorsGuide extends ShopWerewolfItem implements InteractItem {
         String werewolf = WerewolfGame.getTeamsManager().getTeam(Role.WEREWOLF).getEntries().stream().toList()
                 .get(new Random().nextInt(game.getPool().getWerewolfNumber()));
         WerewolfUtil.sendPluginText(user, werewolf + " is a werewolf!", ChatColor.RED);
-
-        WerewolfGame.getInstance().getTracker().getPlayerStats(user.getUniqueId()).addTraitorsGuideUsed();
     }
 }

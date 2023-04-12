@@ -59,10 +59,6 @@ public class TeamsManager {
         spectators.setColor(ChatColor.RED);
     }
 
-    public List<Team> getTeams() {
-        return List.of(villagers, werewolves, traitors, vampires, possessed);
-    }
-
     public Team getTeam(Role role) {
         return switch(role) {
             case WEREWOLF -> werewolves;

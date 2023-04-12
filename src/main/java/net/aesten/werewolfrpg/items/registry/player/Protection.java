@@ -69,14 +69,12 @@ public class Protection extends ShopWerewolfItem implements InteractItem {
             user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
             game.getMap().getWorld().playSound(user.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f,1);
             WerewolfUtil.sendPluginText(user, "Protection activated", ChatColor.GREEN);
-            game.getTracker().getPlayerStats(user.getUniqueId()).addProtectionUsed(true);
         }
         else {
             data.setHasAlreadyUsedProtection(true);
             user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
             game.getMap().getWorld().playSound(user.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f,1);
             WerewolfUtil.sendPluginText(user, "Protection will have no effect", ChatColor.RED);
-            game.getTracker().getPlayerStats(user.getUniqueId()).addProtectionUsed(false);
         }
     }
 }

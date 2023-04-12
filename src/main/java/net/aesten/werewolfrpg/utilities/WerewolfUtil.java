@@ -99,10 +99,6 @@ public class WerewolfUtil {
         }.runTaskLater(WerewolfRpg.getPlugin(), delay);
     }
 
-    public static boolean areSameFaction(Role role1, Role role2) {
-        return role1.factionRole() == role2.factionRole();
-    }
-
     public static boolean sameItem(ItemStack item1, ItemStack item2) {
         return (Objects.requireNonNull(item1.getItemMeta()).getAsString().equals(Objects.requireNonNull(item2.getItemMeta()).getAsString()));
     }

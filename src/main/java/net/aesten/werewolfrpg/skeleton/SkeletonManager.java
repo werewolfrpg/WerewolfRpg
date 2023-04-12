@@ -187,17 +187,11 @@ public class SkeletonManager implements Listener, Configurable {
                 Player player = entity.getKiller();
                 if (entity.getScoreboardTags().contains("basic_skeleton") && rnd.nextDouble() < basicSkeletonEmeraldDropRate.get()) {
                     player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
-                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledBasicSkeletons();
-                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addBasicSkeletonEmeraldDrops();
-                }
-                else if (entity.getScoreboardTags().contains("lucky_skeleton")) {
+                } else if (entity.getScoreboardTags().contains("lucky_skeleton")) {
                     player.getInventory().addItem(new ItemStack(Material.EMERALD, luckySkeletonEmeraldDropNumber.get()));
-                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledLuckySkeletons();
-                }
-                else if (entity.getScoreboardTags().contains("special_skeleton")) {
+                } else if (entity.getScoreboardTags().contains("special_skeleton")) {
                     ShopWerewolfItem drop = specialSkeletonDrops.get().get(rnd.nextInt(specialSkeletonDrops.get().size()));
                     player.getInventory().addItem(drop.getItem());
-                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledSpecialSkeletons();
                 }
             }
         }

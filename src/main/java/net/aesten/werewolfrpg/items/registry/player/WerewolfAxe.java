@@ -17,8 +17,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.AbstractMap;
-
 public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
     @Override
     public String getId() {
@@ -59,21 +57,13 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
 
             if (game.isNight() && data.getRole() == Role.VAMPIRE) {
                 event.setCancelled(true);
-                game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(false);
-            }
-            else if (game.isNight() && data.hasActiveProtection()) {
+            } else if (game.isNight() && data.hasActiveProtection()) {
                 event.setCancelled(true);
                 data.setHasActiveProtection(false);
                 target.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                 WerewolfUtil.sendPluginText(target, "Protection was activated", ChatColor.GREEN);
-                game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(false);
-                game.getTracker().getPlayerStats(target.getUniqueId()).addProtectionTriggered();
-            }
-            else {
+            } else {
                 target.setHealth(0);
-                game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(true);
-                game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
-                game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("werewolf_axe_hit", damager.getUniqueId()));
             }
         }
     }

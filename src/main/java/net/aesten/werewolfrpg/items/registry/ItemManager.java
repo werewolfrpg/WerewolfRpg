@@ -5,7 +5,6 @@ import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.items.base.*;
-import net.aesten.werewolfrpg.tracker.Tracker;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,7 +19,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -75,30 +73,6 @@ public class ItemManager implements Listener {
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player && WerewolfGame.getInstance().isParticipant(player)) {
             event.getEntity().setMetadata("werewolf_projectile", new FixedMetadataValue(WerewolfRpg.getPlugin(), 1));
-            if (event.getEntity().getType() == EntityType.ARROW) {
-                WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addArrowUsed();
-            }
-            else if (event.getEntity().getType() == EntityType.SNOWBALL) {
-                WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addStunGrenadeUsed();
-            }
-            else if (event.getEntity().getType() == EntityType.TRIDENT) {
-                WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addCurseSpearThrowUsed();
-            }
-        }
-    }
-
-    @EventHandler
-    public void onItemConsume(PlayerItemConsumeEvent event) {
-        Player player = event.getPlayer();
-        Tracker tracker = WerewolfGame.getInstance().getTracker();
-        if (WerewolfUtil.sameItem(event.getItem(), PlayerItem.getItemFromId("exquisite_meat").getItem())) {
-            tracker.getPlayerStats(player.getUniqueId()).addSteaksEaten();
-        }
-        else if (WerewolfUtil.sameItem(event.getItem(), PlayerItem.getItemFromId("swiftness_potion").getItem())) {
-            tracker.getPlayerStats(player.getUniqueId()).addSwiftnessUsed();
-        }
-        else if (WerewolfUtil.sameItem(event.getItem(), PlayerItem.getItemFromId("invisibility_potion").getItem())) {
-            tracker.getPlayerStats(player.getUniqueId()).addInvisibilityUsed();
         }
     }
 
@@ -132,7 +106,6 @@ public class ItemManager implements Listener {
                         data.setRemainingDivinations(data.getRemainingDivinations() - 1);
                         targetData.setHasBeenDivinated(true);
                         WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.color + role.name, WerewolfRpg.COLOR);
-                        game.getTracker().getPlayerStats(player.getUniqueId()).addDivinationUsed();
                     }
                 }
                 else {

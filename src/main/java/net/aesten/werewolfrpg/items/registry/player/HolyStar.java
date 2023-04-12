@@ -51,14 +51,7 @@ public class HolyStar extends ShopWerewolfItem implements EntityDamageItem {
         ItemStack item = damager.getInventory().getItemInMainHand();
             game.getMap().getWorld().playSound(damager.getLocation(), Sound.ITEM_SHIELD_BREAK, 1,1);
             item.setAmount(item.getAmount() - 1);
-
-            if (game.getDataMap().get(target.getUniqueId()).getRole() == Role.VAMPIRE) {
-                target.setHealth(0);
-                game.getTracker().getPlayerStats(damager.getUniqueId()).addHolyStarUsed(true);
-            }
-            else {
-                game.getTracker().getPlayerStats(damager.getUniqueId()).addHolyStarUsed(false);
-            }
+            if (game.getDataMap().get(target.getUniqueId()).getRole() == Role.VAMPIRE) target.setHealth(0);
         }
     }
 }

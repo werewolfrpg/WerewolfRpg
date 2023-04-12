@@ -55,21 +55,13 @@ public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
             WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
             if (game.isNight() && data.getRole() == Role.VAMPIRE) {
                 event.setCancelled(true);
-                game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(false);
-            }
-            else if (game.isNight() && data.hasActiveProtection()) {
+            } else if (game.isNight() && data.hasActiveProtection()) {
                 event.setCancelled(true);
                 data.setHasActiveProtection(false);
                 player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                 WerewolfUtil.sendPluginText(player, "Protection was activated", ChatColor.GREEN);
-                game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(false);
-                game.getTracker().getPlayerStats(player.getUniqueId()).addProtectionTriggered();
-            }
-            else {
+            } else {
                 player.setHealth(0);
-                game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(true);
-                game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
-                game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("arrow_hit", shooter.getUniqueId()));
             }
         }
         projectile.remove();
