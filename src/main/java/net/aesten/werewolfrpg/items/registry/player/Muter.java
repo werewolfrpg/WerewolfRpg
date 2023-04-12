@@ -80,6 +80,6 @@ public class Muter extends WerewolfItem implements InteractItem {
             WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN);
         }
 
-        user.setCooldown(Material.ALLIUM, 200);
+        user.setCooldown(Material.ALLIUM, 100);
     }
 }
