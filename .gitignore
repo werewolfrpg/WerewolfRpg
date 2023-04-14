@@ -4,5 +4,6 @@ out/
 .DS_Store
 *.iml
 
+temp/
 database/
 dependency-reduced-pom.xml

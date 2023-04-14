@@ -1,4 +1,4 @@
-package net.aesten.werewolfrpg.tracker;
+package net.aesten.werewolfrpg.statistics;
 
 import net.aesten.werewolfrpg.data.Role;
 
@@ -6,7 +6,7 @@ import net.aesten.werewolfrpg.data.Role;
 public class PlayerStats {
     private final String playerId;
     private Role role;
-    private Result result; //win rate = W / (W+L+D)
+    private Result result;
 
     //basic stats
     private int kills = 0;
@@ -51,7 +51,7 @@ public class PlayerStats {
     private int werewolfAxeKills = 0;
 
     public PlayerStats(String playerId) {
-        this.playerId = playerId.replace("-", "");
+        this.playerId = playerId;
     }
 
     public void setRole(Role role) {

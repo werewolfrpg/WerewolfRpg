@@ -23,6 +23,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new SessionCommand());
         commands.add(new RegisterButtonCommand());
         commands.add(new ReadRulesCommand());
+        commands.add(new ScoreCommand());
     }
 
     public List<BotCommand> getCommands() {

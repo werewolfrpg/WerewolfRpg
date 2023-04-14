@@ -57,6 +57,13 @@
             <version>1.0.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.azalealibrary</groupId>
+            <artifactId>achievements</artifactId>
+            <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/temp/achievements-1.0.1.jar</systemPath>
+        </dependency>
         <!-- protocol lib -->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
@@ -131,9 +138,12 @@
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.spigotmc:spigot-api</exclude>
-                                    <exclude>org.spigotmc:spigot</exclude>
                                     <exclude>org.spigotmc:plugin-annotations</exclude>
                                     <exclude>org.jetbrains:annotations</exclude>
+                                    <exclude>com.comphenix.protocol:ProtocolLib</exclude>
+                                    <exclude>net.azalealibrary:configuration</exclude>
+                                    <exclude>net.azalealibrary:command</exclude>
+                                    <exclude>net.azalealibrary:achievements</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>

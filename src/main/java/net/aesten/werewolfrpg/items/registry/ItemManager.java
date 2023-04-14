@@ -5,7 +5,7 @@ import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.items.base.*;
-import net.aesten.werewolfrpg.tracker.Tracker;
+import net.aesten.werewolfrpg.statistics.Tracker;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

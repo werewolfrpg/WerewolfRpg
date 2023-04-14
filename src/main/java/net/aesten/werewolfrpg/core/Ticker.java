@@ -131,6 +131,7 @@ public class Ticker {
                     WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
                     player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     data.resetTemporaryValues();
+                    player.getInventory().remove(Material.WOODEN_SWORD);
 
                     if (data.isAlive() && vc != null && !data.isForceMute()) {
                         List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());

@@ -35,7 +35,7 @@ public class SneakNotice extends ShopWerewolfItem implements InteractItem {
 
     @Override
     public Integer getDefaultCost() {
-        return 2;
+        return 1;
     }
 
     @Override

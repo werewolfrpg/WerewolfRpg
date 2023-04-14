@@ -46,7 +46,7 @@ public class RegistrationListener extends ListenerAdapter {
             if (QueryManager.getMcIdOfDiscordUser(event.getUser().getId()).equals("")) {
                 event.reply("You are not registered").setEphemeral(true).queue();
             } else {
-                QueryManager.removeBinding(event.getUser().getId()); //todo add role
+                QueryManager.removeBinding(event.getUser().getId());
 
                 List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("WWRPG Player", true);
                 if (role.size() != 0) {
@@ -69,9 +69,17 @@ public class RegistrationListener extends ListenerAdapter {
             } else {
                 QueryManager.addIdBinding(uuid, event.getUser().getId());
 
-                List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("WWRPG Player", true);
-                if (role.size() != 0) {
-                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), role.get(0)).queue();
+                if (!QueryManager.isRegistered(uuid)) {
+                    QueryManager.registerPlayer(uuid);
+                }
+
+                List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
+                if (werewolfRole.size() != 0) {
+                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).queue();
+                }
+                List<Role> beginnerRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Beginner", true);
+                if (beginnerRole.size() != 0) {
+                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), beginnerRole.get(0)).queue();
                 }
 
                 event.reply("You are now registered!").setEphemeral(true).queue();

@@ -27,7 +27,7 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
 
     @Override
     protected ItemStack getBaseItem() {
-        return ItemStackBuilder.builder(Material.NETHERITE_AXE, 1)
+        return ItemStackBuilder.builder(Material.STONE_AXE, 1)
                 .addName(ChatColor.DARK_RED + "Werewolf Axe")
                 .addLore(ChatColor.DARK_PURPLE + "The murderous axe of werewolves")
                 .addFlags(ItemFlag.HIDE_ATTRIBUTES)

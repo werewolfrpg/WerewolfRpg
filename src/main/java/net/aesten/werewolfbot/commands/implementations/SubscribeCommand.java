@@ -62,17 +62,58 @@ public class SubscribeCommand extends BotCommand {
     private void subscribe(Guild guild, String vcId, String lcId) {
         WerewolfRpg.getBot().getSubscribedGuilds().add(guild.getId());
         QueryManager.addGuild(guild.getId(), vcId, lcId);
-        createPlayerRoleIfNotExists(guild);
+        createPlayerRoles(guild);
     }
 
-    private void createPlayerRoleIfNotExists(Guild guild) {
-        List<Role> role = guild.getRolesByName("WWRPG Player", true);
-        if (role.size() == 0) {
-            guild.createRole()
-                    .setName("WWRPG Player")
-                    .setColor(Color.GREEN)
-                    .setHoisted(true)
-                    .complete();
-        }
+    private void createPlayerRoles(Guild guild) {
+        guild.createRole()
+                .setName("Werewolf RPG")
+                .setColor(Color.decode("#3ebe37"))
+                .setHoisted(true)
+                .complete();
+
+        guild.createRole()
+                .setName("Beginner")
+                .setColor(Color.decode("#11b1e7"))
+                .complete();
+        guild.createRole()
+                .setName("Novice")
+                .setColor(Color.decode("#11b1e7"))
+                .complete();
+        guild.createRole()
+                .setName("Apprentice")
+                .setColor(Color.decode("#11b1e7"))
+                .complete();
+
+        guild.createRole()
+                .setName("Intermediate")
+                .setColor(Color.decode("#e28621"))
+                .complete();
+        guild.createRole()
+                .setName("Skilled")
+                .setColor(Color.decode("#e28621"))
+                .complete();
+        guild.createRole()
+                .setName("Experienced")
+                .setColor(Color.decode("#e28621"))
+                .complete();
+
+        guild.createRole()
+                .setName("Veteran")
+                .setColor(Color.decode("#e92269"))
+                .complete();
+        guild.createRole()
+                .setName("Expert")
+                .setColor(Color.decode("#e92269"))
+                .complete();
+        guild.createRole()
+                .setName("Elite")
+                .setColor(Color.decode("#e92269"))
+                .complete();
+
+        guild.createRole()
+                .setName("Legendary")
+                .setColor(Color.decode("#ffad00"))
+                .complete();
     }
 }

@@ -4,14 +4,15 @@ import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
+import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.items.base.EntityInteractItem;
 import net.aesten.werewolfrpg.items.base.InteractItem;
 import net.aesten.werewolfrpg.items.base.WerewolfItem;
 import net.aesten.werewolfrpg.items.registry.AdminItem;
 import net.aesten.werewolfrpg.map.WerewolfMap;
-import net.aesten.werewolfrpg.tracker.PlayerStats;
-import net.aesten.werewolfrpg.tracker.Result;
+import net.aesten.werewolfrpg.statistics.PlayerStats;
+import net.aesten.werewolfrpg.statistics.Result;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -36,7 +37,7 @@ public class GeneralEvents implements Listener {
 
         if (WerewolfGame.getInstance().isPlaying()) {
             if (!WerewolfGame.getInstance().isParticipant(player)) {
-                WerewolfGame.getTeamsManager().addPlayerToSpectator(player);
+                WerewolfGame.getTeamsManager().registerPlayerRole(player, Role.SPECTATOR);
             }
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
         } else {

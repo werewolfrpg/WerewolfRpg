@@ -1,4 +1,4 @@
-package net.aesten.werewolfrpg.tracker;
+package net.aesten.werewolfrpg.statistics;
 
 public enum Result {
     VICTORY, DEFEAT, CANCELLED, DISCONNECTED

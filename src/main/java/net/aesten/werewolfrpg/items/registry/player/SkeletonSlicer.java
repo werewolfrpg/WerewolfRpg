@@ -19,16 +19,18 @@ public class SkeletonSlicer extends ShopWerewolfItem {
     protected ItemStack getBaseItem() {
         return ItemStackBuilder.builder(Material.WOODEN_SWORD, 1)
                 .addName(ChatColor.GOLD + "Skeleton Slicer")
-                .addLore(ChatColor.BLUE + "Kills skeletons faster")
+                .addLore(ChatColor.BLUE + "Kill skeletons faster")
+                .addLore(ChatColor.GRAY + "Has to be purchased every night")
+                .addLore(ChatColor.GRAY + "Deleted from inventory at the end of night time")
                 .addEnchantment(Enchantment.DAMAGE_UNDEAD, 5)
                 .addFlags(ItemFlag.HIDE_ENCHANTS)
-                .addDamage(19)
+                .setUnbreakable()
                 .build();
     }
 
     @Override
     public Integer getDefaultCost() {
-        return 4;
+        return 1;
     }
 
     @Override

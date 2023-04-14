@@ -1,24 +1,24 @@
-package net.aesten.werewolfrpg.tracker;
+package net.aesten.werewolfrpg.statistics;
 
 import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
+import net.aesten.werewolfrpg.data.Faction;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.apache.commons.lang.time.DurationFormatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tracker {
     private final Map<UUID, AbstractMap.SimpleEntry<String, UUID>> specificDeathCauses = new HashMap<>();
     private final Map<UUID, PlayerStats> playerStats = new HashMap<>();
+    private final Map<UUID, ScoreDetail> scoreDetails = new HashMap<>();
 
     public PlayerStats addPlayer(Player player) {
         playerStats.put(player.getUniqueId(), new PlayerStats(player.getUniqueId().toString()));
@@ -47,13 +47,16 @@ public class Tracker {
                             stats.setResult(Result.DEFEAT);
                         }
                     }
-                }
-            );
+                });
     }
 
     public void sendDataToDatabase(WerewolfGame game, Role winner) {
-        QueryManager.addMatchRecord(game.getMatchId().replace("-", ""), game.getStartTime(), game.getEndTime(), winner);
-        playerStats.values().forEach(stats -> QueryManager.addPlayerMatchRecord(game.getMatchId().replace("-", ""), stats));
+        QueryManager.addMatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner);
+        playerStats.values().forEach(stats -> {
+            QueryManager.addPlayerMatchRecord(game.getMatchId(), stats);
+            int gainedScore = WerewolfGame.getScoreManager().getCalculatedScore(stats);
+            scoreDetails.put(UUID.fromString(stats.getPlayerId()), new ScoreDetail(QueryManager.addPlayerScore(stats.getPlayerId(), gainedScore), gainedScore));
+        });
         WerewolfRpg.logConsole("Saved match " + game.getMatchId() + " in database");
     }
 
@@ -76,26 +79,22 @@ public class Tracker {
         long time = (game.getEndTime().getTime() - game.getStartTime().getTime());
         String duration = DurationFormatUtils.formatDuration(time, "HH:mm:ss");
 
-        embed.setAuthor("WerewolfRPG");
         embed.setTitle(result);
-        embed.setDescription("Duration: " + duration);
-        embed.setFooter("MatchId: " + game.getMatchId());
+        embed.setDescription("Map: " + game.getMap().getName() + "\nDuration: " + duration + "\nMatchId: " + game.getMatchId());
 
         AtomicInteger c = new AtomicInteger();
-        for (Team team : WerewolfGame.getTeamsManager().getTeams()) {
-            Set<String> entries = team.getEntries();
-            if (entries.size() > 0) {
+        for (Faction faction : WerewolfGame.getTeamsManager().getFactions().values()) {
+            if (faction.getInitialPlayers().size() > 0) {
                 embed.addField("===============", "", true);
-                embed.addField(team.getName() + " (" + entries.size() + ")", "", true);
+                embed.addField(faction.getTeam().getName() + " (" + faction.getInitialPlayers().size() + ")", "", true);
                 embed.addField("===============", "", true);
-                entries.forEach(s -> {
-                    Player player = Bukkit.getPlayerExact(s);
-                    String status = "*Disconnected*";
-                    if (player != null) {
-                        if (game.getDataMap().get(player.getUniqueId()).isAlive()) status = "*Alive*";
-                        else status = "*Dead*";
-                    }
-                    embed.addField(s, status, true);
+                faction.getInitialPlayers().forEach((id, name) -> {
+                    String status;
+                    if (playerStats.get(id).getResult() == Result.DISCONNECTED) status = "*Disconnected*";
+                    else if (game.getDataMap().get(id).isAlive()) status = "*Alive*";
+                    else status = "*Dead*";
+                    ScoreDetail sd = scoreDetails.get(id);
+                    embed.addField(name, status + "\n" + sd.score + " (+" + sd.gain + ")", true);
                     c.getAndIncrement();
                 });
                 if (c.get() % 3 != 0) {
@@ -107,8 +106,16 @@ public class Tracker {
             }
         }
 
-        //embed.setImage(); todo add per map image and url?
-
         bot.getCurrentSession().getLc().sendMessage("").setEmbeds(embed.build()).queue();
+    }
+
+    private static final class ScoreDetail {
+        public int score;
+        public int gain;
+
+        public ScoreDetail(int score, int gain) {
+            this.score = score;
+            this.gain = gain;
+        }
     }
 }

@@ -2,7 +2,7 @@ package net.aesten.werewolfdb;
 
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
-import net.aesten.werewolfrpg.tracker.PlayerStats;
+import net.aesten.werewolfrpg.statistics.PlayerStats;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -55,6 +55,57 @@ public class QueryManager {
             WerewolfDatabase.getInstance().execute(sql);
         } catch (SQLException e) {
             WerewolfRpg.logConsole("Query to add a guild failed");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void registerPlayer(String mcId) {
+        String sql = "INSERT INTO SCORES VALUES ('" + mcId + "', 0)";
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to add a player in SCORES failed");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean isRegistered(String mcId) {
+        String sql = "SELECT MCID FROM SCORES WHERE MCID='" + mcId + "'";
+        try {
+            String result = getResult(sql);
+            return !result.equals("");
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to check player registration");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static int getScoreOfPlayer(String mcId) {
+        String sql = "SELECT SCORE FROM SCORES WHERE MCID='" + mcId + "'";
+        try {
+            String result = getResult(sql);
+            if (result.equals("")) {
+                throw new RuntimeException("Score of player is not and integer");
+            }
+            return Integer.parseInt(result);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to get player score failed");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static int addPlayerScore(String mcId, int score) {
+        int newScore = getScoreOfPlayer(mcId) + score;
+        setPlayerScore(mcId, newScore);
+        return newScore;
+    }
+
+    public static void setPlayerScore(String mcId, int score) {
+        String sql = "UPDATE SCORES SET SCORE=" + score + " WHERE MCID='" + mcId + "'";
+        try {
+            WerewolfDatabase.getInstance().execute(sql);
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to set player score failed");
             throw new RuntimeException(e);
         }
     }

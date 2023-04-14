@@ -54,6 +54,9 @@ public final class WerewolfRpg extends JavaPlugin {
         Configurable skeleton = WerewolfGame.getSkeletonManager();
         AzaleaConfigurationApi.load(this, skeleton);
 
+        Configurable score = WerewolfGame.getScoreManager();
+        AzaleaConfigurationApi.load(this, score);
+
         //load worlds & maps
         WerewolfGame.initMapManager();
 
@@ -76,6 +79,9 @@ public final class WerewolfRpg extends JavaPlugin {
 
         Configurable skeleton = WerewolfGame.getSkeletonManager();
         AzaleaConfigurationApi.save(this, skeleton);
+
+        Configurable score = WerewolfGame.getScoreManager();
+        AzaleaConfigurationApi.save(this, score);
 
         WerewolfGame.getMapManager().saveMaps();
 
@@ -132,6 +138,3 @@ public final class WerewolfRpg extends JavaPlugin {
         }
     }
 }
-
-//todo later: add a prompt to create roles and assign 'MMR' value to get role
-//todo IMPORTANT: fix melee weapons
