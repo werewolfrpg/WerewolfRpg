@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class Muter extends WerewolfItem implements InteractItem {
@@ -74,24 +75,25 @@ public class Muter extends WerewolfItem implements InteractItem {
             }
         }
 
-        List<String> str = QueryManager.getDiscordIdsOfPlayer(user.getUniqueId().toString());
+        String dcId = QueryManager.getDiscordIdOfPlayer(user.getUniqueId().toString());
         VoiceChannel vc = bot.getCurrentSession().getVc();
-        List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
+        Optional<Member> dcMemberOpt = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
 
-        if (dcMember.isEmpty()) {
+        if (dcMemberOpt.isEmpty()) {
             WerewolfUtil.sendPluginText(user, "Could not find your discord account in vc", ChatColor.RED);
             return;
         }
 
+        Member dcMember = dcMemberOpt.get();
         WerewolfPlayerData data = game.getDataMap().get(user.getUniqueId());
 
         if (data.isForceMute()) {
             data.setForceMute(false);
-            dcMember.forEach(member -> member.mute(false).queue());
+            dcMember.mute(false).queue();
             WerewolfUtil.sendPluginText(user, "You are now unmute", ChatColor.GREEN);
         } else {
             data.setForceMute(true);
-            dcMember.forEach(member -> member.mute(true).queue());
+            dcMember.mute(true).queue();
             WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN);
         }
 

@@ -14,6 +14,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import net.aesten.werewolfrpg.core.WerewolfGame;
+import net.aesten.werewolfrpg.data.Role;
 
 public class SpecInfoPacket extends PacketAdapter {
     public SpecInfoPacket(WerewolfRpg plugin) {
@@ -36,7 +37,7 @@ public class SpecInfoPacket extends PacketAdapter {
                 WrappedGameProfile profile = data.getProfile();
                 NativeGameMode gameMode = data.getGameMode();
                 if (gameMode != NativeGameMode.SPECTATOR || profile.getName().equals(playerName) ||
-                        WerewolfGame.getTeamsManager().getSpectators().getEntries().contains(profile.getName())) continue;
+                        WerewolfGame.getTeamsManager().getFaction(Role.SPECTATOR).getTeam().getEntries().contains(profile.getName())) continue;
 
                 PlayerInfoData newData = new PlayerInfoData(profile, data.getLatency(),
                         NativeGameMode.ADVENTURE, data.getDisplayName());

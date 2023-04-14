@@ -1,7 +1,6 @@
 package net.aesten.werewolfrpg.statistics;
 
 import net.aesten.werewolfdb.QueryManager;
-import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.data.Role;
 import net.azalealibrary.configuration.Configurable;
@@ -67,7 +66,7 @@ public class ScoreManager implements Configurable {
     public Rank getScoreRank(int score) {
         Map.Entry<Rank, Property<Integer>> bestEntry = Map.entry(Rank.BEGINNER, rank0);
         for (Map.Entry<Rank, Property<Integer>> entry : rankThresholdMap.entrySet()) {
-            if (score <= entry.getValue().get() && score >= bestEntry.getValue().get()) {
+            if (score >= entry.getValue().get() && entry.getValue().get() >= bestEntry.getValue().get()) {
                 bestEntry = entry;
             }
         }
@@ -101,29 +100,27 @@ public class ScoreManager implements Configurable {
     }
 
     public void assignRole(Player player, Guild guild) {
-        assignRole(QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString()), guild, WerewolfGame.getScoreManager().getPlayerRank(player));
+        assignRole(QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString()), guild, WerewolfGame.getScoreManager().getPlayerRank(player));
     }
 
-    public void assignRole(List<String> dcIds, Guild guild, Rank rank) {
+    public void assignRole(String dcId, Guild guild, Rank rank) {
         if (roles.size() == 0) getAllDiscordRoles(guild);
 
         List<net.dv8tion.jda.api.entities.Role> newRoles = guild.getRolesByName(rank.name(), true);
         if (newRoles.size() == 0) return;
         net.dv8tion.jda.api.entities.Role newRole = newRoles.get(0);
 
-        dcIds.forEach(dcId -> {
-            Member member = guild.getMemberById(dcId);
-            if (member != null) {
-                if (!member.getRoles().contains(newRole)) {
-                    roles.forEach(role -> {
-                        if (member.getRoles().contains(role)) {
-                            guild.removeRoleFromMember(member, role).queue();
-                        }
-                    });
-                    guild.addRoleToMember(member, newRole).queue();
-                }
+        Member member = guild.getMemberById(dcId);
+        if (member != null) {
+            if (!member.getRoles().contains(newRole)) {
+                roles.forEach(role -> {
+                    if (member.getRoles().contains(role)) {
+                        guild.removeRoleFromMember(member, role).queue();
+                    }
+                });
+                guild.addRoleToMember(member, newRole).queue();
             }
-        });
+        }
     }
 
     private void getAllDiscordRoles(Guild guild) {

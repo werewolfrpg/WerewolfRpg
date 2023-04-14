@@ -59,29 +59,8 @@ public class QueryManager {
         }
     }
 
-    public static void registerPlayer(String mcId) {
-        String sql = "INSERT INTO SCORES VALUES ('" + mcId + "', 0)";
-        try {
-            WerewolfDatabase.getInstance().execute(sql);
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to add a player in SCORES failed");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static boolean isRegistered(String mcId) {
-        String sql = "SELECT MCID FROM SCORES WHERE MCID='" + mcId + "'";
-        try {
-            String result = getResult(sql);
-            return !result.equals("");
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to check player registration");
-            throw new RuntimeException(e);
-        }
-    }
-
     public static int getScoreOfPlayer(String mcId) {
-        String sql = "SELECT SCORE FROM SCORES WHERE MCID='" + mcId + "'";
+        String sql = "SELECT SCORE FROM PLAYER_DATA WHERE MCID='" + mcId + "'";
         try {
             String result = getResult(sql);
             if (result.equals("")) {
@@ -101,7 +80,7 @@ public class QueryManager {
     }
 
     public static void setPlayerScore(String mcId, int score) {
-        String sql = "UPDATE SCORES SET SCORE=" + score + " WHERE MCID='" + mcId + "'";
+        String sql = "UPDATE PLAYER_DATA SET SCORE=" + score + " WHERE MCID='" + mcId + "'";
         try {
             WerewolfDatabase.getInstance().execute(sql);
         } catch (SQLException e) {
@@ -110,18 +89,18 @@ public class QueryManager {
         }
     }
 
-    public static List<String> getDiscordIdsOfPlayer(String mcId) {
-        String sql = "SELECT DCID FROM IDBINDINGS WHERE MCID='" + mcId + "'";
+    public static String getDiscordIdOfPlayer(String mcId) {
+        String sql = "SELECT DCID FROM PLAYER_DATA WHERE MCID='" + mcId + "'";
         try {
-            return WerewolfDatabase.getInstance().query(sql);
+            return getResult(sql);
         } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to get Discord ids from Minecraft id failed");
+            WerewolfRpg.logConsole("Query to get Discord id from Minecraft id failed");
             throw new RuntimeException(e);
         }
     }
 
     public static String getMcIdOfDiscordUser(String dcId) {
-        String sql = "SELECT MCID FROM IDBINDINGS WHERE DCID=" + dcId;
+        String sql = "SELECT MCID FROM PLAYER_DATA WHERE DCID=" + dcId;
         try {
             return getResult(sql);
         } catch (SQLException e) {
@@ -131,7 +110,7 @@ public class QueryManager {
     }
 
     public static List<String> getAllMcIds() {
-        String sql = "SELECT MCID FROM IDBINDINGS";
+        String sql = "SELECT MCID FROM PLAYER_DATA";
         try {
             return WerewolfDatabase.getInstance().query(sql);
         } catch (SQLException e) {
@@ -140,18 +119,18 @@ public class QueryManager {
         }
     }
 
-    public static void addIdBinding(String mcId, String dcId) {
-        String sql = "INSERT INTO IDBINDINGS (MCID, DCID) VALUES ('" + mcId + "'," + dcId + ")";
+    public static void registerPlayer(String mcId, String dcId) {
+        String sql = "INSERT INTO PLAYER_DATA (MCID, DCID) VALUES ('" + mcId + "'," + dcId + ")";
         try {
             WerewolfDatabase.getInstance().execute(sql);
         } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to register a Discord id to Minecraft id binding failed");
+            WerewolfRpg.logConsole("Query to register player failed");
             throw new RuntimeException(e);
         }
     }
 
-    public static void removeBinding(String dcId) {
-        String sql = "DELETE FROM IDBINDINGS WHERE DCID=" + dcId;
+    public static void removePlayer(String dcId) {
+        String sql = "DELETE FROM PLAYER_DATA WHERE DCID=" + dcId;
         try {
             WerewolfDatabase.getInstance().execute(sql);
         } catch (SQLException e) {
@@ -159,6 +138,18 @@ public class QueryManager {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean isRegistered(String dcId) {
+        String sql = "SELECT DCID FROM PLAYER_DATA WHERE DCID=" + dcId;
+        try {
+            String result = getResult(sql);
+            return !result.equals("");
+        } catch (SQLException e) {
+            WerewolfRpg.logConsole("Query to check player registration");
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static void addMatchRecord(String matchId, Timestamp start, Timestamp end, Role role) {
         String sql;

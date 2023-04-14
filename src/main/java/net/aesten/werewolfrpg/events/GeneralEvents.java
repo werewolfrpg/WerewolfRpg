@@ -33,17 +33,6 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
-
-        if (WerewolfGame.getInstance().isPlaying()) {
-            if (!WerewolfGame.getInstance().isParticipant(player)) {
-                WerewolfGame.getTeamsManager().registerPlayerRole(player, Role.SPECTATOR);
-            }
-            event.getPlayer().setGameMode(GameMode.SPECTATOR);
-        } else {
-            event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
-                    ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
-        }
 
         //check if user is registered
         WerewolfBot bot = WerewolfRpg.getBot();
@@ -53,6 +42,21 @@ public class GeneralEvents implements Listener {
 
         if (!mcIds.contains(player.getUniqueId().toString())) {
             event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!\nYou're Minecraft username to register is: " + player.getName());
+            event.setJoinMessage(null);
+        } else {
+            Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
+
+            WerewolfGame.getScoreManager().assignPrefix(player);
+
+            if (WerewolfGame.getInstance().isPlaying()) {
+                if (!WerewolfGame.getInstance().isParticipant(player)) {
+                    WerewolfGame.getTeamsManager().registerPlayerRole(player, Role.SPECTATOR);
+                }
+                event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            } else {
+                event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
+                        ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
+            }
         }
     }
 
@@ -77,7 +81,7 @@ public class GeneralEvents implements Listener {
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
-        event.setLeaveMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.LIGHT_PURPLE + event.getPlayer().getName() + ChatColor.AQUA + " tried to join server!");
+        event.setLeaveMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + ChatColor.RED + event.getPlayer().getName() + ChatColor.AQUA + " tried to join server!");
     }
 
     //split chat between spectators and players when in-game

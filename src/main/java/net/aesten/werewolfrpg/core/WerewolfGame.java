@@ -337,9 +337,9 @@ public class WerewolfGame {
                 scoreManager.assignPrefix(player);
 
                 if (vc != null) {
-                    List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-                    List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
-                    dcMember.forEach(member -> member.mute(false).queue());
+                    String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
+                    Optional<Member> dcMember = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                    dcMember.ifPresent(member -> member.mute(false).queue());
                     scoreManager.assignRole(player, vc.getGuild());
                 }
             }

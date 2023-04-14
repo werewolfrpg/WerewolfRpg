@@ -33,7 +33,7 @@ public class SubscribeCommand extends BotCommand {
             OptionMapping lcOpt = event.getOption("log-channel");
 
             if (vcOpt == null || lcOpt == null) {
-                event.reply("Missing arguments").queue();
+                event.reply("Missing arguments").setEphemeral(true).queue();
                 return;
             }
 
@@ -41,15 +41,15 @@ public class SubscribeCommand extends BotCommand {
             String lcId = lcOpt.getAsChannel().asTextChannel().getId();
 
             if (WerewolfRpg.getBot().getJda().getGuildChannelById(vcId) == null || WerewolfRpg.getBot().getJda().getGuildChannelById(lcId) == null) {
-                event.reply("Invalid channels").queue();
+                event.reply("Invalid channels").setEphemeral(true).queue();
                 return;
             }
 
             if (WerewolfRpg.getBot().isSubscribed(Objects.requireNonNull(event.getGuild()))) {
-                event.reply("This guild is already registered").queue();
+                event.reply("This guild is already registered").setEphemeral(true).queue();
             } else {
                 subscribe(event.getGuild(), vcId, lcId);
-                event.reply("Subscription succeeded").queue();
+                event.reply("Subscription succeeded").setEphemeral(true).queue();
             }
         }
     }
@@ -66,54 +66,26 @@ public class SubscribeCommand extends BotCommand {
     }
 
     private void createPlayerRoles(Guild guild) {
-        guild.createRole()
-                .setName("Werewolf RPG")
-                .setColor(Color.decode("#3ebe37"))
-                .setHoisted(true)
-                .complete();
+        createRoleIfNonExistant(guild, "Werewolf RPG", "#3ebe37", true);
+        createRoleIfNonExistant(guild, "Beginner", "#11b1e7");
+        createRoleIfNonExistant(guild, "Novice", "#11b1e7");
+        createRoleIfNonExistant(guild, "Apprentice", "#11b1e7");
+        createRoleIfNonExistant(guild, "Intermediate", "#e28621");
+        createRoleIfNonExistant(guild, "Skilled", "#e28621");
+        createRoleIfNonExistant(guild, "Experienced", "#e28621");
+        createRoleIfNonExistant(guild, "Veteran", "#e92269");
+        createRoleIfNonExistant(guild, "Expert", "#e92269");
+        createRoleIfNonExistant(guild, "Elite", "#e92269");
+        createRoleIfNonExistant(guild, "Legendary", "#ffad00");
+    }
 
-        guild.createRole()
-                .setName("Beginner")
-                .setColor(Color.decode("#11b1e7"))
-                .complete();
-        guild.createRole()
-                .setName("Novice")
-                .setColor(Color.decode("#11b1e7"))
-                .complete();
-        guild.createRole()
-                .setName("Apprentice")
-                .setColor(Color.decode("#11b1e7"))
-                .complete();
+    private void createRoleIfNonExistant(Guild guild, String name, String colorCode) {
+        createRoleIfNonExistant(guild, name, colorCode, false);
+    }
 
-        guild.createRole()
-                .setName("Intermediate")
-                .setColor(Color.decode("#e28621"))
-                .complete();
-        guild.createRole()
-                .setName("Skilled")
-                .setColor(Color.decode("#e28621"))
-                .complete();
-        guild.createRole()
-                .setName("Experienced")
-                .setColor(Color.decode("#e28621"))
-                .complete();
-
-        guild.createRole()
-                .setName("Veteran")
-                .setColor(Color.decode("#e92269"))
-                .complete();
-        guild.createRole()
-                .setName("Expert")
-                .setColor(Color.decode("#e92269"))
-                .complete();
-        guild.createRole()
-                .setName("Elite")
-                .setColor(Color.decode("#e92269"))
-                .complete();
-
-        guild.createRole()
-                .setName("Legendary")
-                .setColor(Color.decode("#ffad00"))
-                .complete();
+    private void createRoleIfNonExistant(Guild guild, String name, String colorCode, boolean hoisted) {
+        if (guild.getRolesByName(name, true).size() == 0) {
+            guild.createRole().setName(name).setColor(Color.decode(colorCode)).setHoisted(hoisted).complete();
+        }
     }
 }

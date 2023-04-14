@@ -30,6 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Ticker {
     private BossBar bar;
@@ -100,9 +101,9 @@ public class Ticker {
                                         2400, 5,false, false, false));
                     }
                     if (vc != null) {
-                        List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-                        List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
-                        dcMember.forEach(member -> member.mute(true).queue());
+                        String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
+                        Optional<Member> dcMember = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                        dcMember.ifPresent(member -> member.mute(true).queue());
                     }
                 }
 
@@ -134,9 +135,9 @@ public class Ticker {
                     player.getInventory().remove(Material.WOODEN_SWORD);
 
                     if (data.isAlive() && vc != null && !data.isForceMute()) {
-                        List<String> str = QueryManager.getDiscordIdsOfPlayer(player.getUniqueId().toString());
-                        List<Member> dcMember = vc.getMembers().stream().filter(member -> str.contains(member.getId())).toList();
-                        dcMember.forEach(member -> member.mute(false).queue());
+                        String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
+                        Optional<Member> dcMember = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                        dcMember.ifPresent(member -> member.mute(false).queue());
                     }
                 }
                 WerewolfUtil.sendTitle(player, ChatColor.YELLOW + "DAY TIME", ChatColor.GOLD + "Day " + days);

@@ -22,8 +22,8 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new UnsubscribeCommand());
         commands.add(new SessionCommand());
         commands.add(new RegisterButtonCommand());
-        commands.add(new ReadRulesCommand());
         commands.add(new ScoreCommand());
+        commands.add(new ReadRulesCommand());
     }
 
     public List<BotCommand> getCommands() {

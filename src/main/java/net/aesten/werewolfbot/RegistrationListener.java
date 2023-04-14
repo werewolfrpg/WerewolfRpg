@@ -22,13 +22,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class RegistrationListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (event.getComponentId().equals("register-button")) {
-            if (!QueryManager.getMcIdOfDiscordUser(event.getUser().getId()).equals("")) {
+            if (QueryManager.isRegistered(event.getUser().getId())) {
                 event.reply("You already have a registered Minecraft ID").setEphemeral(true).queue();
             } else {
                 TextInput subject = TextInput.create("minecraft-id", "Minecraft ID", TextInputStyle.SHORT)
@@ -46,7 +45,7 @@ public class RegistrationListener extends ListenerAdapter {
             if (QueryManager.getMcIdOfDiscordUser(event.getUser().getId()).equals("")) {
                 event.reply("You are not registered").setEphemeral(true).queue();
             } else {
-                QueryManager.removeBinding(event.getUser().getId());
+                QueryManager.removePlayer(event.getUser().getId());
 
                 List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("WWRPG Player", true);
                 if (role.size() != 0) {
@@ -67,11 +66,7 @@ public class RegistrationListener extends ListenerAdapter {
             if (uuid.equals("")) {
                 event.reply("Account not found...").setEphemeral(true).queue();
             } else {
-                QueryManager.addIdBinding(uuid, event.getUser().getId());
-
-                if (!QueryManager.isRegistered(uuid)) {
-                    QueryManager.registerPlayer(uuid);
-                }
+                QueryManager.registerPlayer(uuid, event.getUser().getId());
 
                 List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
                 if (werewolfRole.size() != 0) {
