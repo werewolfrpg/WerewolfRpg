@@ -146,7 +146,7 @@ public class Ticker {
 
     private void tick(WerewolfGame game) {
         TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        if ((teamsManager.getFaction(Role.VILLAGER).size() == 0 || teamsManager.getFaction(Role.WEREWOLF).size() == 0)) {
+        if ((teamsManager.getFactionSize(Role.VILLAGER) == 0 || teamsManager.getFactionSize(Role.WEREWOLF) == 0)) {
             WerewolfGame.endGame();
         }
         else {
