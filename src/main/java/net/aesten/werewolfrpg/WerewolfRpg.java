@@ -43,12 +43,14 @@ public final class WerewolfRpg extends JavaPlugin {
     public void onLoad() {
         plugin = this;
 
-        //Register commands
-        AzaleaCommandApi.register(this, WerewolfCommand.class);
+        //todo fetch & load dependencies instead of shading
     }
 
     @Override
     public void onEnable() {
+        //register commands
+        AzaleaCommandApi.register(this, WerewolfCommand.class);
+
         //plugin configurations
         Configurable shopConfig = WerewolfGame.getShopManager();
         AzaleaConfigurationApi.load(this, shopConfig);
@@ -131,5 +133,3 @@ public final class WerewolfRpg extends JavaPlugin {
         }
     }
 }
-
-//todo investigate .queue errors
