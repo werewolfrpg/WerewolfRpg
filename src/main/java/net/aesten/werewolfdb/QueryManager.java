@@ -9,56 +9,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class QueryManager {
-    public static List<String> requestGuildIdList() {
-        String sql = "SELECT GUILDID FROM GUILDS";
-        try {
-            return WerewolfDatabase.getInstance().query(sql);
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to fetch list of guild ids failed");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String requestGuildVoiceChannel(String guildId) {
-        String sql = "SELECT VCID FROM GUILDS WHERE GUILDID=" + guildId;
-        try {
-            return getResult(sql);
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to get vc channel from guild failed");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String requestGuildLogChannel(String guildId) {
-        String sql = "SELECT LOGCHID FROM GUILDS WHERE GUILDID=" + guildId;
-        try {
-            return getResult(sql);
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to get log channel from guild failed");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void removeGuild(String guildId) {
-        String sql = "DELETE FROM GUILDS WHERE GUILDID=" + guildId;
-        try {
-            WerewolfDatabase.getInstance().execute(sql);
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to remove a guild failed");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void addGuild(String guildId, String vcId, String lcId) {
-        String sql = "INSERT INTO GUILDS VALUES (" + guildId + "," + vcId + "," + lcId + ")";
-        try {
-            WerewolfDatabase.getInstance().execute(sql);
-        } catch (SQLException e) {
-            WerewolfRpg.logConsole("Query to add a guild failed");
-            throw new RuntimeException(e);
-        }
-    }
-
     public static int getScoreOfPlayer(String mcId) {
         String sql = "SELECT SCORE FROM PLAYER_DATA WHERE MCID='" + mcId + "'";
         try {

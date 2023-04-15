@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.core;
 
+import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.data.Role;
@@ -17,7 +18,6 @@ import net.aesten.werewolfrpg.utilities.WerewolfUtil;
 import net.aesten.werewolfrpg.data.RolePool;
 import net.aesten.werewolfrpg.map.WerewolfMap;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -294,9 +294,7 @@ public class WerewolfGame {
         //prepare and send stats
         instance.tracker.setResults(role);
         instance.tracker.sendDataToDatabase(instance, role);
-        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
-            instance.tracker.logMatchResult(instance, role);
-        }
+        instance.tracker.logMatchResult(instance, role);
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
@@ -314,12 +312,6 @@ public class WerewolfGame {
         teamsManager.clear();
         HandlerList.unregisterAll(listener);
         HandlerList.unregisterAll(skeletonManager);
-
-        //get voice channel to unmute
-        VoiceChannel vc = null;
-        if (WerewolfRpg.getBot() != null && WerewolfRpg.getBot().getCurrentSession() != null) {
-            vc = WerewolfRpg.getBot().getCurrentSession().getVc();
-        }
 
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {
@@ -339,11 +331,12 @@ public class WerewolfGame {
 
                 scoreManager.assignPrefixSuffix(player);
 
-                if (vc != null) {
+                WerewolfBot bot = WerewolfRpg.getBot();
+                if (bot != null && bot.isConfigured()) {
                     String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
-                    Optional<Member> dcMember = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                    Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
                     dcMember.ifPresent(member -> member.mute(false).queue());
-                    scoreManager.assignRole(player, vc.getGuild());
+                    scoreManager.assignRole(player, bot.getGuild());
                 }
             }
         }

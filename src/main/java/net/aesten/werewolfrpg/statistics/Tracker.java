@@ -106,7 +106,7 @@ public class Tracker {
             }
         }
 
-        bot.getCurrentSession().getLc().sendMessage("").setEmbeds(embed.build()).queue();
+        bot.getLc().sendMessage("").setEmbeds(embed.build()).queue();
     }
 
     private static final class ScoreDetail {

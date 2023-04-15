@@ -18,9 +18,7 @@ public class CommandManager extends ListenerAdapter {
 
     public CommandManager() {
         commands = new ArrayList<>();
-        commands.add(new SubscribeCommand());
-        commands.add(new UnsubscribeCommand());
-        commands.add(new SessionCommand());
+        commands.add(new ConfigureCommand());
         commands.add(new RegisterButtonCommand());
         commands.add(new ScoreCommand());
         commands.add(new ReadRulesCommand());

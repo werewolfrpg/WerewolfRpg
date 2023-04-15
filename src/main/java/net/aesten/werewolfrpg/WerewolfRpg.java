@@ -1,6 +1,7 @@
 package net.aesten.werewolfrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import net.aesten.werewolfbot.BotConfig;
 import net.aesten.werewolfbot.WerewolfBot;
 import net.aesten.werewolfrpg.packets.SpecInfoPacket;
 import net.aesten.werewolfrpg.commands.WerewolfCommand;
@@ -19,8 +20,6 @@ import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
-import java.io.*;
-
 @Plugin(name = "WerewolfRPG", version = "2.0")
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional RPG elements.")
 @Author("Aesten")
@@ -35,6 +34,7 @@ public final class WerewolfRpg extends JavaPlugin {
     public static final String CHAT_LOG = "[wwrpg] ";
 
     private static org.bukkit.plugin.Plugin plugin;
+    private static BotConfig botConfig;
     private static WerewolfBot bot;
 
     private SpecInfoPacket specInfoPacket;
@@ -50,14 +50,17 @@ public final class WerewolfRpg extends JavaPlugin {
     @Override
     public void onEnable() {
         //plugin configurations
-        Configurable shop = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.load(this, shop);
+        Configurable shopConfig = WerewolfGame.getShopManager();
+        AzaleaConfigurationApi.load(this, shopConfig);
 
-        Configurable skeleton = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.load(this, skeleton);
+        Configurable skeletonConfig = WerewolfGame.getSkeletonManager();
+        AzaleaConfigurationApi.load(this, skeletonConfig);
 
-        Configurable score = WerewolfGame.getScoreManager();
-        AzaleaConfigurationApi.load(this, score);
+        Configurable scoreConfig = WerewolfGame.getScoreManager();
+        AzaleaConfigurationApi.load(this, scoreConfig);
+
+        botConfig = new BotConfig();
+        AzaleaConfigurationApi.load(this, botConfig);
 
         //load worlds & maps
         WerewolfGame.initMapManager();
@@ -70,20 +73,22 @@ public final class WerewolfRpg extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().addPacketListener(specInfoPacket);
 
         //enable discord bot if configured
-        initBot();
+        initBot(botConfig);
     }
 
     @Override
     public void onDisable() {
         //plugin configurations
-        Configurable shop = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.save(this, shop);
+        Configurable shopConfig = WerewolfGame.getShopManager();
+        AzaleaConfigurationApi.save(this, shopConfig);
 
-        Configurable skeleton = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.save(this, skeleton);
+        Configurable skeletonConfig = WerewolfGame.getSkeletonManager();
+        AzaleaConfigurationApi.save(this, skeletonConfig);
 
-        Configurable score = WerewolfGame.getScoreManager();
-        AzaleaConfigurationApi.save(this, score);
+        Configurable scoreConfig = WerewolfGame.getScoreManager();
+        AzaleaConfigurationApi.save(this, scoreConfig);
+
+        AzaleaConfigurationApi.save(this, botConfig);
 
         WerewolfGame.getMapManager().saveMaps();
 
@@ -109,27 +114,13 @@ public final class WerewolfRpg extends JavaPlugin {
         Bukkit.getServer().getConsoleSender().sendMessage("[WerewolfRPG] " + log);
     }
 
-    private String getBotToken() throws IOException {
-        File file = new File(this.getDataFolder() + File.separator + "wwrpg-bot-token.txt");
-        if (file.createNewFile()) {
-            logConsole("File wwrpg-bot-token.txt not found, created one in plugin data folder");
-            return "";
+    private void initBot(BotConfig config) {
+        logConsole("Enabling Discord bot...");
+        if (config.getToken().get().equals("")) {
+            logConsole("No token was given, disabling all bot-related features");
+            bot = null;
         } else {
-            return new BufferedReader(new FileReader(file)).readLine();
-        }
-    }
-
-    private void initBot() {
-        try {
-            String token = getBotToken();
-            if (token.equals("")) {
-                logConsole("Discord bot not enabled");
-                bot = null;
-            } else {
-                bot = new WerewolfBot(token);
-            }
-        } catch (IOException e) {
-            logConsole("Failed to read bot token");
+            bot = new WerewolfBot(config);
         }
     }
 
@@ -141,4 +132,4 @@ public final class WerewolfRpg extends JavaPlugin {
     }
 }
 
-//todo remove guild SQL table
+//todo investigate .queue errors

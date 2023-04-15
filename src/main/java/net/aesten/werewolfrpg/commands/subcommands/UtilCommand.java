@@ -71,7 +71,7 @@ public class UtilCommand extends CommandNode {
         public void execute(CommandSender sender, Arguments arguments) {
             if (sender instanceof Player player) {
                 if (!WerewolfGame.getInstance().isPlaying()) {
-                    player.setHealth(40d);
+                    player.setHealth(20d);
                     player.setFoodLevel(20);
                     player.setSaturation(20f);
                 } else {

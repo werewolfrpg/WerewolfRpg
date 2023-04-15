@@ -2,8 +2,6 @@ package net.aesten.werewolfbot;
 
 import net.aesten.werewolfbot.commands.BotCommand;
 import net.aesten.werewolfbot.commands.CommandManager;
-import net.aesten.werewolfdb.QueryManager;
-import net.aesten.werewolfrpg.WerewolfRpg;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -13,17 +11,18 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class WerewolfBot {
-    private final List<String> subscribedGuilds;
+    private final BotConfig config;
     private final JDA jda;
-    private Session currentSession;
+    private boolean isConfigured;
 
-    public WerewolfBot(String botToken) {
-        JDABuilder builder = JDABuilder.createDefault(botToken);
+    public WerewolfBot(BotConfig config) {
+        this.config = config;
+        this.isConfigured = config.getGuildId().get() != 0 && config.getVcId().get() != 0 && config.getLcId().get() != 0;
+
+        JDABuilder builder = JDABuilder.createDefault(config.getToken().get());
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("WerewolfRPG"));
         builder.enableIntents(List.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS));
@@ -32,10 +31,10 @@ public class WerewolfBot {
         jda.addEventListener(manager);
         jda.addEventListener(new RegistrationListener());
         jda.updateCommands().addCommands(manager.getCommands().stream().map(BotCommand::getCommand).toList()).queue();
+
+        //Wait until JDA starts
         try {
             jda.awaitReady();
-            subscribedGuilds = new ArrayList<>(QueryManager.requestGuildIdList());
-            WerewolfRpg.logConsole("Registered guilds: " + subscribedGuilds.stream().map(jda::getGuildById).filter(Objects::nonNull).map(Guild::getName).toList());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -45,24 +44,27 @@ public class WerewolfBot {
         return jda;
     }
 
-    public List<String> getSubscribedGuilds() {
-        return subscribedGuilds;
+    public BotConfig getConfig() {
+        return config;
     }
 
-    public boolean isSubscribed(Guild guild) {
-        return subscribedGuilds.contains(guild.getId());
+    public boolean isConfigured() {
+        return isConfigured;
     }
 
-    public void newSession(VoiceChannel vc, TextChannel lc) {
-        currentSession = new Session(vc, lc);
+    public void setConfigured(boolean isConfigured) {
+        this.isConfigured = isConfigured;
     }
 
-    public void endSession() {
-        currentSession.terminate();
-        currentSession = null;
+    public Guild getGuild() {
+        return jda.getGuildById(config.getGuildId().get());
     }
 
-    public Session getCurrentSession() {
-        return currentSession;
+    public VoiceChannel getVc() {
+        return jda.getVoiceChannelById(config.getVcId().get());
+    }
+
+    public TextChannel getLc() {
+        return jda.getTextChannelById(config.getLcId().get());
     }
 }

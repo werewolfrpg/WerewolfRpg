@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ public class Muter extends WerewolfItem implements InteractItem {
                 .addLore(ChatColor.GREEN + "Right click to use")
                 .addLore(ChatColor.BLUE + "Switch mute/unmute on discord")
                 .addLore(ChatColor.GRAY + "The bot has to be active for the item to activate")
-                .addLore(ChatColor.GRAY + "You need to be in the session's discord")
+                .addLore(ChatColor.GRAY + "You need to be in the correct voice channel")
                 .addLore(ChatColor.GRAY + "You cannot unmute yourself during night time")
                 .build();
     }
@@ -56,8 +55,8 @@ public class Muter extends WerewolfItem implements InteractItem {
             return;
         }
 
-        if (bot.getCurrentSession() == null) {
-            WerewolfUtil.sendPluginText(user, "There is no active session", ChatColor.RED);
+        if (!bot.isConfigured()) {
+            WerewolfUtil.sendPluginText(user, "Bot is not configured properly", ChatColor.RED);
             return;
         }
 
@@ -76,7 +75,7 @@ public class Muter extends WerewolfItem implements InteractItem {
         }
 
         String dcId = QueryManager.getDiscordIdOfPlayer(user.getUniqueId().toString());
-        VoiceChannel vc = bot.getCurrentSession().getVc();
+        VoiceChannel vc = bot.getVc();
         Optional<Member> dcMemberOpt = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
 
         if (dcMemberOpt.isEmpty()) {

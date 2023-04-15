@@ -33,11 +33,6 @@ public class ScoreCommand extends BotCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
-            if (!WerewolfRpg.getBot().isSubscribed(Objects.requireNonNull(event.getGuild()))) {
-                event.reply("This server is not subscribed, ask an admin to subscribe the server").setEphemeral(true).queue();
-                return;
-            }
-
             OptionMapping userOpt = event.getOption("user");
             OptionMapping actionOpt = event.getOption("action");
             OptionMapping valueOpt = event.getOption("value");
