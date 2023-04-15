@@ -25,6 +25,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -44,9 +46,8 @@ public class GeneralEvents implements Listener {
             event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!\nYou're Minecraft username to register is: " + player.getName());
             event.setJoinMessage(null);
         } else {
-            Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(40.0);
-
-            WerewolfGame.getScoreManager().assignPrefix(player);
+            WerewolfGame.getScoreManager().assignPrefixSuffix(player);
+            player.setPlayerListHeader(ChatColor.GOLD + "Werewolf RPG Server");
 
             if (WerewolfGame.getInstance().isPlaying()) {
                 if (!WerewolfGame.getInstance().isParticipant(player)) {

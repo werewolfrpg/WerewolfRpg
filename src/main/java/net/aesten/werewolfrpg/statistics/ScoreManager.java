@@ -10,6 +10,7 @@ import net.azalealibrary.configuration.property.Property;
 import net.azalealibrary.configuration.property.PropertyType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -91,12 +92,14 @@ public class ScoreManager implements Configurable {
         return score;
     }
 
-    public void assignPrefix(Player player) {
-        assignPrefix(player, WerewolfGame.getScoreManager().getPlayerRank(player));
+    public void assignPrefixSuffix(Player player) {
+        int score = QueryManager.getScoreOfPlayer(player.getUniqueId().toString());
+        assignPrefixSuffix(player, score);
     }
 
-    public void assignPrefix(Player player, Rank rank) {
-        player.setPlayerListHeader(rank.getPrefix());
+    public void assignPrefixSuffix(Player player, int score) {
+        Rank rank = getScoreRank(score);
+        player.setPlayerListName(rank.getPrefix() + player.getName() + ChatColor.GREEN + " (" + score + ")");
     }
 
     public void assignRole(Player player, Guild guild) {
@@ -121,6 +124,11 @@ public class ScoreManager implements Configurable {
                 guild.addRoleToMember(member, newRole).queue();
             }
         }
+    }
+
+    public List<net.dv8tion.jda.api.entities.Role> getRankRoles(Guild guild) {
+        if (roles.size() == 0) getAllDiscordRoles(guild);
+        return roles;
     }
 
     private void getAllDiscordRoles(Guild guild) {

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
+import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -47,10 +48,12 @@ public class RegistrationListener extends ListenerAdapter {
             } else {
                 QueryManager.removePlayer(event.getUser().getId());
 
-                List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("WWRPG Player", true);
+                List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
                 if (role.size() != 0) {
                     Objects.requireNonNull(event.getGuild()).removeRoleFromMember(event.getUser(), role.get(0)).queue();
                 }
+
+                WerewolfGame.getScoreManager().getRankRoles(event.getGuild()).forEach(r -> event.getGuild().removeRoleFromMember(event.getUser(), r).queue());
 
                 event.reply("Your registration has been successfully canceled").setEphemeral(true).queue();
             }
@@ -65,6 +68,8 @@ public class RegistrationListener extends ListenerAdapter {
 
             if (uuid.equals("")) {
                 event.reply("Account not found...").setEphemeral(true).queue();
+            } else if (QueryManager.getAllMcIds().contains(uuid)) {
+                event.reply("Your Minecraft ID account is already registered").setEphemeral(true).queue();
             } else {
                 QueryManager.registerPlayer(uuid, event.getUser().getId());
 

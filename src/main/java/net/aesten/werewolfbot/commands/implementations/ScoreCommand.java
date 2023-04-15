@@ -4,11 +4,8 @@ import net.aesten.werewolfbot.commands.BotCommand;
 import net.aesten.werewolfdb.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
-import net.aesten.werewolfrpg.statistics.Rank;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -18,7 +15,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -82,10 +78,9 @@ public class ScoreCommand extends BotCommand {
     }
 
     private void applyRank(String mcId, int value, User user, Guild guild) {
-        Rank rank = WerewolfGame.getScoreManager().getScoreRank(value);
-        WerewolfGame.getScoreManager().assignRole(user.getId(), guild, rank);
+        WerewolfGame.getScoreManager().assignRole(user.getId(), guild, WerewolfGame.getScoreManager().getScoreRank(value));
         if (WerewolfRpg.getPlugin().getServer().getOnlinePlayers().stream().map(Entity::getUniqueId).toList().contains(UUID.fromString(mcId))) {
-            WerewolfGame.getScoreManager().assignPrefix(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(mcId))), rank);
+            WerewolfGame.getScoreManager().assignPrefixSuffix(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(mcId))), value);
         }
     }
 }

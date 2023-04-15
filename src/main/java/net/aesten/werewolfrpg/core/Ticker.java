@@ -92,6 +92,7 @@ public class Ticker {
             vc = WerewolfRpg.getBot().getCurrentSession().getVc();
         }
 
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (game.getParticipants().contains(player)) {
                 WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());

@@ -59,10 +59,10 @@
         </dependency>
         <dependency>
             <groupId>net.azalealibrary</groupId>
-            <artifactId>achievements</artifactId>
+            <artifactId>achievement</artifactId>
             <version>1.0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/temp/achievements-1.0.1.jar</systemPath>
+            <systemPath>${project.basedir}/temp/achievement-1.0.1.jar</systemPath>
         </dependency>
         <!-- protocol lib -->
         <dependency>

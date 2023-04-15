@@ -28,6 +28,8 @@ import java.io.*;
 @ApiVersion(ApiVersion.Target.v1_19)
 @Dependency("AzaleaConfiguration")
 @Dependency("AzaleaCommand")
+@Dependency("AzaleaAchievement")
+@Dependency("ProtocolLib")
 public final class WerewolfRpg extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;
     public static final String CHAT_LOG = "[wwrpg] ";
@@ -138,3 +140,5 @@ public final class WerewolfRpg extends JavaPlugin {
         }
     }
 }
+
+//todo remove guild SQL table

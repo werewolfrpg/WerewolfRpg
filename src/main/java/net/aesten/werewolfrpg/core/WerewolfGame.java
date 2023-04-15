@@ -25,6 +25,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
@@ -257,6 +259,7 @@ public class WerewolfGame {
 
                     //prepare player
                     player.setGameMode(GameMode.ADVENTURE);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 1000000, 4, false, false));
                     player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
                     player.getInventory().addItem(PlayerItem.MUTER.getItem());
@@ -334,7 +337,7 @@ public class WerewolfGame {
                 player.setFoodLevel(20);
                 player.setSaturation(20);
 
-                scoreManager.assignPrefix(player);
+                scoreManager.assignPrefixSuffix(player);
 
                 if (vc != null) {
                     String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
