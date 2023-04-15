@@ -8,7 +8,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <mcVersion>1.19</mcVersion> <!-- default mc version -->
+        <mc.version>1.19</mc.version>
     </properties>
 
     <groupId>net.aesten</groupId>
@@ -36,9 +36,9 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>${mcVersion}-R0.1-SNAPSHOT</version>
+            <version>${mc.version}-R0.1-SNAPSHOT</version>
         </dependency>
-        <!-- plugin annotations -->
+        <!-- spigot annotations -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>plugin-annotations</artifactId>
@@ -71,12 +71,11 @@
             <version>4.8.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- jda discord sdk -->
+        <!-- discord jda library -->
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.0-beta.5</version>
-            <scope>compile</scope>
+            <version>5.0.0-beta.8</version>
         </dependency>
         <!-- h2 embedded database -->
         <dependency>
@@ -90,63 +89,55 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
-        <!-- jet brains -->
+        <!-- annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-v${project.version}-${mcVersion}</finalName>
+        <finalName>${project.artifactId}-v${project.version}-${mc.version}</finalName>
 
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.5.0</version>
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>${project.version}</version>
-                            <destFileName>${project.build.finalName}</destFileName>
-                            <overWrite>true</overWrite>
-                        </artifactItem>
-                    </artifactItems>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.4.1</version>
+                <configuration>
+                    <minimizeJar>true</minimizeJar>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>org.spigotmc:spigot-api</exclude>
+                            <exclude>org.spigotmc:plugin-annotations</exclude>
+                            <exclude>org.jetbrains:annotations</exclude>
+                            <exclude>com.comphenix.protocol:ProtocolLib</exclude>
+                            <exclude>net.azalealibrary:configuration</exclude>
+                            <exclude>net.azalealibrary:command</exclude>
+                            <exclude>net.azalealibrary:achievement</exclude>
+                        </excludes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>module-info.class</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                <exclude>**/module-info.class</exclude>
+                                <exclude>META-INF/NOTICE*</exclude>
+                                <exclude>META-INF/LICENSE*</exclude>
+                                <exclude>LICENSE*</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.spigotmc:spigot-api</exclude>
-                                    <exclude>org.spigotmc:plugin-annotations</exclude>
-                                    <exclude>org.jetbrains:annotations</exclude>
-                                    <exclude>com.comphenix.protocol:ProtocolLib</exclude>
-                                    <exclude>net.azalealibrary:configuration</exclude>
-                                    <exclude>net.azalealibrary:command</exclude>
-                                    <exclude>net.azalealibrary:achievement</exclude>
-                                </excludes>
-                            </artifactSet>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
