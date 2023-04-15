@@ -143,7 +143,7 @@
                                     <exclude>com.comphenix.protocol:ProtocolLib</exclude>
                                     <exclude>net.azalealibrary:configuration</exclude>
                                     <exclude>net.azalealibrary:command</exclude>
-                                    <exclude>net.azalealibrary:achievements</exclude>
+                                    <exclude>net.azalealibrary:achievement</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>

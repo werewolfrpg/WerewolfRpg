@@ -1,22 +1,22 @@
 package net.aesten.werewolfrpg.statistics;
 
-import net.azalealibrary.achievements.AzaleaAchievements;
-import net.azalealibrary.achievements.achievement.Achievement;
-import net.azalealibrary.achievements.achievement.AchievementCreator;
-import net.azalealibrary.achievements.achievement.Frame;
+import net.azalealibrary.achievement.AzaleaAchievement;
+import net.azalealibrary.achievement.achievement.Achievement;
+import net.azalealibrary.achievement.achievement.AchievementCreator;
+import net.azalealibrary.achievement.achievement.Frame;
 
 import java.util.List;
 
 public class AchievementsManager {
     public static void init() {
-        List<Achievement> achievements = List.of(root, firstGame);
-        AzaleaAchievements.Api.registerAchievements("WerewolfRPG", achievements);
+        List<Achievement> achievement = List.of(root, firstGame);
+        AzaleaAchievement.Api.registerAchievements("WerewolfRPG", achievement);
     }
 
     private static final Achievement root = AchievementCreator.begin()
             .setTickTrigger()
             .setIcon("minecraft:stone_axe")
-            .setTitle("Werewolf RPG Achievements")
+            .setTitle("Werewolf RPG achievement")
             .setDescription("Thank you for playing Werewolf RPG!")
             .setFrame(Frame.TASK)
             .create("root");
