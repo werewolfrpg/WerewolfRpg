@@ -50,10 +50,10 @@ public class RegistrationListener extends ListenerAdapter {
 
                 List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
                 if (role.size() != 0) {
-                    Objects.requireNonNull(event.getGuild()).removeRoleFromMember(event.getUser(), role.get(0)).complete();
+                    Objects.requireNonNull(event.getGuild()).removeRoleFromMember(event.getUser(), role.get(0)).submit();
                 }
 
-                WerewolfGame.getScoreManager().getRankRoles(event.getGuild()).forEach(r -> event.getGuild().removeRoleFromMember(event.getUser(), r).complete());
+                WerewolfGame.getScoreManager().getRankRoles(event.getGuild()).forEach(r -> event.getGuild().removeRoleFromMember(event.getUser(), r).submit());
 
                 event.reply("Your registration has been successfully canceled").setEphemeral(true).queue();
             }
@@ -75,15 +75,15 @@ public class RegistrationListener extends ListenerAdapter {
 
                 List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
                 if (werewolfRole.size() != 0) {
-                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).complete();
+                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).submit();
                 }
                 List<Role> beginnerRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Beginner", true);
                 if (beginnerRole.size() != 0) {
-                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), beginnerRole.get(0)).complete();
+                    Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), beginnerRole.get(0)).submit();
                 }
 
                 event.reply("You are now registered!").setEphemeral(true).queue();
-                WerewolfRpg.logConsole("Player " + uuid + " registered in server: " + event.getGuild().getName());
+                WerewolfRpg.logConsole("Player " + mcid + " (" + uuid + ") registered in server: " + event.getGuild().getName());
             }
         }
     }
