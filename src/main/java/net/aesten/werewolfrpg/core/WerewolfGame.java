@@ -335,7 +335,7 @@ public class WerewolfGame {
                 if (bot != null && bot.isConfigured()) {
                     String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
                     Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
-                    dcMember.ifPresent(member -> member.mute(false).queue());
+                    dcMember.ifPresent(member -> member.mute(false).submit());
                     scoreManager.assignRole(player, bot.getGuild());
                 }
             }

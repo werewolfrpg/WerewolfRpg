@@ -118,10 +118,10 @@ public class ScoreManager implements Configurable {
             if (!member.getRoles().contains(newRole)) {
                 roles.forEach(role -> {
                     if (member.getRoles().contains(role)) {
-                        guild.removeRoleFromMember(member, role).queue();
+                        guild.removeRoleFromMember(member, role).complete();
                     }
                 });
-                guild.addRoleToMember(member, newRole).queue();
+                guild.addRoleToMember(member, newRole).complete();
             }
         }
     }

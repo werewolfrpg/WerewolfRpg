@@ -88,11 +88,11 @@ public class Muter extends WerewolfItem implements InteractItem {
 
         if (data.isForceMute()) {
             data.setForceMute(false);
-            dcMember.mute(false).queue();
+            dcMember.mute(false).submit();
             WerewolfUtil.sendPluginText(user, "You are now unmute", ChatColor.GREEN);
         } else {
             data.setForceMute(true);
-            dcMember.mute(true).queue();
+            dcMember.mute(true).submit();
             WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN);
         }
 
