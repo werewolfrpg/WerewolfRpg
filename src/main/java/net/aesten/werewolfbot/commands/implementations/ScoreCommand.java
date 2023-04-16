@@ -74,7 +74,7 @@ public class ScoreCommand extends BotCommand {
 
     private void applyRank(String mcId, int value, User user, Guild guild) {
         WerewolfGame.getScoreManager().assignRole(user.getId(), guild, WerewolfGame.getScoreManager().getScoreRank(value));
-        if (WerewolfRpg.getPlugin().getServer().getOnlinePlayers().stream().map(Entity::getUniqueId).toList().contains(UUID.fromString(mcId))) {
+        if (Bukkit.getOnlinePlayers().stream().map(Entity::getUniqueId).toList().contains(UUID.fromString(mcId))) {
             WerewolfGame.getScoreManager().assignPrefixSuffix(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(mcId))), value);
         }
     }
