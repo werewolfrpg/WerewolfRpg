@@ -74,6 +74,9 @@ public class Muter extends WerewolfItem implements InteractItem {
             }
         }
 
+        user.setCooldown(Material.ALLIUM, cooldown*20);
+        cooldowns.put(user, Instant.now());
+
         String dcId = QueryManager.getDiscordIdOfPlayer(user.getUniqueId().toString());
         VoiceChannel vc = bot.getVc();
         Optional<Member> dcMemberOpt = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
@@ -94,7 +97,6 @@ public class Muter extends WerewolfItem implements InteractItem {
             dcMember.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN));
         }
 
-        user.setCooldown(Material.ALLIUM, cooldown*20);
-        cooldowns.put(user, Instant.now());
+
     }
 }
