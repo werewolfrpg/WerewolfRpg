@@ -133,3 +133,6 @@ public final class WerewolfRpg extends JavaPlugin {
         }
     }
 }
+
+//todo make score formula configurable
+//todo achievements

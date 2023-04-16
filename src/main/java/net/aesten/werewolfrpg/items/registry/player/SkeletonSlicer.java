@@ -22,7 +22,7 @@ public class SkeletonSlicer extends ShopWerewolfItem {
                 .addLore(ChatColor.BLUE + "Kill skeletons faster")
                 .addLore(ChatColor.GRAY + "Has to be purchased every night")
                 .addLore(ChatColor.GRAY + "Deleted from inventory at the end of night time")
-                .addEnchantment(Enchantment.DAMAGE_UNDEAD, 5)
+                .addEnchantment(Enchantment.DAMAGE_UNDEAD, 10)
                 .addFlags(ItemFlag.HIDE_ENCHANTS)
                 .setUnbreakable()
                 .build();
