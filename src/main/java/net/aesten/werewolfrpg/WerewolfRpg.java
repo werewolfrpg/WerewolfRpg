@@ -136,3 +136,5 @@ public final class WerewolfRpg extends JavaPlugin {
 
 //todo make score formula configurable
 //todo achievements
+//todo make database access more secure and use a library like spark/javalin
+//todo frontend will be separate app (roles to access views or allow modifications)
