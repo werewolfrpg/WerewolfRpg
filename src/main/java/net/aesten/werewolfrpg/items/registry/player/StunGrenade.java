@@ -1,6 +1,7 @@
 package net.aesten.werewolfrpg.items.registry.player;
 
 import net.aesten.werewolfrpg.core.WerewolfGame;
+import net.aesten.werewolfrpg.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.items.base.*;
 import net.aesten.werewolfrpg.shop.ShopType;
 import net.aesten.werewolfrpg.utilities.WerewolfUtil;
@@ -83,8 +84,11 @@ public class StunGrenade extends ShopWerewolfItem implements ProjectileItem, Pla
     @Override
     public void onPlayerMove(PlayerMoveEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
-        if (game.isParticipant(event.getPlayer()) && game.getDataMap().get(event.getPlayer().getUniqueId()).isStunned()) {
-            event.setTo(event.getFrom());
+        if (game.isParticipant(event.getPlayer())) {
+            WerewolfPlayerData data = game.getDataMap().get(event.getPlayer().getUniqueId());
+            if (data != null && data.isStunned()) {
+                event.setTo(event.getFrom());
+            }
         }
     }
 }

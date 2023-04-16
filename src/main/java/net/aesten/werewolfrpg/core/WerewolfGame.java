@@ -212,12 +212,9 @@ public class WerewolfGame {
             else if (entity instanceof Player player) {
                 WerewolfUtil.removeAllPotionEffectsFromPlayer(player);
                 instance.ticker.addPlayer(player);
-                player.setGameMode(GameMode.SPECTATOR);
                 player.getInventory().clear();
                 player.teleport(instance.map.getMapSpawn());
-                player.setHealth(40);
-                player.setFoodLevel(20);
-                player.setSaturation(20);
+
 
                 if (instance.participants.contains(player)) {
                     //select the role to attribute
@@ -260,6 +257,9 @@ public class WerewolfGame {
                     //prepare player
                     player.setGameMode(GameMode.ADVENTURE);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 1000000, 4, false, false));
+                    player.setHealth(40d);
+                    player.setFoodLevel(20);
+                    player.setSaturation(20);
                     player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
                     player.getInventory().addItem(PlayerItem.MUTER.getItem());
@@ -267,6 +267,7 @@ public class WerewolfGame {
                     //increment
                     count++;
                 } else {
+                    player.setGameMode(GameMode.SPECTATOR);
                     teamsManager.registerPlayerRole(player, Role.SPECTATOR);
                 }
             }
@@ -303,6 +304,9 @@ public class WerewolfGame {
         //get role list (before resetting)
         String rolesList = getMatchText();
 
+        //keep score gains of players
+        Map<UUID, Integer> scoreGains = instance.tracker.getGains();
+
         //reset all values
         instance = new WerewolfGame(instance);
         World world = instance.map.getWorld();
@@ -325,17 +329,19 @@ public class WerewolfGame {
                 player.sendTitle(getEndString(role), ChatColor.GOLD + "GAME END", 2, 2, 40);
                 player.sendMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG + getEndString(role));
                 player.setGameMode(GameMode.SPECTATOR);
-                player.setHealth(40);
+                WerewolfUtil.removeAllPotionEffectsFromPlayer(player);
+                player.setHealth(20d);
                 player.setFoodLevel(20);
                 player.setSaturation(20);
 
+                WerewolfUtil.sendPluginText(player, "You gained " + ChatColor.LIGHT_PURPLE + scoreGains.get(player.getUniqueId()) + ChatColor.AQUA + " points");
                 scoreManager.assignPrefixSuffix(player);
 
                 WerewolfBot bot = WerewolfRpg.getBot();
                 if (bot != null && bot.isConfigured()) {
                     String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
                     Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
-                    dcMember.ifPresent(member -> member.mute(false).submit());
+                    dcMember.ifPresent(member -> member.mute(false).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been unmuted", ChatColor.GREEN)));
                     scoreManager.assignRole(player, bot.getGuild());
                 }
             }
@@ -373,11 +379,11 @@ public class WerewolfGame {
 
     private static String getMatchText() {
         TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        Set<String> villagers = teamsManager.getFaction(Role.VILLAGER).getTeam().getEntries();
-        Set<String> werewolves = teamsManager.getFaction(Role.WEREWOLF).getTeam().getEntries();
-        Set<String> traitors = teamsManager.getFaction(Role.TRAITOR).getTeam().getEntries();
-        Set<String> vampires = teamsManager.getFaction(Role.VAMPIRE).getTeam().getEntries();
-        Set<String> possessed = teamsManager.getFaction(Role.POSSESSED).getTeam().getEntries();
+        Collection<String> villagers = teamsManager.getFaction(Role.VILLAGER).getInitialPlayers().values();
+        Collection<String> werewolves = teamsManager.getFaction(Role.WEREWOLF).getInitialPlayers().values();
+        Collection<String> traitors = teamsManager.getFaction(Role.TRAITOR).getInitialPlayers().values();
+        Collection<String> vampires = teamsManager.getFaction(Role.VAMPIRE).getInitialPlayers().values();
+        Collection<String> possessed = teamsManager.getFaction(Role.POSSESSED).getInitialPlayers().values();
 
         StringBuilder builder = new StringBuilder();
 

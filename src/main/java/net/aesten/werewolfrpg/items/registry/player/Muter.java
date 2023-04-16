@@ -88,12 +88,10 @@ public class Muter extends WerewolfItem implements InteractItem {
 
         if (data.isForceMute()) {
             data.setForceMute(false);
-            dcMember.mute(false).submit();
-            WerewolfUtil.sendPluginText(user, "You are now unmute", ChatColor.GREEN);
+            dcMember.mute(false).submit().thenAccept(r -> WerewolfUtil.sendPluginText(user, "You are now unmuted", ChatColor.GREEN));
         } else {
             data.setForceMute(true);
-            dcMember.mute(true).submit();
-            WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN);
+            dcMember.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(user, "You are now muted", ChatColor.GREEN));
         }
 
         user.setCooldown(Material.ALLIUM, cooldown*20);

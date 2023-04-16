@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.items.registry.player;
 
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.core.WerewolfGame;
 import net.aesten.werewolfrpg.data.Role;
 import net.aesten.werewolfrpg.data.WerewolfPlayerData;
@@ -31,7 +32,7 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
                 .addName(ChatColor.DARK_RED + "Werewolf Axe")
                 .addLore(ChatColor.DARK_PURPLE + "The murderous axe of werewolves")
                 .addFlags(ItemFlag.HIDE_ATTRIBUTES)
-                .addDamage(2031)
+                .addDamage(131)
                 .build();
     }
 

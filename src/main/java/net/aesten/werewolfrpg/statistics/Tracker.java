@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.awt.Color;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Tracker {
     private final Map<UUID, AbstractMap.SimpleEntry<String, UUID>> specificDeathCauses = new HashMap<>();
@@ -103,10 +104,15 @@ public class Tracker {
                 if (c.get() % 3 == 1) {
                     embed.addField("", "", true);
                 }
+                c.set(0);
             }
         }
 
         bot.getLc().sendMessage("").setEmbeds(embed.build()).queue();
+    }
+
+    public Map<UUID, Integer> getGains() {
+        return scoreDetails.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().gain));
     }
 
     private static final class ScoreDetail {

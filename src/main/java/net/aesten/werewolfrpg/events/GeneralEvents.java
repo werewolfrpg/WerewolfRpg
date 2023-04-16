@@ -52,6 +52,10 @@ public class GeneralEvents implements Listener {
                 }
                 event.getPlayer().setGameMode(GameMode.SPECTATOR);
             } else {
+                if (WerewolfGame.getInstance().getParticipants().stream().map(Player::getUniqueId).toList().contains(player.getUniqueId())) {
+                    WerewolfGame.getInstance().getParticipants().removeIf(p -> p.getUniqueId().equals(player.getUniqueId()));
+                    WerewolfGame.getInstance().getParticipants().add(player);
+                }
                 event.setJoinMessage(WerewolfRpg.COLOR + WerewolfRpg.CHAT_LOG +
                         ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
             }

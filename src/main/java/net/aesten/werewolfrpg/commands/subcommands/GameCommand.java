@@ -110,9 +110,6 @@ public class GameCommand extends CommandNode {
                 WerewolfGame.getInstance().getParticipants().forEach(player -> {
                     player.teleport(WerewolfGame.getInstance().getMap().getMapSpawn());
                     player.setGameMode(GameMode.ADVENTURE);
-                    player.setHealth(40);
-                    player.setFoodLevel(20);
-                    player.setSaturation(20);
                 });
                 WerewolfUtil.sendPluginText(sender, "All players have been gathered to the selected map");
             }

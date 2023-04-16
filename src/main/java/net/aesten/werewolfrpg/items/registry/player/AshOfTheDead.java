@@ -54,7 +54,7 @@ public class AshOfTheDead extends ShopWerewolfItem implements InteractItem {
         WerewolfGame game = WerewolfGame.getInstance();
         Player user = event.getPlayer();
         Objects.requireNonNull(event.getItem()).setAmount(event.getItem().getAmount() - 1);
-        game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.6f,1);
+        game.getMap().getWorld().playSound(user.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.6f,1);
         WerewolfUtil.sendPluginText(user, "Ash of the dead:");
         for (Player player : game.getParticipants()) {
             if (game.getDataMap().get(player.getUniqueId()).isAlive()) {

@@ -7,6 +7,8 @@ import net.azalealibrary.command.CommandNode;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class UtilCommand extends CommandNode {
     public UtilCommand() {

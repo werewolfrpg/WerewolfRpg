@@ -98,7 +98,7 @@ public class Ticker {
                     if (bot != null && bot.isConfigured()) {
                         String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
                         Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
-                        dcMember.ifPresent(member -> member.mute(true).submit());
+                        dcMember.ifPresent(member -> member.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been muted", ChatColor.GREEN)));
                     }
                 }
 
@@ -128,7 +128,7 @@ public class Ticker {
                     if (bot != null && bot.isConfigured() && data.isAlive() && !data.isForceMute()) {
                         String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
                         Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
-                        dcMember.ifPresent(member -> member.mute(false).submit());
+                        dcMember.ifPresent(member -> member.mute(false).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been unmuted", ChatColor.GREEN)));
                     }
                 }
                 WerewolfUtil.sendTitle(player, ChatColor.YELLOW + "DAY TIME", ChatColor.GOLD + "Day " + days);
