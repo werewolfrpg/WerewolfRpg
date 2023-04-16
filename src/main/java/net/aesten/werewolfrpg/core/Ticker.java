@@ -150,7 +150,7 @@ public class Ticker {
                     int div = 0;
                     for (int i = 0 ; i < inventory.getSize() ; i++) {
                         ItemStack is = inventory.getItem(i);
-                        if (is != null && is.getType() == Material.HEART_OF_THE_SEA) {
+                        if (is != null && is.getType() == PlayerItem.DIVINATION.getItem().getType()) {
                             div += is.getAmount();
                         }
                     }
@@ -173,14 +173,14 @@ public class Ticker {
                     }
                 }
 
-                if (inventory.contains(PlayerItem.WEREWOLF_AXE.getItem()) && data.getRole() != Role.WEREWOLF) {
-                    inventory.remove(PlayerItem.WEREWOLF_AXE.getItem());
+                if (inventory.contains(PlayerItem.WEREWOLF_AXE.getItem().getType()) && data.getRole() != Role.WEREWOLF) {
+                    inventory.remove(PlayerItem.WEREWOLF_AXE.getItem().getType());
                     WerewolfUtil.sendPluginText(player, "Werewolf Axe deleted from inventory", ChatColor.RED);
                     WerewolfUtil.sendPluginText(player, "You cannot use this item", ChatColor.RED);
                 }
 
-                if (inventory.contains(PlayerItem.TRAITORS_GUIDE.getItem()) && data.getRole() != Role.TRAITOR) {
-                    inventory.remove(PlayerItem.TRAITORS_GUIDE.getItem());
+                if (inventory.contains(PlayerItem.TRAITORS_GUIDE.getItem().getType()) && data.getRole() != Role.TRAITOR) {
+                    inventory.remove(PlayerItem.TRAITORS_GUIDE.getItem().getType());
                     WerewolfUtil.sendPluginText(player, "Traitor's Guide deleted from inventory", ChatColor.RED);
                     WerewolfUtil.sendPluginText(player, "You cannot use this item", ChatColor.RED);
                 }
