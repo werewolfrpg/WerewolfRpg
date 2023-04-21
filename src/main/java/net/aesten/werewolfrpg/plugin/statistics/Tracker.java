@@ -1,7 +1,9 @@
 package net.aesten.werewolfrpg.plugin.statistics;
 
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
+import net.aesten.werewolfrpg.backend.models.MatchRecord;
+import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import net.aesten.werewolfrpg.bot.WerewolfBot;
-import net.aesten.werewolfrpg.backend.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.aesten.werewolfrpg.plugin.data.Faction;
@@ -22,7 +24,7 @@ public class Tracker {
     private final Map<UUID, ScoreDetail> scoreDetails = new HashMap<>();
 
     public PlayerStats addPlayer(Player player) {
-        playerStats.put(player.getUniqueId(), new PlayerStats(player.getUniqueId().toString()));
+        playerStats.put(player.getUniqueId(), new PlayerStats(player.getUniqueId()));
         return playerStats.get(player.getUniqueId());
     }
 
@@ -52,17 +54,21 @@ public class Tracker {
     }
 
     public void sendDataToDatabase(WerewolfGame game, Role winner) {
-        QueryManager.addMatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner);
+        WerewolfBackend backend = WerewolfBackend.getBackend();
+        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner.name));
         playerStats.values().forEach(stats -> {
-            QueryManager.addPlayerMatchRecord(game.getMatchId(), stats);
             int gainedScore = WerewolfGame.getScoreManager().getCalculatedScore(stats);
-            scoreDetails.put(UUID.fromString(stats.getPlayerId()), new ScoreDetail(QueryManager.addPlayerScore(stats.getPlayerId(), gainedScore), gainedScore));
+            stats.setGain(gainedScore);
+            stats.setMatchId(game.getMatchId());
+            backend.getPsc().savePlayerStats(stats);
+            backend.getPdc().addScoreToPlayer(stats.getPlayerId(), gainedScore);
+            scoreDetails.put(stats.getPlayerId(), new ScoreDetail(backend.getPdc().addScoreToPlayer(stats.getPlayerId(), gainedScore).getScore(), gainedScore));
         });
         WerewolfRpg.logConsole("Saved match " + game.getMatchId() + " in database");
     }
 
     public void logMatchResult(WerewolfGame game, Role winner) {
-        WerewolfBot bot = WerewolfRpg.getBot();
+        WerewolfBot bot = WerewolfBot.getBot();
         if (bot == null) return;
 
         EmbedBuilder embed = new EmbedBuilder();

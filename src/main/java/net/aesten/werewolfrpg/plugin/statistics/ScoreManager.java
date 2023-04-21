@@ -1,6 +1,7 @@
 package net.aesten.werewolfrpg.plugin.statistics;
 
-import net.aesten.werewolfrpg.backend.QueryManager;
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
+import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.aesten.werewolfrpg.plugin.data.Role;
 import net.azalealibrary.configuration.Configurable;
@@ -60,7 +61,7 @@ public class ScoreManager implements Configurable {
     }
 
     public Rank getPlayerRank(Player player) {
-        int score = QueryManager.getScoreOfPlayer(player.getUniqueId().toString());
+        int score = WerewolfBackend.getBackend().getPdc().getScoreOfPlayer(player.getUniqueId());
         return getScoreRank(score);
     }
 
@@ -86,14 +87,14 @@ public class ScoreManager implements Configurable {
         }
 
         score += (stats.getTraitorsGuideUsed() + stats.getDivinationUsed()) * 2;
-        score += (stats.getAsheUsed() + stats.getRevelationUsed() + stats.getInvisibilityUsed() + stats.getProtectionTriggered() + stats.getSneakNoticeTriggered());
+        score += (stats.getAshUsed() + stats.getRevelationUsed() + stats.getInvisibilityUsed() + stats.getProtectionTriggered() + stats.getSneakNoticeTriggered());
         score += stats.getKills() * 2;
 
         return score;
     }
 
     public void assignPrefixSuffix(Player player) {
-        int score = QueryManager.getScoreOfPlayer(player.getUniqueId().toString());
+        int score = WerewolfBackend.getBackend().getPdc().getScoreOfPlayer(player.getUniqueId());
         assignPrefixSuffix(player, score);
     }
 
@@ -103,10 +104,10 @@ public class ScoreManager implements Configurable {
     }
 
     public void assignRole(Player player, Guild guild) {
-        assignRole(QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString()), guild, WerewolfGame.getScoreManager().getPlayerRank(player));
+        assignRole(WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId()), guild, WerewolfGame.getScoreManager().getPlayerRank(player));
     }
 
-    public void assignRole(String dcId, Guild guild, Rank rank) {
+    public void assignRole(long dcId, Guild guild, Rank rank) {
         if (roles.size() == 0) getAllDiscordRoles(guild);
 
         List<net.dv8tion.jda.api.entities.Role> newRoles = guild.getRolesByName(rank.name(), true);

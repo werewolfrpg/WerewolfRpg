@@ -97,4 +97,8 @@ public class WerewolfBot {
     public static WerewolfBot getBot() {
         return bot;
     }
+
+    public boolean isActive() {
+        return bot != null;
+    }
 }

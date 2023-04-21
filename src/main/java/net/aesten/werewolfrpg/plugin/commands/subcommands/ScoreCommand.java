@@ -1,7 +1,7 @@
 package net.aesten.werewolfrpg.plugin.commands.subcommands;
 
-import net.aesten.werewolfrpg.backend.QueryManager;
-import net.aesten.werewolfrpg.WerewolfRpg;
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
+import net.aesten.werewolfrpg.bot.WerewolfBot;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.aesten.werewolfrpg.plugin.utilities.WerewolfUtil;
 import net.azalealibrary.command.Arguments;
@@ -61,11 +61,11 @@ public class ScoreCommand extends CommandNode {
                 WerewolfUtil.sendErrorText(sender, "Score shouldn't be negative");
                 return;
             }
+            WerewolfBackend backend = WerewolfBackend.getBackend();
             UUID uuid = player.getUniqueId();
-            String mcId = uuid.toString();
-            String dcId = QueryManager.getDiscordIdOfPlayer(mcId);
-            int score = QueryManager.addPlayerScore(mcId, gain);
-            WerewolfGame.getScoreManager().assignRole(dcId, WerewolfRpg.getBot().getGuild(), WerewolfGame.getScoreManager().getScoreRank(score));
+            long dcId = backend.getPdc().getDiscordIdOfPlayer(uuid);
+            int score = backend.getPdc().addScoreToPlayer(uuid, gain).getScore();
+            WerewolfGame.getScoreManager().assignRole(dcId, WerewolfBot.getBot().getGuild(), WerewolfGame.getScoreManager().getScoreRank(score));
             WerewolfGame.getScoreManager().assignPrefixSuffix(player, score);
             WerewolfUtil.sendPluginText(sender, arguments.get(0) + " now has " + score + " score");
         }
@@ -100,11 +100,11 @@ public class ScoreCommand extends CommandNode {
                 WerewolfUtil.sendErrorText(sender, "Score shouldn't be negative");
                 return;
             }
+            WerewolfBackend backend = WerewolfBackend.getBackend();
             UUID uuid = player.getUniqueId();
-            String mcId = uuid.toString();
-            String dcId = QueryManager.getDiscordIdOfPlayer(mcId);
-            QueryManager.setPlayerScore(mcId, score);
-            WerewolfGame.getScoreManager().assignRole(dcId, WerewolfRpg.getBot().getGuild(), WerewolfGame.getScoreManager().getScoreRank(score));
+            long dcId = backend.getPdc().getDiscordIdOfPlayer(uuid);
+            backend.getPdc().setScoreOfPlayer(uuid, score);
+            WerewolfGame.getScoreManager().assignRole(dcId, WerewolfBot.getBot().getGuild(), WerewolfGame.getScoreManager().getScoreRank(score));
             WerewolfGame.getScoreManager().assignPrefixSuffix(player, score);
             WerewolfUtil.sendPluginText(sender, arguments.get(0) + " now has " + score + " score");
         }

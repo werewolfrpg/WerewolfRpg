@@ -2,8 +2,9 @@ package net.aesten.werewolfrpg.bot;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.aesten.werewolfrpg.backend.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
+import net.aesten.werewolfrpg.backend.models.PlayerData;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -23,12 +24,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class RegistrationListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        WerewolfBackend backend = WerewolfBackend.getBackend();
         if (event.getComponentId().equals("register-button")) {
-            if (QueryManager.isRegistered(event.getUser().getId())) {
+            if (backend.getPdc().getMinecraftIdFromDiscordId(event.getUser().getIdLong()) != null) {
                 event.reply("You already have a registered Minecraft ID").setEphemeral(true).queue();
             } else {
                 TextInput subject = TextInput.create("minecraft-id", "Minecraft ID", TextInputStyle.SHORT)
@@ -43,10 +46,10 @@ public class RegistrationListener extends ListenerAdapter {
                 event.replyModal(modal).queue();
             }
         } else if (event.getComponentId().equals("unregister-button")) {
-            if (QueryManager.getMcIdOfDiscordUser(event.getUser().getId()).equals("")) {
+            if (backend.getPdc().getMinecraftIdFromDiscordId(event.getUser().getIdLong()) == null) {
                 event.reply("You are not registered").setEphemeral(true).queue();
             } else {
-                QueryManager.removePlayer(event.getUser().getId());
+                backend.getPdc().deletePlayerByDiscordId(event.getUser().getIdLong());
 
                 List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
                 if (role.size() != 0) {
@@ -63,16 +66,16 @@ public class RegistrationListener extends ListenerAdapter {
     @Override
     public void onModalInteraction(@Nonnull ModalInteractionEvent event) {
         if (event.getModalId().equals("registration")) {
+            WerewolfBackend backend = WerewolfBackend.getBackend();
             String mcid = Objects.requireNonNull(event.getValue("minecraft-id")).getAsString();
-            String uuid = getUUID(mcid);
+            UUID uuid = getUUID(mcid);
 
-            if (uuid.equals("")) {
+            if (uuid == null) {
                 event.reply("Account not found...").setEphemeral(true).queue();
-            } else if (QueryManager.getAllMcIds().contains(uuid)) {
+            } else if (backend.getPdc().getAllMinecraftIds().contains(uuid)) {
                 event.reply("Your Minecraft ID account is already registered").setEphemeral(true).queue();
             } else {
-                QueryManager.registerPlayer(uuid, event.getUser().getId());
-
+                backend.getPdc().registerPlayer(new PlayerData(uuid, event.getUser().getIdLong(), 0));
                 List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf RPG", true);
                 if (werewolfRole.size() != 0) {
                     Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).submit();
@@ -88,7 +91,7 @@ public class RegistrationListener extends ListenerAdapter {
         }
     }
 
-    private String getUUID(String mcid) {
+    private UUID getUUID(String mcid) {
         try {
             URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + mcid);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -104,10 +107,10 @@ public class RegistrationListener extends ListenerAdapter {
 
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(response.toString(), JsonObject.class);
-            return jsonObject.get("id").getAsString().replaceAll("(.{8})(.{4})(.{4})(.{4})(.+)", "$1-$2-$3-$4-$5");
+            return UUID.fromString(jsonObject.get("id").getAsString().replaceAll("(.{8})(.{4})(.{4})(.{4})(.+)", "$1-$2-$3-$4-$5"));
         } catch (IOException e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
     }
 }

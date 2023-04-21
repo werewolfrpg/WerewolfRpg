@@ -1,8 +1,7 @@
 package net.aesten.werewolfrpg.plugin.items.registry.player;
 
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
 import net.aesten.werewolfrpg.bot.WerewolfBot;
-import net.aesten.werewolfrpg.backend.QueryManager;
-import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.aesten.werewolfrpg.plugin.data.WerewolfPlayerData;
 import net.aesten.werewolfrpg.plugin.items.base.InteractItem;
@@ -47,7 +46,7 @@ public class Muter extends WerewolfItem implements InteractItem {
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
-        WerewolfBot bot = WerewolfRpg.getBot();
+        WerewolfBot bot = WerewolfBot.getBot();
         Player user = event.getPlayer();
 
         if (bot == null) {
@@ -77,9 +76,9 @@ public class Muter extends WerewolfItem implements InteractItem {
         user.setCooldown(Material.ALLIUM, cooldown*20);
         cooldowns.put(user, Instant.now());
 
-        String dcId = QueryManager.getDiscordIdOfPlayer(user.getUniqueId().toString());
+        long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(user.getUniqueId());
         VoiceChannel vc = bot.getVc();
-        Optional<Member> dcMemberOpt = vc.getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+        Optional<Member> dcMemberOpt = vc.getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
 
         if (dcMemberOpt.isEmpty()) {
             WerewolfUtil.sendPluginText(user, "Could not find your discord account in vc", ChatColor.RED);

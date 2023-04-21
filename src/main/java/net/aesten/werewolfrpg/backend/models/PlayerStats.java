@@ -1,57 +1,116 @@
-package net.aesten.werewolfrpg.plugin.statistics;
+package net.aesten.werewolfrpg.backend.models;
 
+import jakarta.persistence.*;
 import net.aesten.werewolfrpg.plugin.data.Role;
+import net.aesten.werewolfrpg.plugin.statistics.Result;
 
-@SuppressWarnings({"all"})
+import java.util.UUID;
+
+@Entity
+@Table(name = "player_stats")
 public class PlayerStats {
-    private final String playerId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    @Column(name = "player_id", nullable = false)
+    private UUID playerId;
+    @Column(name = "match_id", nullable = false)
+    private UUID matchId;
+    @Column(name = "role", nullable = false)
     private Role role;
+    @Column(name = "result", nullable = false)
     private Result result;
 
     //basic stats
+    @Column(name = "kills", nullable = false)
     private int kills = 0;
-    private String killerId; //can be null
-    private String deathCause; //can be null
+    @Column(name = "killer_id")
+    private UUID killerId;
+    @Column(name = "death_cause")
+    private String deathCause;
+    @Column(name = "killed_basic_skeletons", nullable = false)
     private int killedBasicSkeletons = 0;
+    @Column(name = "killed_lucky_skeletons", nullable = false)
     private int killedLuckySkeletons = 0;
+    @Column(name = "killed_special_skeletons", nullable = false)
     private int killedSpecialSkeletons = 0;
+    @Column(name = "basic_skeleton_emerald_drops", nullable = false)
     private int basicSkeletonEmeraldDrops = 0;
 
     //item stats
+    @Column(name = "steaks_eaten", nullable = false)
     private int steaksEaten = 0;
-    private int asheUsed = 0;
+    @Column(name = "ash_used", nullable = false)
+    private int ashUsed = 0;
+    @Column(name = "divination_used", nullable = false)
     private int divinationUsed = 0;
+    @Column(name = "invisibility_used", nullable = false)
     private int invisibilityUsed = 0;
+    @Column(name = "swiftness_used", nullable = false)
     private int swiftnessUsed = 0;
+    @Column(name = "revelation_used", nullable = false)
     private int revelationUsed = 0;
+    @Column(name = "traitors_guide_used", nullable = false)
     private int traitorsGuideUsed = 0;
 
     //effectiveness
+    @Column(name = "curse_spear_melee_used", nullable = false)
     private int curseSpearMeleeUsed = 0;
+    @Column(name = "curse_spear_melee_curses", nullable = false)
     private int curseSpearMeleeCurses = 0;
+    @Column(name = "curse_spear_melee_kills", nullable = false)
     private int curseSpearMeleeKills = 0;
+    @Column(name = "curse_spear_throw_used", nullable = false)
     private int curseSpearThrowUsed = 0;
+    @Column(name = "curse_spear_throw_hits", nullable = false)
     private int curseSpearThrowHits = 0;
+    @Column(name = "curse_spear_throw_curses", nullable = false)
     private int curseSpearThrowCurses = 0;
+    @Column(name = "curse_spear_throw_kills", nullable = false)
     private int curseSpearThrowKills = 0;
+    @Column(name = "arrow_used", nullable = false)
     private int arrowUsed = 0;
+    @Column(name = "arrow_hits", nullable = false)
     private int arrowHits = 0;
+    @Column(name = "arrow_kills", nullable = false)
     private int arrowKills = 0;
+    @Column(name = "stun_grenade_used", nullable = false)
     private int stunGrenadeUsed = 0;
+    @Column(name = "stun_grenade_hits", nullable = false)
     private int stunGrenadeHits = 0;
+    @Column(name = "stun_grenade_hit_targets", nullable = false)
     private int stunGrenadeHitTargets = 0;
+    @Column(name = "hole_star_used", nullable = false)
     private int holyStarUsed = 0;
+    @Column(name = "hole_star_kills", nullable = false)
     private int holyStarKills = 0;
+    @Column(name = "protection_used", nullable = false)
     private int protectionUsed = 0;
+    @Column(name = "protection_activated", nullable = false)
     private int protectionActivated = 0;
+    @Column(name = "protection_triggered", nullable = false)
     private int protectionTriggered = 0;
+    @Column(name = "sneak_notice_used", nullable = false)
     private int sneakNoticeUsed = 0;
+    @Column(name = "sneak_notice_trigerred", nullable = false)
     private int sneakNoticeTriggered = 0;
+    @Column(name = "werewolf_axe_used", nullable = false)
     private int werewolfAxeUsed = 0;
+    @Column(name = "werewolf_axe_kills", nullable = false)
     private int werewolfAxeKills = 0;
 
-    public PlayerStats(String playerId) {
+    //additional data
+    @Column(name = "score_gain", nullable = false)
+    private int gain = 0;
+
+    public PlayerStats(UUID playerId) {
         this.playerId = playerId;
+    }
+
+    public PlayerStats() {}
+
+    public void setMatchId(UUID matchId) {
+        this.matchId = matchId;
     }
 
     public void setRole(Role role) {
@@ -74,7 +133,7 @@ public class PlayerStats {
         this.kills += 1;
     }
 
-    public void setKiller(String killerId) {
+    public void setKiller(UUID killerId) {
         this.killerId = killerId;
     }
 
@@ -103,7 +162,7 @@ public class PlayerStats {
     }
     
     public void addAsheUsed() {
-        this.asheUsed += 1;
+        this.ashUsed += 1;
     }
     
     public void addDivinationUsed() {
@@ -187,17 +246,25 @@ public class PlayerStats {
         if (killed) this.werewolfAxeKills += 1;
     }
 
+    public void setGain(int gain) {
+        this.gain = gain;
+    }
+
     //getters for jackson
 
-    public String getPlayerId() {
+    public UUID getPlayerId() {
         return playerId;
+    }
+
+    public UUID getMatchId() {
+        return matchId;
     }
 
     public int getKills() {
         return kills;
     }
 
-    public String getKillerId() {
+    public UUID getKillerId() {
         return killerId;
     }
 
@@ -225,8 +292,8 @@ public class PlayerStats {
         return steaksEaten;
     }
 
-    public int getAsheUsed() {
-        return asheUsed;
+    public int getAshUsed() {
+        return ashUsed;
     }
 
     public int getDivinationUsed() {
@@ -335,5 +402,9 @@ public class PlayerStats {
 
     public int getWerewolfAxeKills() {
         return werewolfAxeKills;
+    }
+
+    public int getGain() {
+        return gain;
     }
 }

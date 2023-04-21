@@ -1,7 +1,7 @@
 package net.aesten.werewolfrpg.plugin.core;
 
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
 import net.aesten.werewolfrpg.bot.WerewolfBot;
-import net.aesten.werewolfrpg.backend.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.plugin.data.Role;
 import net.aesten.werewolfrpg.plugin.data.WerewolfPlayerData;
@@ -43,7 +43,7 @@ public class WerewolfGame {
     private static final TeamsManager teamsManager = new TeamsManager();
     private static MapManager mapManager;
     private static String statusMessage;
-    private final String matchId;
+    private final UUID matchId;
     private final List<Player> participants;
     private final Map<UUID, WerewolfPlayerData> dataMap;
     private final Ticker ticker;
@@ -57,7 +57,7 @@ public class WerewolfGame {
     private final List<ArmorStand> displayNameArmorStands;
 
     public WerewolfGame() {
-        this.matchId = UUID.randomUUID().toString();
+        this.matchId = UUID.randomUUID();
         this.participants = new ArrayList<>();
         this.dataMap = new HashMap<>();
         this.pool = new RolePool(1,0,0,0);
@@ -70,7 +70,7 @@ public class WerewolfGame {
     }
 
     public WerewolfGame(WerewolfGame previousGame) {
-        this.matchId = UUID.randomUUID().toString();
+        this.matchId = UUID.randomUUID();
         previousGame.participants.removeIf(p -> !Bukkit.getOnlinePlayers().contains(p));
         this.participants = previousGame.participants;
         this.dataMap = new HashMap<>();
@@ -117,7 +117,7 @@ public class WerewolfGame {
         mapManager = new MapManager(new WorldManager());
     }
 
-    public String getMatchId() {
+    public UUID getMatchId() {
         return matchId;
     }
 
@@ -339,8 +339,8 @@ public class WerewolfGame {
 
                 WerewolfBot bot = WerewolfBot.getBot();
                 if (bot != null && bot.isConfigured()) {
-                    String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
-                    Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                    long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId());
+                    Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
                     dcMember.ifPresent(member -> member.mute(false).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been unmuted", ChatColor.GREEN)));
                     scoreManager.assignRole(player, bot.getGuild());
                 }

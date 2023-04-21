@@ -1,7 +1,7 @@
 package net.aesten.werewolfrpg.plugin.events;
 
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
 import net.aesten.werewolfrpg.bot.WerewolfBot;
-import net.aesten.werewolfrpg.backend.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.aesten.werewolfrpg.plugin.data.Role;
@@ -11,7 +11,7 @@ import net.aesten.werewolfrpg.plugin.items.base.InteractItem;
 import net.aesten.werewolfrpg.plugin.items.base.WerewolfItem;
 import net.aesten.werewolfrpg.plugin.items.registry.AdminItem;
 import net.aesten.werewolfrpg.plugin.map.WerewolfMap;
-import net.aesten.werewolfrpg.plugin.statistics.PlayerStats;
+import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import net.aesten.werewolfrpg.plugin.statistics.Result;
 import net.aesten.werewolfrpg.plugin.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -34,12 +34,12 @@ public class GeneralEvents implements Listener {
         Player player = event.getPlayer();
 
         //check if user is registered
-        WerewolfBot bot = WerewolfRpg.getBot();
+        WerewolfBot bot = WerewolfBot.getBot();
         if (bot == null) return;
 
-        List<String> mcIds = QueryManager.getAllMcIds();
+        List<UUID> mcIds = WerewolfBackend.getBackend().getPdc().getAllMinecraftIds();
 
-        if (!mcIds.contains(player.getUniqueId().toString())) {
+        if (!mcIds.contains(player.getUniqueId())) {
             event.getPlayer().kickPlayer("[WerewolfRPG]\nYou are not registered on a valid Discord server!\nYou're Minecraft username to register is: " + player.getName());
             event.setJoinMessage(null);
         } else {
@@ -171,7 +171,7 @@ public class GeneralEvents implements Listener {
                      deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
                  } else {
                      deathCause = deathData.getKey();
-                     stats.setKiller(deathData.getValue().toString());
+                     stats.setKiller(deathData.getValue());
                  }
                  stats.setDeathCause(deathCause);
              }

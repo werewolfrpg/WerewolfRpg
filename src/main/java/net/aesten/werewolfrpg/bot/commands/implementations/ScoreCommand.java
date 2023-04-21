@@ -1,7 +1,7 @@
 package net.aesten.werewolfrpg.bot.commands.implementations;
 
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
 import net.aesten.werewolfrpg.bot.commands.BotCommand;
-import net.aesten.werewolfrpg.backend.QueryManager;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -41,18 +41,19 @@ public class ScoreCommand extends BotCommand {
                 return;
             }
 
+            WerewolfBackend backend = WerewolfBackend.getBackend();
             User user = userOpt.getAsUser();
             String action = actionOpt.getAsString();
             int value = valueOpt.getAsInt();
 
             if (action.equals("add")) {
-                String mcId = QueryManager.getMcIdOfDiscordUser(user.getId());
-                int score = QueryManager.addPlayerScore(mcId, value);
+                UUID mcId = backend.getPdc().getMinecraftIdFromDiscordId(user.getIdLong());
+                int score = backend.getPdc().addScoreToPlayer(mcId, value).getScore();
                 applyRank(mcId, score, user, event.getGuild());
                 event.reply(user.getName() + " now has " + score + " score").setEphemeral(true).queue();
             } else if (action.equals("set")) {
-                String mcId = QueryManager.getMcIdOfDiscordUser(user.getId());
-                QueryManager.setPlayerScore(mcId, value);
+                UUID mcId = backend.getPdc().getMinecraftIdFromDiscordId(user.getIdLong());
+                backend.getPdc().setScoreOfPlayer(mcId, value);
                 applyRank(mcId, value, user, event.getGuild());
                 event.reply(user.getName() + " now has " + value + " score").setEphemeral(true).queue();
             } else {
@@ -71,10 +72,10 @@ public class ScoreCommand extends BotCommand {
         return null;
     }
 
-    private void applyRank(String mcId, int value, User user, Guild guild) {
-        WerewolfGame.getScoreManager().assignRole(user.getId(), guild, WerewolfGame.getScoreManager().getScoreRank(value));
-        if (Bukkit.getOnlinePlayers().stream().map(Entity::getUniqueId).toList().contains(UUID.fromString(mcId))) {
-            WerewolfGame.getScoreManager().assignPrefixSuffix(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(mcId))), value);
+    private void applyRank(UUID mcId, int value, User user, Guild guild) {
+        WerewolfGame.getScoreManager().assignRole(user.getIdLong(), guild, WerewolfGame.getScoreManager().getScoreRank(value));
+        if (Bukkit.getOnlinePlayers().stream().map(Entity::getUniqueId).toList().contains(mcId)) {
+            WerewolfGame.getScoreManager().assignPrefixSuffix(Objects.requireNonNull(Bukkit.getPlayer(mcId)), value);
         }
     }
 }

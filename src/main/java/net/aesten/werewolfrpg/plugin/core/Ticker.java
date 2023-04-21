@@ -1,7 +1,7 @@
 package net.aesten.werewolfrpg.plugin.core;
 
+import net.aesten.werewolfrpg.backend.WerewolfBackend;
 import net.aesten.werewolfrpg.bot.WerewolfBot;
-import net.aesten.werewolfrpg.backend.QueryManager;
 import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.plugin.data.Role;
 import net.aesten.werewolfrpg.plugin.data.TeamsManager;
@@ -94,10 +94,10 @@ public class Ticker {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
                                         2400, 5,false, false, false));
                     }
-                    WerewolfBot bot = WerewolfRpg.getBot();
+                    WerewolfBot bot = WerewolfBot.getBot();
                     if (bot != null && bot.isConfigured()) {
-                        String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
-                        Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                        long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId());
+                        Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
                         dcMember.ifPresent(member -> member.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been muted", ChatColor.GREEN)));
                     }
                 }
@@ -124,10 +124,10 @@ public class Ticker {
                     data.resetTemporaryValues();
                     player.getInventory().remove(Material.WOODEN_SWORD);
 
-                    WerewolfBot bot = WerewolfRpg.getBot();
+                    WerewolfBot bot = WerewolfBot.getBot();
                     if (bot != null && bot.isConfigured() && data.isAlive() && !data.isForceMute()) {
-                        String dcId = QueryManager.getDiscordIdOfPlayer(player.getUniqueId().toString());
-                        Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getId().equals(dcId)).findAny();
+                        long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId());
+                        Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
                         dcMember.ifPresent(member -> member.mute(false).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been unmuted", ChatColor.GREEN)));
                     }
                 }

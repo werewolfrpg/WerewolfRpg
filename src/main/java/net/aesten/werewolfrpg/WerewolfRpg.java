@@ -1,10 +1,7 @@
 package net.aesten.werewolfrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import io.javalin.Javalin;
-import net.aesten.werewolfrpg.backend.BackendConfig;
 import net.aesten.werewolfrpg.backend.WerewolfBackend;
-import net.aesten.werewolfrpg.bot.BotConfig;
 import net.aesten.werewolfrpg.bot.WerewolfBot;
 import net.aesten.werewolfrpg.plugin.packets.SpecInfoPacket;
 import net.aesten.werewolfrpg.plugin.commands.WerewolfCommand;
@@ -37,7 +34,6 @@ public final class WerewolfRpg extends JavaPlugin {
     public static final String CHAT_LOG = "[wwrpg] ";
 
     private static org.bukkit.plugin.Plugin plugin;
-    private static Javalin app;
 
     private SpecInfoPacket specInfoPacket;
 
@@ -114,5 +110,4 @@ public final class WerewolfRpg extends JavaPlugin {
 
 //todo make score formula configurable
 //todo achievements
-//todo make database access more secure and use a library like spark/javalin
 //todo frontend will be separate app (roles to access views or allow modifications)

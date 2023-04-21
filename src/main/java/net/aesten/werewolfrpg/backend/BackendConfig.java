@@ -17,6 +17,30 @@ public class BackendConfig implements Configurable {
     private final Property<Integer> backendPort = Property.create(PropertyType.INTEGER, "backend.port", () -> 8085).done();
     private final Property<Boolean> backendShowSql = Property.create(PropertyType.BOOLEAN, "backend.hibernate_show_sql", () -> true).done();
 
+    public Property<String> getJdbcUrl() {
+        return jdbcUrl;
+    }
+
+    public Property<String> getJdbcDriver() {
+        return jdbcDriver;
+    }
+
+    public Property<String> getJdbcUsername() {
+        return jdbcUsername;
+    }
+
+    public Property<String> getJdbcPassword() {
+        return jdbcPassword;
+    }
+
+    public Property<Integer> getBackendPort() {
+        return backendPort;
+    }
+
+    public Property<Boolean> getBackendShowSql() {
+        return backendShowSql;
+    }
+
     @Override
     public String getName() {
         return "wwrpg-backend-config";
