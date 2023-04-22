@@ -6,7 +6,7 @@ import net.azalealibrary.configuration.property.ListProperty;
 import net.azalealibrary.configuration.property.Property;
 import net.azalealibrary.configuration.property.PropertyType;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BackendConfig implements Configurable {
@@ -23,7 +23,7 @@ public class BackendConfig implements Configurable {
     private final Property<Integer> backendTokenValidity = Property.create(PropertyType.INTEGER, "backend.token_validity", () -> 1)
             .description("the pace at which the admin access token is re-generated (in hours)")
             .done();
-    private final ListProperty<String> backendCorsAllowed = ListProperty.create(PropertyType.STRING, "backend.cors_enabled_hosts", Collections::emptyList)
+    private final ListProperty<String> backendCorsAllowed = ListProperty.create(PropertyType.STRING, "backend.cors_enabled_hosts", () -> new ArrayList<>(List.of("*")))
             .description("list of hosts which will have cors enabled by Javalin")
             .done();
 

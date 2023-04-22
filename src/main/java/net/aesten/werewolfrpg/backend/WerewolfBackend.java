@@ -68,7 +68,12 @@ public class WerewolfBackend {
         mrc = new MatchRecordController(sessionFactory);
         psc = new PlayerStatsController(sessionFactory);
 
-        app = Javalin.create(jConfig -> jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowed().get().forEach(it::allowHost))));
+        if (!config.getBackendCorsAllowed().get().isEmpty()) {
+            app = Javalin.create(jConfig -> jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowed().get().forEach(it::allowHost))));
+        } else {
+            app = Javalin.create();
+        }
+
 
         app.before("/api/admin/*", ctx -> {
             String authHeader = ctx.header("Authorization");
