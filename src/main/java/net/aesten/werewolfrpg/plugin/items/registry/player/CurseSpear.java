@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -34,6 +35,7 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                 .addLore(ChatColor.BLUE + "Hitting a cursed player will kill him")
                 .addLore(ChatColor.GRAY + "Protection and Vampire can negate second hit")
                 .addLore(ChatColor.GRAY + "Breaks on usage")
+                .addEnchantment(Enchantment.LOYALTY, 0)
                 .addDamage(250)
                 .build();
     }
