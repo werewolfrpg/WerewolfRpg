@@ -167,7 +167,7 @@ public class PlayerDataController {
 
     public List<UUID> getAllMinecraftIds() {
         Session session = sessionFactory.openSession();
-        TypedQuery<PlayerData> query = session.createQuery("select mcId from PlayerData", PlayerData.class);
+        TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
         List<UUID> results = query.getResultList().stream().map(PlayerData::getMcId).toList();
         session.close();
         return results;
@@ -179,7 +179,7 @@ public class PlayerDataController {
 
     public List<Long> getAllDiscordIds() {
         Session session = sessionFactory.openSession();
-        TypedQuery<PlayerData> query = session.createQuery("select dcId from PlayerData", PlayerData.class);
+        TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
         List<Long> results = query.getResultList().stream().map(PlayerData::getDcId).toList();
         session.close();
         return results;

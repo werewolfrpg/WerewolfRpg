@@ -91,10 +91,10 @@ public class WerewolfBackend {
         app.put("/api/admin/player/minecraft_id/{minecraft_id}/score/{score}/add", pdc::apiAddScoreToPlayer); //add score to a player
         app.get("/api/player/minecraft_id/{minecraft_id}/score", pdc::apiGetScoreOfPlayer); //get the score of a player
         app.get("/api/player/minecraft_id/{minecraft_id}/discord_id", pdc::apiGetDiscordIdOfPlayer); //get Discord id of Minecraft player
-        app.get("/api/player/discord_id_id/{discord_id_id}/minecraft_id", pdc::apiGetMinecraftIdFromDiscordId); //get Minecraft id of Discord user
+        app.get("/api/player/discord_id/{discord_id}/minecraft_id", pdc::apiGetMinecraftIdFromDiscordId); //get Minecraft id of Discord user
         app.get("/api/players", pdc::apiGetAllPlayerData); //get all registered players
         app.get("/api/players/minecraft_id", pdc::apiGetAllMinecraftIds); //get all registered Minecraft ids
-        app.get("/api/players/discord_id_id", pdc::apiGetAllDiscordIds); //get all registered Discord ids
+        app.get("/api/players/discord_id", pdc::apiGetAllDiscordIds); //get all registered Discord ids
 
         app.post("/api/admin/match", mrc::apiRecordMatch); //add a new match record
         app.delete("/api/admin/match/{match_id}", mrc::apiDeleteMatch); //delete a match record (along with associated player stats record)
