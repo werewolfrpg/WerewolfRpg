@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.plugin.statistics;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import net.aesten.werewolfrpg.backend.WerewolfBackend;
 import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import net.aesten.werewolfrpg.plugin.core.WerewolfGame;
@@ -22,16 +23,22 @@ import java.util.Map;
 public class ScoreManager implements Configurable {
     private static final AssignmentPolicy<Integer> POSITIVE = AssignmentPolicy.create(i -> i >= 0, "Score threshold should be positive");
 
-    private final Property<Integer> rank0 = Property.create(PropertyType.INTEGER, "rank-score.beginner", () -> 0).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank1 = Property.create(PropertyType.INTEGER, "rank-score.novice", () -> 100).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank2 = Property.create(PropertyType.INTEGER, "rank-score.apprentice", () -> 200).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank3 = Property.create(PropertyType.INTEGER, "rank-score.intermediate", () -> 300).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank4 = Property.create(PropertyType.INTEGER, "rank-score.skilled", () -> 400).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank5 = Property.create(PropertyType.INTEGER, "rank-score.experienced", () -> 500).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank6 = Property.create(PropertyType.INTEGER, "rank-score.veteran", () -> 700).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank7 = Property.create(PropertyType.INTEGER, "rank-score.expert", () -> 1000).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank8 = Property.create(PropertyType.INTEGER, "rank-score.elite", () -> 1500).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank9 = Property.create(PropertyType.INTEGER, "rank-score.legendary", () -> 2000).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank0 = Property.create(PropertyType.INTEGER, "score.rank.beginner", () -> 0).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank1 = Property.create(PropertyType.INTEGER, "score.rank.novice", () -> 100).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank2 = Property.create(PropertyType.INTEGER, "score.rank.apprentice", () -> 200).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank3 = Property.create(PropertyType.INTEGER, "score.rank.intermediate", () -> 300).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank4 = Property.create(PropertyType.INTEGER, "score.rank.skilled", () -> 500).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank5 = Property.create(PropertyType.INTEGER, "score.rank.experienced", () -> 700).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank6 = Property.create(PropertyType.INTEGER, "score.rank.veteran", () -> 1000).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank7 = Property.create(PropertyType.INTEGER, "score.rank.expert", () -> 1500).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank8 = Property.create(PropertyType.INTEGER, "score.rank.elite", () -> 2000).addPolicy(POSITIVE).done();
+    private final Property<Integer> rank9 = Property.create(PropertyType.INTEGER, "score.rank.legendary", () -> 3000).addPolicy(POSITIVE).done();
+
+    private final Property<Integer> vampireVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.vampire", () -> 25).done();
+    private final Property<Integer> traitorVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.traitor", () -> 20).done();
+    private final Property<Integer> baseVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.base", () -> 15).done();
+    private final Property<Integer> vampireDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.vampire", () -> 10).done();
+    private final Property<Integer> baseDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.base", () -> 5).done();
 
     private final Map<Rank, Property<Integer>> rankThresholdMap = new HashMap<>();
 
@@ -57,7 +64,8 @@ public class ScoreManager implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        return List.of(rank0, rank1, rank2, rank3, rank4, rank5, rank6, rank7, rank8, rank9);
+        return List.of(rank0, rank1, rank2, rank3, rank4, rank5, rank6, rank7, rank8, rank9,
+                vampireVictoryScoreGain, traitorVictoryScoreGain, baseVictoryScoreGain, vampireDefeatScoreGain, baseDefeatScoreGain);
     }
 
     public Rank getPlayerRank(Player player) {
@@ -78,17 +86,25 @@ public class ScoreManager implements Configurable {
     public int getCalculatedScore(PlayerStats stats) {
         int score = 0;
         if (stats.getResult() == Result.VICTORY) {
-            if (stats.getRole() == Role.VAMPIRE) score += 25;
-            else if (stats.getRole() == Role.TRAITOR && stats.getKillerId() == null) score += 20;
-            else score += 15;
+            if (stats.getRole() == Role.VAMPIRE) score += vampireVictoryScoreGain.get();
+            else if (stats.getRole() == Role.TRAITOR) score += traitorVictoryScoreGain.get();
+            else score += baseVictoryScoreGain.get();
         } else if (stats.getResult() == Result.DEFEAT) {
-            if (stats.getRole() == Role.VAMPIRE) score += 10;
-            else score += 5;
+            if (stats.getRole() == Role.VAMPIRE) score += vampireDefeatScoreGain.get();
+            else score += baseDefeatScoreGain.get();
         }
 
-        score += (stats.getTraitorsGuideUsed() + stats.getDivinationUsed()) * 2;
-        score += (stats.getAshUsed() + stats.getRevelationUsed() + stats.getInvisibilityUsed() + stats.getProtectionTriggered() + stats.getSneakNoticeTriggered());
-        score += stats.getKills() * 2;
+        score += stats.getTraitorsGuideUsed() * 2;
+        score += stats.getDivinationUsed() * 2;
+        score += stats.getAshUsed();
+        score += stats.getRevelationUsed();
+        score += stats.getInvisibilityUsed();
+        score += stats.getProtectionTriggered() * 3;
+        score += stats.getSneakNoticeTriggered() * 3;
+        score += stats.getStunGrenadeHitTargets() * 2;
+        score += stats.getCurseSpearMeleeCurses() * 3;
+        score += stats.getCurseSpearThrowCurses() * 4;
+        score += stats.getKills() * 5;
 
         return score;
     }

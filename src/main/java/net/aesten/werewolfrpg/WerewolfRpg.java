@@ -108,9 +108,6 @@ public final class WerewolfRpg extends JavaPlugin {
 
 }
 
-//todo replace null checks by isActive
-//todo check when backend is null
-
 //todo make score formula configurable
 //todo achievements
 //todo frontend will be separate app (roles to access views or allow modifications)

@@ -62,6 +62,10 @@ public class ScoreCommand extends CommandNode {
                 return;
             }
             WerewolfBackend backend = WerewolfBackend.getBackend();
+            if (backend == null) {
+                WerewolfUtil.sendErrorText(sender, "Backend is not running");
+                return;
+            }
             UUID uuid = player.getUniqueId();
             long dcId = backend.getPdc().getDiscordIdOfPlayer(uuid);
             int score = backend.getPdc().addScoreToPlayer(uuid, gain).getScore();
@@ -101,6 +105,10 @@ public class ScoreCommand extends CommandNode {
                 return;
             }
             WerewolfBackend backend = WerewolfBackend.getBackend();
+            if (backend == null) {
+                WerewolfUtil.sendErrorText(sender, "Backend is not running");
+                return;
+            }
             UUID uuid = player.getUniqueId();
             long dcId = backend.getPdc().getDiscordIdOfPlayer(uuid);
             backend.getPdc().setScoreOfPlayer(uuid, score);

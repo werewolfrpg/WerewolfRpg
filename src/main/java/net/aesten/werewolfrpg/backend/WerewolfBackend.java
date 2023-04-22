@@ -68,10 +68,7 @@ public class WerewolfBackend {
         mrc = new MatchRecordController(sessionFactory);
         psc = new PlayerStatsController(sessionFactory);
 
-        app = Javalin.create(config -> config.plugins.enableCors(cors -> cors.add(it -> {
-                it.allowHost("*.azalealibrary.com");
-                it.allowHost("*.aesten.net");
-            })));
+        app = Javalin.create(jConfig -> jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowed().get().forEach(it::allowHost))));
 
         app.before("/api/admin/*", ctx -> {
             String authHeader = ctx.header("Authorization");
@@ -156,7 +153,8 @@ public class WerewolfBackend {
 
     private void regenToken() {
         token = UUID.randomUUID();
-        WerewolfUtil.runDelayedTask(20 * 3600, this::regenToken);
+        WerewolfRpg.logConsole("Admin token: " + token + " (valid " + config.getBackendTokenValidity().get() + " hours)");
+        WerewolfUtil.runDelayedTask(20 * 3600 * config.getBackendTokenValidity().get(), this::regenToken);
     }
 
     public static WerewolfBackend getBackend() {
@@ -173,9 +171,5 @@ public class WerewolfBackend {
 
     public PlayerStatsController getPsc() {
         return psc;
-    }
-
-    public boolean isActive() {
-        return backend != null;
     }
 }
