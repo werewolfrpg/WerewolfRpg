@@ -8,11 +8,11 @@ import java.util.UUID;
 @Table(name = "player_data")
 public class PlayerData {
     @Id
-    @Column(name = "discord_id", nullable = false)
-    private long dcId;
-
     @Column(name = "minecraft_id", nullable = false)
     private UUID mcId;
+
+    @Column(name = "discord_id", nullable = false)
+    private long dcId;
 
     @Column(name = "score", nullable = false)
     private int score;

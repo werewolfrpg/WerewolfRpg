@@ -2,6 +2,7 @@ package net.aesten.werewolfrpg.backend.controllers;
 
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
+import net.aesten.werewolfrpg.backend.models.MatchRecord;
 import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -88,5 +89,17 @@ public class PlayerStatsController {
         }
         transaction.commit();
         session.close();
+    }
+
+    public void apiGetAllStats(Context ctx) {
+        ctx.json(getAllStats());
+    }
+
+    public List<PlayerStats> getAllStats() {
+        Session session = sessionFactory.openSession();
+        TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats", PlayerStats.class);
+        List<PlayerStats> results = query.getResultList();
+        session.close();
+        return results;
     }
 }

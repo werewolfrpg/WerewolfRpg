@@ -2,11 +2,14 @@ package net.aesten.werewolfrpg.backend.controllers;
 
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import jakarta.persistence.TypedQuery;
 import net.aesten.werewolfrpg.backend.models.MatchRecord;
+import net.aesten.werewolfrpg.backend.models.PlayerData;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.util.List;
 import java.util.UUID;
 
 public class MatchRecordController {
@@ -46,5 +49,17 @@ public class MatchRecordController {
         session.remove(matchRecord);
         tx.commit();
         session.close();
+    }
+
+    public void apiGetAllMatches(Context ctx) {
+        ctx.json(getAllMatches());
+    }
+
+    public List<MatchRecord> getAllMatches() {
+        Session session = sessionFactory.openSession();
+        TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord", MatchRecord.class);
+        List<MatchRecord> results = query.getResultList();
+        session.close();
+        return results;
     }
 }
