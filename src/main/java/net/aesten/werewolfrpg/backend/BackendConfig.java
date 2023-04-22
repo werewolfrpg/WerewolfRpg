@@ -23,7 +23,8 @@ public class BackendConfig implements Configurable {
     private final Property<Integer> backendTokenValidity = Property.create(PropertyType.INTEGER, "backend.token_validity", () -> 1)
             .description("the pace at which the admin access token is re-generated (in hours)")
             .done();
-    private final ListProperty<String> backendCorsAllowed = ListProperty.create(PropertyType.STRING, "backend.cors_enabled_hosts", () -> new ArrayList<>(List.of("http://localhost:8080")))
+    private final Property<Boolean> backendCorsEnabled = Property.create(PropertyType.BOOLEAN, "backend.cors.enabled", () -> false).done();
+    private final ListProperty<String> backendCorsAllowedHosts = ListProperty.create(PropertyType.STRING, "backend.cors.allowed_hosts", () -> new ArrayList<>(List.of("http://localhost:8080")))
             .description("list of hosts which will have cors enabled by Javalin")
             .done();
 
@@ -55,8 +56,12 @@ public class BackendConfig implements Configurable {
         return backendTokenValidity;
     }
 
-    public ListProperty<String> getBackendCorsAllowed() {
-        return backendCorsAllowed;
+    public Property<Boolean> getBackendCorsEnabled() {
+        return backendCorsEnabled;
+    }
+
+    public ListProperty<String> getBackendCorsAllowedHosts() {
+        return backendCorsAllowedHosts;
     }
 
     @Override
@@ -66,6 +71,6 @@ public class BackendConfig implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        return List.of(jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword, backendPort, backendShowSql, backendTokenValidity, backendCorsAllowed);
+        return List.of(jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword, backendPort, backendShowSql, backendTokenValidity, backendCorsEnabled, backendCorsAllowedHosts);
     }
 }
