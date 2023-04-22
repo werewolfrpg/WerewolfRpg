@@ -4,7 +4,6 @@ import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import jakarta.persistence.TypedQuery;
 import net.aesten.werewolfrpg.backend.models.MatchRecord;
-import net.aesten.werewolfrpg.backend.models.PlayerData;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -31,6 +30,16 @@ public class MatchRecordController {
         session.persist(matchRecord);
         tx.commit();
         session.close();
+    }
+
+    public void apiUpdateMatchRecord(Context ctx) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        MatchRecord newRecord = ctx.bodyAsClass(MatchRecord.class);
+        session.merge(newRecord);
+        tx.commit();
+        session.close();
+        ctx.status(200).json(newRecord);
     }
 
     public void apiDeleteMatch(Context ctx) {

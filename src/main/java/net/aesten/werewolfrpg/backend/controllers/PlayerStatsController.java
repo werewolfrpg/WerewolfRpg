@@ -2,7 +2,6 @@ package net.aesten.werewolfrpg.backend.controllers;
 
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
-import net.aesten.werewolfrpg.backend.models.MatchRecord;
 import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,6 +31,16 @@ public class PlayerStatsController {
         session.close();
     }
 
+    public void apiUpdateStats(Context ctx) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        PlayerStats newStats = ctx.bodyAsClass(PlayerStats.class);
+        session.merge(newStats);
+        tx.commit();
+        session.close();
+        ctx.status(200).json(newStats);
+    }
+
     public void apiDeleteStatsByMatchId(Context ctx) {
         UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
         deleteStatsByMatchId(matchId);
@@ -40,14 +49,14 @@ public class PlayerStatsController {
 
     public void deleteStatsByMatchId(UUID matchId) {
         Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction tx = session.beginTransaction();
         TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where matchId = :match_id", PlayerStats.class);
         query.setParameter("match_id", matchId);
         List<PlayerStats> objectsToDelete = query.getResultList();
         for (PlayerStats stats : objectsToDelete) {
             session.remove(stats);
         }
-        transaction.commit();
+        tx.commit();
         session.close();
     }
 
@@ -59,14 +68,14 @@ public class PlayerStatsController {
 
     public void deleteStatsByPlayerId(UUID minecraftId) {
         Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction tx = session.beginTransaction();
         TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :player_id", PlayerStats.class);
         query.setParameter("player_id", minecraftId);
         List<PlayerStats> objectsToDelete = query.getResultList();
         for (PlayerStats stats : objectsToDelete) {
             session.remove(stats);
         }
-        transaction.commit();
+        tx.commit();
         session.close();
     }
 
@@ -84,9 +93,7 @@ public class PlayerStatsController {
         query.setParameter("player_id", minecraftId);
         query.setParameter("match_id", matchId);
         List<PlayerStats> objectsToDelete = query.getResultList();
-        for (PlayerStats stats : objectsToDelete) {
-            session.remove(stats);
-        }
+        objectsToDelete.forEach(session::remove);
         transaction.commit();
         session.close();
     }

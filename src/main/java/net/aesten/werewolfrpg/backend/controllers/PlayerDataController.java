@@ -32,6 +32,16 @@ public class PlayerDataController {
         session.close();
     }
 
+    public void apiUpdatePlayer(Context ctx) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        PlayerData newData = ctx.bodyAsClass(PlayerData.class);
+        session.merge(newData);
+        tx.commit();
+        session.close();
+        ctx.status(200).json(newData);
+    }
+
     public void apiDeletePlayerByDiscordId(Context ctx) {
         long discordId = Long.parseLong(ctx.pathParam("discord_id"));
         deletePlayerByDiscordId(discordId);
@@ -50,14 +60,7 @@ public class PlayerDataController {
         session.close();
     }
 
-    public void apiSetScoreOfPlayer(Context ctx) {
-        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-        int score = Integer.parseInt(ctx.pathParam("score"));
-        PlayerData data = setScoreOfPlayer(minecraftId, score);
-        ctx.json(data);
-    }
-
-    public PlayerData setScoreOfPlayer(UUID minecraftId, int score) {
+    public void setScoreOfPlayer(UUID minecraftId, int score) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         PlayerData data = session.get(PlayerData.class, minecraftId);
@@ -68,14 +71,6 @@ public class PlayerDataController {
         session.merge(data);
         tx.commit();
         session.close();
-        return data;
-    }
-
-    public void apiAddScoreToPlayer(Context ctx) {
-        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-        int score = Integer.parseInt(ctx.pathParam("score"));
-        PlayerData data = addScoreToPlayer(minecraftId, score);
-        ctx.json(data);
     }
 
     public PlayerData addScoreToPlayer(UUID minecraftId, int score) {
@@ -92,16 +87,6 @@ public class PlayerDataController {
         return data;
     }
 
-    public void apiGetScoreOfPlayer(Context ctx) {
-        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-        try {
-            int score = getScoreOfPlayer(minecraftId);
-            ctx.json(score);
-        } catch (NotFoundResponse r) {
-            ctx.status(404);
-        }
-    }
-
     public int getScoreOfPlayer(UUID minecraftId) {
         Session session = sessionFactory.openSession();
         PlayerData data = session.get(PlayerData.class, minecraftId);
@@ -112,16 +97,6 @@ public class PlayerDataController {
         return data.getScore();
     }
 
-    public void apiGetDiscordIdOfPlayer(Context ctx) {
-        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-        try {
-            long dcId = getDiscordIdOfPlayer(minecraftId);
-            ctx.json(dcId);
-        } catch (NotFoundResponse r) {
-            ctx.status(404);
-        }
-    }
-
     public long getDiscordIdOfPlayer(UUID minecraftId) {
         Session session = sessionFactory.openSession();
         PlayerData data = session.get(PlayerData.class, minecraftId);
@@ -130,13 +105,6 @@ public class PlayerDataController {
         }
         session.close();
         return data.getDcId();
-    }
-
-    public void apiGetMinecraftIdFromDiscordId(Context ctx) {
-        long dcId = Long.parseLong(ctx.pathParam("discord_id"));
-        UUID mcId = getMinecraftIdFromDiscordId(dcId);
-        if (mcId == null) ctx.status(404);
-        else ctx.json(mcId);
     }
 
     public UUID getMinecraftIdFromDiscordId(long discordId) {
@@ -161,10 +129,6 @@ public class PlayerDataController {
         return results;
     }
 
-    public void apiGetAllMinecraftIds(Context ctx) {
-        ctx.json(getAllMinecraftIds());
-    }
-
     public List<UUID> getAllMinecraftIds() {
         Session session = sessionFactory.openSession();
         TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
@@ -173,15 +137,31 @@ public class PlayerDataController {
         return results;
     }
 
-    public void apiGetAllDiscordIds(Context ctx) {
-        ctx.json(getAllDiscordIds());
-    }
-
     public List<Long> getAllDiscordIds() {
         Session session = sessionFactory.openSession();
         TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
         List<Long> results = query.getResultList().stream().map(PlayerData::getDcId).toList();
         session.close();
         return results;
+    }
+
+    public void apiGetPlayerFromDiscordId(Context ctx) {
+        Session session = sessionFactory.openSession();
+        long discordId = Long.parseLong(ctx.pathParam("discord_id"));
+        TypedQuery<PlayerData> query = session.createQuery("from PlayerData where dcId = :discord_id", PlayerData.class);
+        query.setParameter("discord_id", discordId);
+        List<PlayerData> data = query.getResultList();
+        session.close();
+        ctx.json(data);
+    }
+
+    public void apiGetPlayerFromMinecraftId(Context ctx) {
+        Session session = sessionFactory.openSession();
+        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
+        TypedQuery<PlayerData> query = session.createQuery("from PlayerData where mcId = :minecraft_id", PlayerData.class);
+        query.setParameter("minecraft_id", minecraftId);
+        List<PlayerData> data = query.getResultList();
+        session.close();
+        ctx.json(data);
     }
 }
