@@ -109,3 +109,4 @@ public final class WerewolfRpg extends JavaPlugin {
 }
 
 //todo achievements
+//todo rename to Werewolf MC
