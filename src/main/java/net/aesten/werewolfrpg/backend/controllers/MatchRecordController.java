@@ -3,6 +3,7 @@ package net.aesten.werewolfrpg.backend.controllers;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import jakarta.persistence.TypedQuery;
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.backend.models.MatchRecord;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,9 +20,14 @@ public class MatchRecordController {
     }
 
     public void apiRecordMatch(Context ctx) {
-        MatchRecord matchRecord = ctx.bodyAsClass(MatchRecord.class);
-        recordMatch(matchRecord);
-        ctx.status(201).json(matchRecord);
+        try {
+            MatchRecord matchRecord = ctx.bodyAsClass(MatchRecord.class);
+            recordMatch(matchRecord);
+            ctx.status(201).json(matchRecord);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void recordMatch(MatchRecord matchRecord) {
@@ -33,19 +39,29 @@ public class MatchRecordController {
     }
 
     public void apiUpdateMatchRecord(Context ctx) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        MatchRecord newRecord = ctx.bodyAsClass(MatchRecord.class);
-        session.merge(newRecord);
-        tx.commit();
-        session.close();
-        ctx.status(200).json(newRecord);
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            MatchRecord newRecord = ctx.bodyAsClass(MatchRecord.class);
+            session.merge(newRecord);
+            tx.commit();
+            session.close();
+            ctx.status(200).json(newRecord);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void apiDeleteMatch(Context ctx) {
-        UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-        deleteMatch(matchId);
-        ctx.status(204);
+        try {
+            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
+            deleteMatch(matchId);
+            ctx.status(204);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void deleteMatch(UUID matchId) {
@@ -61,7 +77,12 @@ public class MatchRecordController {
     }
 
     public void apiGetAllMatches(Context ctx) {
-        ctx.json(getAllMatches());
+        try {
+            ctx.json(getAllMatches());
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public List<MatchRecord> getAllMatches() {

@@ -2,6 +2,7 @@ package net.aesten.werewolfrpg.backend.controllers;
 
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
+import net.aesten.werewolfrpg.WerewolfRpg;
 import net.aesten.werewolfrpg.backend.models.PlayerStats;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,9 +19,14 @@ public class PlayerStatsController {
     }
 
     public void apiSavePlayerStats(Context ctx) {
-        PlayerStats stats = ctx.bodyAsClass(PlayerStats.class);
-        savePlayerStats(stats);
-        ctx.status(201).json(stats);
+        try {
+            PlayerStats stats = ctx.bodyAsClass(PlayerStats.class);
+            savePlayerStats(stats);
+            ctx.status(201).json(stats);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void savePlayerStats(PlayerStats stats) {
@@ -32,19 +38,29 @@ public class PlayerStatsController {
     }
 
     public void apiUpdateStats(Context ctx) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        PlayerStats newStats = ctx.bodyAsClass(PlayerStats.class);
-        session.merge(newStats);
-        tx.commit();
-        session.close();
-        ctx.status(200).json(newStats);
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            PlayerStats newStats = ctx.bodyAsClass(PlayerStats.class);
+            session.merge(newStats);
+            tx.commit();
+            session.close();
+            ctx.status(200).json(newStats);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void apiDeleteStatsByMatchId(Context ctx) {
-        UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-        deleteStatsByMatchId(matchId);
-        ctx.status(204);
+        try {
+            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
+            deleteStatsByMatchId(matchId);
+            ctx.status(204);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void deleteStatsByMatchId(UUID matchId) {
@@ -61,9 +77,14 @@ public class PlayerStatsController {
     }
 
     public void apiDeleteStatsByPlayerId(Context ctx) {
-        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-        deleteStatsByPlayerId(minecraftId);
-        ctx.status(204);
+        try {
+            UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
+            deleteStatsByPlayerId(minecraftId);
+            ctx.status(204);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void deleteStatsByPlayerId(UUID minecraftId) {
@@ -80,10 +101,15 @@ public class PlayerStatsController {
     }
 
     public void apiDeleteStatsByPlayerIdAndMatchId(Context ctx) {
-        UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-        UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-        deleteStatsByPlayerIdAndMatchId(minecraftId, matchId);
-        ctx.status(204);
+        try {
+            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
+            UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
+            deleteStatsByPlayerIdAndMatchId(minecraftId, matchId);
+            ctx.status(204);
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public void deleteStatsByPlayerIdAndMatchId(UUID minecraftId, UUID matchId) {
@@ -99,7 +125,12 @@ public class PlayerStatsController {
     }
 
     public void apiGetAllStats(Context ctx) {
-        ctx.json(getAllStats());
+        try {
+            ctx.json(getAllStats());
+        } catch (Exception e) {
+            WerewolfRpg.logConsole("Error with api request");
+            e.printStackTrace();
+        }
     }
 
     public List<PlayerStats> getAllStats() {

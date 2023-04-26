@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.backend.models;
 
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,15 +14,19 @@ import java.util.UUID;
 public class MatchRecord {
     @Id
     @Column(name = "match_id", nullable = false)
+    @SerializedName("match_id")
     private UUID matchId;
 
     @Column(name = "start_time", nullable = false)
+    @SerializedName("start_time")
     private Timestamp startTime;
 
     @Column(name = "end_time", nullable = false)
+    @SerializedName("end_time")
     private Timestamp endTime;
 
     @Column(name = "winning_faction", nullable = false)
+    @SerializedName("winning_faction")
     private String endReason;
 
     public MatchRecord(UUID matchId, Timestamp startTime, Timestamp endTime, String endReason) {

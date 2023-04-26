@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.backend.models;
 
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -9,12 +10,15 @@ import java.util.UUID;
 public class PlayerData {
     @Id
     @Column(name = "minecraft_id", nullable = false)
+    @SerializedName("minecraft_id")
     private UUID mcId;
 
     @Column(name = "discord_id", nullable = false)
+    @SerializedName("discord_id")
     private long dcId;
 
     @Column(name = "score", nullable = false)
+    @SerializedName("score")
     private int score;
 
     public PlayerData(UUID mcId, long dcId, int score) {
