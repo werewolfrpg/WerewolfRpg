@@ -1,5 +1,6 @@
 package net.aesten.werewolfrpg.plugin.map;
 
+import net.aesten.werewolfrpg.plugin.utilities.WerewolfUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -44,7 +45,7 @@ public class WorldManager {
             File[] worldDirs = worldsDir.listFiles(File::isDirectory);
             if (worldDirs != null) {
                 for (File worldContainer : worldDirs) {
-                    createWorld(worldContainer.getName());
+                    loadWorld(worldContainer.getName());
                 }
             }
         }
@@ -58,7 +59,7 @@ public class WorldManager {
         return worlds.get("lobby");
     }
 
-    public void createWorld(String worldName) {
+    public void loadWorld(String worldName) {
         World world = new WorldCreator("wwrpg_worlds/" + worldName).createWorld();
         if (world != null) {
             setGameRule(world);
@@ -66,13 +67,15 @@ public class WorldManager {
         }
     }
 
-    public boolean deleteWorld(World world) {
+    public boolean deleteWorld(String worldName) {
+        if (worldName.equals("lobby")) return false;
+        World world = worlds.get(worldName);
         if (world == null) return false;
-        if (world.getName().equals(worlds.get("lobby").getName())) return false;
         Bukkit.unloadWorld(world, false);
         String serverDir = Bukkit.getServer().getWorldContainer().getAbsolutePath();
-        File worldDir = new File(serverDir + File.separator + "wwrpg_worlds" + File.separator + world.getName());
-        return worldDir.delete();
+        File worldDir = new File(serverDir + File.separator + world.getName());
+        worlds.remove(worldName);
+        return WerewolfUtil.deleteDirectory(worldDir);
     }
 
     public Map<String, World> getWorlds() {

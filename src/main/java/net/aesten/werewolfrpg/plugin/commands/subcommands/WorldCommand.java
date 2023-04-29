@@ -14,7 +14,7 @@ public class WorldCommand extends CommandNode {
     public WorldCommand() {
         super("world",
                 new List(),
-                new Create(),
+                new Load(),
                 new Delete()
         );
     }
@@ -23,7 +23,7 @@ public class WorldCommand extends CommandNode {
         if (sender instanceof Player player) {
             WerewolfUtil.sendHelpText(player, "/ww world -> help");
             WerewolfUtil.sendHelpText(player, "/ww world list -> list all worlds of the server");
-            WerewolfUtil.sendHelpText(player, "/ww world create <file-name> -> loads a world from the werewolf worlds folder");
+            WerewolfUtil.sendHelpText(player, "/ww world load <file-name> -> loads a world from the werewolf worlds folder");
             WerewolfUtil.sendHelpText(player, "/ww world delete <world> -> unloads and deletes a world except lobby");
         }
     }
@@ -56,9 +56,9 @@ public class WorldCommand extends CommandNode {
     }
 
 
-    private static final class Create extends CommandNode {
-        public Create() {
-            super("create");
+    private static final class Load extends CommandNode {
+        public Load() {
+            super("load");
         }
 
         @Override
@@ -72,7 +72,7 @@ public class WorldCommand extends CommandNode {
                 WorldManager manager = WerewolfGame.getMapManager().getWorldManager();
                 if (manager.worldContainerExists(arguments.get(0))) {
                     if (manager.getWorldFromName(arguments.get(0)) == null) {
-                        manager.createWorld(arguments.get(0));
+                        manager.loadWorld(arguments.get(0));
                         WerewolfUtil.sendPluginText(sender, "World loaded");
                     } else {
                         WerewolfUtil.sendErrorText(sender, "World already existing");
@@ -87,7 +87,7 @@ public class WorldCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwrpg.cmd.ww.world.create";
+            return "wwrpg.cmd.ww.world.load";
         }
     }
 
@@ -103,7 +103,7 @@ public class WorldCommand extends CommandNode {
 
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
-            if (WerewolfGame.getMapManager().getWorldManager().deleteWorld(arguments.find(0, "world", WerewolfGame.getMapManager().getWorldManager()::getWorldFromName))) {
+            if (WerewolfGame.getMapManager().getWorldManager().deleteWorld(arguments.get(0))) {
                 WerewolfUtil.sendPluginText(sender, "World successfully deleted");
             } else {
                 WerewolfUtil.sendErrorText(sender, "World deletion failed");

@@ -263,7 +263,15 @@ public class MapCommand extends CommandNode {
 
             @Override
             public void execute(CommandSender sender, Arguments arguments) {
-                WerewolfGame.getShopManager().updatePrices(WerewolfGame.getInstance().getMap().getWorld());
+                if (sender instanceof Player player) {
+                    WerewolfMap map = WerewolfGame.getMapManager().getHelper().getSelectedMap(player);
+                    if (map != null) {
+                        WerewolfGame.getShopManager().updatePrices(map.getWorld());
+                        WerewolfUtil.sendPluginText(player, "Successfully updated shop prices");
+                    } else {
+                        WerewolfUtil.sendErrorText(player, "Could not update shop prices, have you selected a map?");
+                    }
+                }
             }
 
             @Override

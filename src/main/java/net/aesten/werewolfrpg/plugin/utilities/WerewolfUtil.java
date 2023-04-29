@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.util.Objects;
 
 public class WerewolfUtil {
@@ -105,5 +106,15 @@ public class WerewolfUtil {
 
     public static boolean sameItem(ItemStack item1, ItemStack item2) {
         return (Objects.requireNonNull(item1.getItemMeta()).getAsString().equals(Objects.requireNonNull(item2.getItemMeta()).getAsString()));
+    }
+
+    public static boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
     }
 }
