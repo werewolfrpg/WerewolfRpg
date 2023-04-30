@@ -93,7 +93,7 @@ public class MapCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             WerewolfUtil.sendPluginText(sender, "Loaded maps:");
-            WerewolfGame.getMapManager().getMaps().keySet().forEach(s -> WerewolfUtil.sendPluginText(sender, s));
+            WerewolfGame.getMapManager().getMaps().keySet().forEach(s -> WerewolfUtil.sendPluginText(sender, s, ChatColor.LIGHT_PURPLE));
         }
 
         @Override

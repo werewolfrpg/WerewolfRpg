@@ -5,6 +5,7 @@ import net.aesten.werewolfmc.plugin.map.WorldManager;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
 import net.azalealibrary.command.Arguments;
 import net.azalealibrary.command.CommandNode;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -46,7 +47,7 @@ public class WorldCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             WerewolfUtil.sendPluginText(sender, "Loaded worlds:");
-            WerewolfGame.getMapManager().getWorldManager().getWorlds().keySet().forEach(s -> WerewolfUtil.sendPluginText(sender, s));
+            WerewolfGame.getMapManager().getWorldManager().getWorlds().keySet().forEach(s -> WerewolfUtil.sendPluginText(sender, s, ChatColor.LIGHT_PURPLE));
         }
 
         @Override

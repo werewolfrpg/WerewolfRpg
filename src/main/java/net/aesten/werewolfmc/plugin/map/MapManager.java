@@ -28,7 +28,7 @@ public class MapManager {
 
     private void loadMaps() {
         for (FileConfiguration fileConfiguration : AzaleaConfigurationApi.getAllFileConfigurations(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), "/werewolf-maps")) {
-            WerewolfMap mapConfig = new WerewolfMap(fileConfiguration.getName(), Objects.requireNonNull(Bukkit.getWorld("lobby")));
+            WerewolfMap mapConfig = new WerewolfMap(fileConfiguration.getName(), Objects.requireNonNull(Bukkit.getWorld(LOBBY)));
             fileConfiguration.load(mapConfig);
             AzaleaConfigurationApi.register(mapConfig);
             maps.put(mapConfig.getName(), mapConfig);
