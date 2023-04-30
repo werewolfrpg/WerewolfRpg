@@ -1,6 +1,6 @@
-## Werewolf RPG
+## Werewolf mc
 
-Ce jeu est une adaptation du "Loup-Garou" fait pour être joué sur Minecraft avec certains aspects RPG en plus.
+Ce jeu est une adaptation du "Loup-Garou" fait pour être joué sur Minecraft avec certains aspects mc en plus.
 
 ### Les Rôles
 

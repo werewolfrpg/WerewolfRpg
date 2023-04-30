@@ -12,7 +12,7 @@
     </properties>
 
     <groupId>net.aesten</groupId>
-    <artifactId>WerewolfRPG</artifactId>
+    <artifactId>Werewolf</artifactId>
     <version>2.1</version>
 
     <repositories>

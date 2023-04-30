@@ -1,6 +1,6 @@
-## Werewolf RPG
+## Werewolf Minigame
 
-This game is an adaptation of the "Werewolf" designed to be played on Minecraft with some additional RPG elements.
+This game is an adaptation of the "Werewolf" designed to be played on Minecraft with some additional action elements.
 
 ### Roles
 
