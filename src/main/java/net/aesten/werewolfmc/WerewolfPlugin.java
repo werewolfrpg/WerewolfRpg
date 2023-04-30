@@ -107,5 +107,3 @@ public final class WerewolfPlugin extends JavaPlugin {
     }
 
 }
-
-//todo achievements
