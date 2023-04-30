@@ -37,7 +37,7 @@ public class UtilCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.util";
+        return "werewolf.cmd.ww.util";
     }
 
     private static final class Spawn extends CommandNode {
@@ -62,7 +62,7 @@ public class UtilCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.util.spawn";
+            return "werewolf.cmd.ww.util.spawn";
         }
     }
 
@@ -86,7 +86,7 @@ public class UtilCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.util.heal";
+            return "werewolf.cmd.ww.util.heal";
         }
     }
 
@@ -109,7 +109,7 @@ public class UtilCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.util.role";
+            return "werewolf.cmd.ww.util.role";
         }
     }
 
@@ -131,7 +131,7 @@ public class UtilCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.util.adventure";
+            return "werewolf.cmd.ww.util.adventure";
         }
     }
 
@@ -153,7 +153,7 @@ public class UtilCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.util.spectator";
+            return "werewolf.cmd.ww.util.spectator";
         }
     }
 }

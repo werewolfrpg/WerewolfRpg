@@ -175,7 +175,7 @@ public class WerewolfGame {
             statusMessage = "Too many players for selected map";
         } else if (!instance.participants.stream().allMatch(Player::isOnline)) {
             statusMessage = "Some participants are not online";
-        } else if (instance.map == null || instance.map.equals(mapManager.getMapFromName("wwmc-maps" + File.separator + "lobby"))) {
+        } else if (instance.map == null || instance.map.equals(mapManager.getMapFromName("werewolf-maps" + File.separator + "lobby"))) {
             statusMessage = "Selected map is not valid";
         } else if (instance.pool.getWerewolfNumber() == 0) {
             statusMessage = "You need at least 1 werewolf to start a game";
@@ -386,7 +386,7 @@ public class WerewolfGame {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(ChatColor.AQUA + "======WWmc Match Role======" + "\n");
+        builder.append(ChatColor.AQUA + "======Werewolf Match Role======" + "\n");
         builder.append(ChatColor.GREEN + "Villagers:" + "\n");
         builder.append("> " + String.join(", ", villagers) + "\n");
         builder.append(ChatColor.DARK_RED + "Werewolves:" + "\n");
@@ -405,7 +405,7 @@ public class WerewolfGame {
             builder.append("> " + String.join(", ", possessed) + "\n");
         }
 
-        builder.append(ChatColor.AQUA + "======WWmc Match Role======" + "\n");
+        builder.append(ChatColor.AQUA + "======Werewolf Match Role======" + "\n");
 
         return builder.toString();
     }

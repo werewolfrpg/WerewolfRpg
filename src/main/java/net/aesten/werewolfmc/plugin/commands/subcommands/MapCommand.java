@@ -53,7 +53,7 @@ public class MapCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.map";
+        return "werewolf.cmd.ww.map";
     }
 
     private static final class Select extends CommandNode {
@@ -81,7 +81,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.select";
+            return "werewolf.cmd.ww.map.select";
         }
     }
 
@@ -98,7 +98,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.select";
+            return "werewolf.cmd.ww.map.select";
         }
     }
 
@@ -138,7 +138,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.create";
+            return "werewolf.cmd.ww.map.create";
         }
     }
 
@@ -168,7 +168,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.delete";
+            return "werewolf.cmd.ww.map.delete";
         }
     }
 
@@ -192,7 +192,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.shop";
+            return "werewolf.cmd.ww.map.shop";
         }
 
         private static final class Summon extends CommandNode {
@@ -257,7 +257,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.shop.summon";
+                return "werewolf.cmd.ww.map.shop.summon";
             }
         }
 
@@ -281,7 +281,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.shop.update";
+                return "werewolf.cmd.ww.map.shop.update";
             }
         }
     }
@@ -313,7 +313,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.skeleton";
+            return "werewolf.cmd.ww.map.skeleton";
         }
 
         private static final class Show extends CommandNode {
@@ -344,7 +344,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.skeleton.show";
+                return "werewolf.cmd.ww.map.skeleton.show";
             }
         }
 
@@ -361,7 +361,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.skeleton.hide";
+                return "werewolf.cmd.ww.map.skeleton.hide";
             }
         }
 
@@ -384,7 +384,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.skeleton.summon";
+                return "werewolf.cmd.ww.map.skeleton.summon";
             }
         }
     }
@@ -411,7 +411,7 @@ public class MapCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.map.border";
+            return "werewolf.cmd.ww.map.border";
         }
 
         private static final class Set extends CommandNode {
@@ -434,7 +434,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.border.set";
+                return "werewolf.cmd.ww.map.border.set";
             }
         }
 
@@ -458,7 +458,7 @@ public class MapCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.map.border.remove";
+                return "werewolf.cmd.ww.map.border.remove";
             }
         }
     }

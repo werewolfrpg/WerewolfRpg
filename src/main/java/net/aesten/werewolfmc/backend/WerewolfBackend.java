@@ -107,8 +107,6 @@ public class WerewolfBackend {
 
         new Thread(() -> app.start(config.getBackendPort().get())).start();
 
-        app.start(config.getBackendPort().get());
-
         regenToken();
     }
 

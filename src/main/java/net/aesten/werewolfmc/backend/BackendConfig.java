@@ -12,12 +12,12 @@ import java.util.List;
 public class BackendConfig implements Configurable {
     public static final List<String> SUPPORTED_DRIVERS = List.of("com.mysql.cj.jdbc.Driver", "org.postgresql.Driver", "org.sqlite.JDBC", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "org.h2.Driver");
 
-    private final Property<String> jdbcUrl = Property.create(PropertyType.STRING, "jdbc.url", () -> "jdbc:h2:file:./plugins/WerewolfMC/database/wwmc").done();
+    private final Property<String> jdbcUrl = Property.create(PropertyType.STRING, "jdbc.url", () -> "jdbc:h2:file:./plugins/Werewolf/database/werewolf").done();
     private final Property<String> jdbcDriver = Property.create(PropertyType.STRING, "jdbc.driver", () -> "org.h2.Driver")
             .description("supported drivers: [ "+ String.join(", ", SUPPORTED_DRIVERS) +" ]")
             .done();
     private final Property<String> jdbcUsername = Property.create(PropertyType.STRING, "jdbc.username", () -> "sa").done();
-    private final Property<String> jdbcPassword = Property.create(PropertyType.STRING, "jdbc.password", () -> "wwmc").done();
+    private final Property<String> jdbcPassword = Property.create(PropertyType.STRING, "jdbc.password", () -> "werewolf").done();
     private final Property<Integer> backendPort = Property.create(PropertyType.INTEGER, "backend.port", () -> 8085).done();
     private final Property<Boolean> backendShowSql = Property.create(PropertyType.BOOLEAN, "backend.hibernate_show_sql", () -> false)
             .description("can be enabled for debugging database issues")
@@ -68,7 +68,7 @@ public class BackendConfig implements Configurable {
 
     @Override
     public String getName() {
-        return "wwmc-backend-config";
+        return "werewolf-backend-config";
     }
 
     @Override

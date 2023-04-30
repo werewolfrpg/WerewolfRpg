@@ -1,4 +1,4 @@
-## Werewolf mc
+## Le Loup-Garou
 
 Ce jeu est une adaptation du "Loup-Garou" fait pour être joué sur Minecraft avec certains aspects mc en plus.
 

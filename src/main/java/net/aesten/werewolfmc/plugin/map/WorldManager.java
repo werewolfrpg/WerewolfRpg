@@ -39,7 +39,7 @@ public class WorldManager {
 
     public void loadPluginWorlds() {
         String serverDir = Bukkit.getServer().getWorldContainer().getAbsolutePath();
-        File worldsDir = new File(serverDir + File.separator + "wwmc_worlds");
+        File worldsDir = new File(serverDir + File.separator + "werewolf_worlds");
 
         if (!worldsDir.mkdir()) {
             File[] worldDirs = worldsDir.listFiles(File::isDirectory);
@@ -60,7 +60,7 @@ public class WorldManager {
     }
 
     public void loadWorld(String worldName) {
-        World world = new WorldCreator("wwmc_worlds/" + worldName).createWorld();
+        World world = new WorldCreator("werewolf_worlds/" + worldName).createWorld();
         if (world != null) {
             setGameRule(world);
             worlds.put(world.getName(), world);
@@ -83,7 +83,7 @@ public class WorldManager {
     }
 
     public boolean worldContainerExists(String folderName) {
-        return new File("wwmc_worlds" + File.separator + folderName).exists();
+        return new File("werewolf_worlds" + File.separator + folderName).exists();
     }
 
     private void setGameRule(World world) {

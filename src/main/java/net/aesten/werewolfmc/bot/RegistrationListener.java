@@ -50,7 +50,7 @@ public class RegistrationListener extends ListenerAdapter {
             } else {
                 backend.getPdc().deletePlayerByDiscordId(event.getUser().getIdLong()).join();
 
-                List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf mc", true);
+                List<Role> role = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf Player", true);
                 if (role.size() != 0) {
                     Objects.requireNonNull(event.getGuild()).removeRoleFromMember(event.getUser(), role.get(0)).submit();
                 }
@@ -75,7 +75,7 @@ public class RegistrationListener extends ListenerAdapter {
                 event.reply("Your Minecraft ID account is already registered").setEphemeral(true).queue();
             } else {
                 backend.getPdc().registerPlayer(new PlayerData(uuid, event.getUser().getIdLong(), 0)).join();
-                List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf mc", true);
+                List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf Player", true);
                 if (werewolfRole.size() != 0) {
                     Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).submit();
                 }

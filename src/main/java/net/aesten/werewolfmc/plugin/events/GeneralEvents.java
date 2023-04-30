@@ -39,11 +39,11 @@ public class GeneralEvents implements Listener {
         List<UUID> mcIds = WerewolfBackend.getBackend().getPdc().getAllMinecraftIds().join();
 
         if (!mcIds.contains(player.getUniqueId())) {
-            event.getPlayer().kickPlayer("[WerewolfMC]\nYou are not registered on a valid Discord server!\nYou're Minecraft username to register is: " + player.getName());
+            event.getPlayer().kickPlayer("[Werewolf]\nYou are not registered on a valid Discord server!\nYour Minecraft username to register is: " + player.getName());
             event.setJoinMessage(null);
         } else {
             WerewolfGame.getScoreManager().assignPrefixSuffix(player);
-            player.setPlayerListHeader(ChatColor.GOLD + "Werewolf mc Server");
+            player.setPlayerListHeader(ChatColor.GOLD + "Werewolf Minigame Server");
 
             if (WerewolfGame.getInstance().isPlaying()) {
                 if (!WerewolfGame.getInstance().isParticipant(player)) {

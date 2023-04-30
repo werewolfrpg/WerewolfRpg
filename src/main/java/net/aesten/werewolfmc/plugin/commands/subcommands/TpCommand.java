@@ -82,6 +82,6 @@ public class TpCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.tp";
+        return "werewolf.cmd.ww.tp";
     }
 }

@@ -16,8 +16,8 @@ public class AchievementsManager {
     private static final Achievement root = AchievementCreator.begin()
             .setTickTrigger()
             .setIcon("minecraft:stone_axe")
-            .setTitle("Werewolf mc achievement")
-            .setDescription("Thank you for playing Werewolf mc!")
+            .setTitle("Werewolf minigame achievement")
+            .setDescription("Thank you for playing the Werewolf!")
             .setFrame(Frame.TASK)
             .create("root");
 

@@ -34,7 +34,7 @@ public class BotConfig implements Configurable {
 
     @Override
     public String getName() {
-        return "wwmc-bot-config";
+        return "werewolf-bot-config";
     }
 
     @Override

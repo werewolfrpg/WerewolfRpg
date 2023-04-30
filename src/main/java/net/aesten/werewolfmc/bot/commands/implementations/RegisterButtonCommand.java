@@ -11,13 +11,13 @@ import java.util.List;
 
 public class RegisterButtonCommand extends BotCommand {
     public RegisterButtonCommand() {
-        super("rbutton", "Generates a button to register/unregister on WerewolfMC", DefaultMemberPermissions.DISABLED, Collections.emptyList());
+        super("rbutton", "Generates a button to register/unregister on the Werewolf", DefaultMemberPermissions.DISABLED, Collections.emptyList());
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
-            event.getChannel().sendMessage("To register as a WerewolfMC player, you have to bind your Discord account to a Minecraft account")
+            event.getChannel().sendMessage("To register as a Werewolf player, you have to bind your Discord account to a Minecraft account")
                     .addActionRow(
                             Button.success("register-button", "Register"),
                             Button.danger("unregister-button", "Unregister"))

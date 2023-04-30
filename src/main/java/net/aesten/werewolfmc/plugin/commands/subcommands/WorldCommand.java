@@ -35,7 +35,7 @@ public class WorldCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.world";
+        return "werewolf.cmd.ww.world";
     }
 
     private static final class List extends CommandNode {
@@ -51,7 +51,7 @@ public class WorldCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.world.list";
+            return "werewolf.cmd.ww.world.list";
         }
     }
 
@@ -87,7 +87,7 @@ public class WorldCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.world.load";
+            return "werewolf.cmd.ww.world.load";
         }
     }
 
@@ -112,7 +112,7 @@ public class WorldCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.world.delete";
+            return "werewolf.cmd.ww.world.delete";
         }
     }
 }

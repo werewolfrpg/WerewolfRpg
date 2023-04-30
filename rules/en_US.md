@@ -1,4 +1,4 @@
-## Werewolf mc
+## Werewolf Minigame
 
 This game is an adaptation of the "Werewolf" designed to be played on Minecraft with some additional mc elements.
 

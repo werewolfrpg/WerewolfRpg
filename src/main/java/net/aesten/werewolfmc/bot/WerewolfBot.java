@@ -26,7 +26,7 @@ public class WerewolfBot {
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken().get());
         builder.setStatus(OnlineStatus.ONLINE);
-        builder.setActivity(Activity.playing("WerewolfMC"));
+        builder.setActivity(Activity.playing("Werewolf Minigame"));
         builder.enableIntents(List.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS));
         jda = builder.build();
         CommandManager manager = new CommandManager();

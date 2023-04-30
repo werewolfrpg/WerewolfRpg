@@ -57,7 +57,7 @@ public class ConfigureCommand extends BotCommand {
     }
 
     private void createPlayerRoles(Guild guild) {
-        createRoleIfNonExistant(guild, "Werewolf mc", "#3ebe37", true);
+        createRoleIfNonExistant(guild, "Werewolf Player", "#3ebe37", true);
         createRoleIfNonExistant(guild, "Beginner", "#11b1e7");
         createRoleIfNonExistant(guild, "Novice", "#11b1e7");
         createRoleIfNonExistant(guild, "Apprentice", "#11b1e7");

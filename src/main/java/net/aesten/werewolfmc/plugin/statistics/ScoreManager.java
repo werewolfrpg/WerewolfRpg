@@ -58,7 +58,7 @@ public class ScoreManager implements Configurable {
 
     @Override
     public String getName() {
-        return "wwmc-score-config";
+        return "werewolf-score-config";
     }
 
     @Override

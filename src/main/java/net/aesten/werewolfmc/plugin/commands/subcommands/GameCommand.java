@@ -48,7 +48,7 @@ public class GameCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.game";
+        return "werewolf.cmd.ww.game";
     }
 
     private static final class Start extends CommandNode {
@@ -71,7 +71,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.game.start";
+            return "werewolf.cmd.ww.game.start";
         }
     }
 
@@ -91,7 +91,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.game.stop";
+            return "werewolf.cmd.ww.game.stop";
         }
     }
 
@@ -117,7 +117,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.game.gather";
+            return "werewolf.cmd.ww.game.gather";
         }
     }
 
@@ -148,7 +148,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.game.map";
+            return "werewolf.cmd.ww.game.map";
         }
     }
 
@@ -183,7 +183,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.game.players";
+            return "werewolf.cmd.ww.game.players";
         }
 
         private static final class Count extends CommandNode {
@@ -199,7 +199,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.players.count";
+                return "werewolf.cmd.ww.game.players.count";
             }
         }
 
@@ -220,7 +220,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.players.list";
+                return "werewolf.cmd.ww.game.players.list";
             }
         }
 
@@ -265,7 +265,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.players.add";
+                return "werewolf.cmd.ww.game.players.add";
             }
         }
 
@@ -286,7 +286,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.players.add-all";
+                return "werewolf.cmd.ww.game.players.add-all";
             }
         }
 
@@ -329,7 +329,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.players.remove";
+                return "werewolf.cmd.ww.game.players.remove";
             }
         }
 
@@ -381,7 +381,7 @@ public class GameCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.game.roles";
+            return "werewolf.cmd.ww.game.roles";
         }
 
         private static final class List extends CommandNode {
@@ -401,7 +401,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.roles.list";
+                return "werewolf.cmd.ww.game.roles.list";
             }
         }
 
@@ -422,7 +422,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.roles.reset";
+                return "werewolf.cmd.ww.game.roles.reset";
             }
         }
 
@@ -446,7 +446,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.roles.werewolf";
+                return "werewolf.cmd.ww.game.roles.werewolf";
             }
         }
 
@@ -470,7 +470,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.roles.traitor";
+                return "werewolf.cmd.ww.game.roles.traitor";
             }
         }
 
@@ -494,7 +494,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.roles.vampire";
+                return "werewolf.cmd.ww.game.roles.vampire";
             }
         }
 
@@ -518,7 +518,7 @@ public class GameCommand extends CommandNode {
 
             @Override
             public String getPermission() {
-                return "wwmc.cmd.ww.game.roles.possessed";
+                return "werewolf.cmd.ww.game.roles.possessed";
             }
         }
     }

@@ -27,7 +27,7 @@ public class MapManager {
     }
 
     private void loadMaps() {
-        for (FileConfiguration fileConfiguration : AzaleaConfigurationApi.getAllFileConfigurations(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), "/wwmc-maps")) {
+        for (FileConfiguration fileConfiguration : AzaleaConfigurationApi.getAllFileConfigurations(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), "/werewolf-maps")) {
             WerewolfMap mapConfig = new WerewolfMap(fileConfiguration.getName(), Objects.requireNonNull(Bukkit.getWorld("lobby")));
             fileConfiguration.load(mapConfig);
             AzaleaConfigurationApi.register(mapConfig);
@@ -45,7 +45,7 @@ public class MapManager {
 
     public void saveMaps() {
         for (WerewolfMap map : maps.values()) {
-            AzaleaConfigurationApi.getFileConfiguration(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(),  "wwmc-maps" + File.separator + map.getName()).save(map);
+            AzaleaConfigurationApi.getFileConfiguration(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(),  "werewolf-maps" + File.separator + map.getName()).save(map);
         }
     }
 

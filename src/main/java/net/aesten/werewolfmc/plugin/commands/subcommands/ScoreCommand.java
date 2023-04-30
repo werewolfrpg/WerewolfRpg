@@ -34,7 +34,7 @@ public class ScoreCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.score";
+        return "werewolf.cmd.ww.score";
     }
 
     private static final class Add extends CommandNode {
@@ -76,7 +76,7 @@ public class ScoreCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.score.add";
+            return "werewolf.cmd.ww.score.add";
         }
     }
 
@@ -119,7 +119,7 @@ public class ScoreCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.score.set";
+            return "werewolf.cmd.ww.score.set";
         }
     }
 }

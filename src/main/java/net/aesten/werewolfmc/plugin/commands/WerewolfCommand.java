@@ -23,12 +23,12 @@ public class WerewolfCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww";
+        return "werewolf.cmd.ww";
     }
 
     @NotNull
     @Override
     public List<String> getAliases() {
-        return List.of("wwmc");
+        return List.of("werewolf");
     }
 }

@@ -85,7 +85,7 @@ public class ShopManager implements Configurable {
 
     @Override
     public String getName() {
-        return "wwmc-shop-config";
+        return "werewolf-shop-config";
     }
 
     @Override

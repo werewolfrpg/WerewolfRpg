@@ -37,7 +37,7 @@ public class ItemCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.item";
+        return "werewolf.cmd.ww.item";
     }
 
     private static final class Get extends CommandNode {
@@ -59,7 +59,7 @@ public class ItemCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.item.get";
+            return "werewolf.cmd.ww.item.get";
         }
     }
 
@@ -87,7 +87,7 @@ public class ItemCommand extends CommandNode {
 
         @Override
         public String getPermission() {
-            return "wwmc.cmd.ww.item.tools";
+            return "werewolf.cmd.ww.item.tools";
         }
     }
 }

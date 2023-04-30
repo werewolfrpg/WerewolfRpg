@@ -205,7 +205,7 @@ public class SkeletonManager implements Listener, Configurable {
 
     @Override
     public String getName() {
-        return "wwmc-skeleton-config";
+        return "werewolf-skeleton-config";
     }
 
     @Override

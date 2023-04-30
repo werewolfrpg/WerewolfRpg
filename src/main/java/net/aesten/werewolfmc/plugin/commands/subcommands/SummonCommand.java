@@ -41,6 +41,6 @@ public class SummonCommand extends CommandNode {
 
     @Override
     public String getPermission() {
-        return "wwmc.cmd.ww.summon";
+        return "werewolf.cmd.ww.summon";
     }
 }
