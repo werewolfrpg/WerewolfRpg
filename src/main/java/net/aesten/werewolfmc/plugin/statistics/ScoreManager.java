@@ -81,7 +81,7 @@ public class ScoreManager {
 
     public void assignPrefixSuffix(Player player, int score) {
         Rank rank = getScoreRank(score);
-        player.setPlayerListName(rank.getPrefix() + player.getName() + ChatColor.GREEN + " (" + score + ")");
+        player.setPlayerListName(rank.getPrefix() + player.getName() + ChatColor.GREEN + " ☆" + score);
     }
 
     public void assignRole(Player player, Guild guild) {

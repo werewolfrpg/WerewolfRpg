@@ -109,22 +109,20 @@ public class ItemManager implements Listener {
         WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Objects.requireNonNull(event.getClickedBlock()).getType() == Material.PLAYER_HEAD) {
             if (!game.isNight()) {
-                WerewolfUtil.sendPluginText(player, "You cannot use a divination during day time", ChatColor.RED);
-            }
-            else if (data.hasAlreadyUsedDivination()) {
-                WerewolfUtil.sendPluginText(player, "You have already used a divination this night", ChatColor.RED);
-            }
-            else if (data.getRemainingDivinations() < 1) {
-                WerewolfUtil.sendPluginText(player, "You don't have any divinations left", ChatColor.RED);
-            }
-            else {
+                WerewolfUtil.sendErrorText(player, "You cannot use a divination during day time");
+            } else if (game.isWerewolfNight()) {
+                WerewolfUtil.sendErrorText(player, "You cannot use a divination during a Werewolf Night");
+            } else if (data.hasAlreadyUsedDivination()) {
+                WerewolfUtil.sendErrorText(player, "You have already used a divination this night");
+            } else if (data.getRemainingDivinations() < 1) {
+                WerewolfUtil.sendErrorText(player, "You don't have any divinations left");
+            } else {
                 OfflinePlayer offlinePlayer = ((Skull) event.getClickedBlock().getState()).getOwningPlayer();
                 if (offlinePlayer != null && game.isParticipant(Bukkit.getPlayer(offlinePlayer.getUniqueId()))) {
                     WerewolfPlayerData targetData = game.getDataMap().get(offlinePlayer.getUniqueId());
                     if (player.getUniqueId() == offlinePlayer.getUniqueId()) {
-                        WerewolfUtil.sendPluginText(player, "You cannot use a divination on yourself", ChatColor.RED);
-                    }
-                    else {
+                        WerewolfUtil.sendErrorText(player, "You cannot use a divination on yourself");
+                    } else {
                         Role role = game.getDataMap().get(offlinePlayer.getUniqueId()).getRole().divinationRole();
                         String name = offlinePlayer.getName();
                         data.setHasAlreadyUsedDivination(true);
@@ -133,9 +131,8 @@ public class ItemManager implements Listener {
                         WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.color + role.name, net.aesten.werewolfmc.WerewolfPlugin.COLOR);
                         game.getTracker().getPlayerStats(player.getUniqueId()).addDivinationUsed();
                     }
-                }
-                else {
-                    WerewolfUtil.sendPluginText(player, "This is not a valid player!", ChatColor.RED);
+                } else {
+                    WerewolfUtil.sendErrorText(player, "This is not a valid player!");
                 }
             }
         }

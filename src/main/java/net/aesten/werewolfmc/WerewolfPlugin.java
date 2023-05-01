@@ -96,5 +96,4 @@ public final class WerewolfPlugin extends JavaPlugin {
     public static void logConsole(String log) {
         Bukkit.getServer().getConsoleSender().sendMessage(CHAT_LOG + log);
     }
-
 }
