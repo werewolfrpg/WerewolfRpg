@@ -27,7 +27,6 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @ApiVersion(ApiVersion.Target.v1_19)
 @Dependency("AzaleaConfiguration")
 @Dependency("AzaleaCommand")
-@Dependency("AzaleaAchievement")
 @Dependency("ProtocolLib")
 public final class WerewolfPlugin extends JavaPlugin {
     public static final ChatColor COLOR = ChatColor.GOLD;
