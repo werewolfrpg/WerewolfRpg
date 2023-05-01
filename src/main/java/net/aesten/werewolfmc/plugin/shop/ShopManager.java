@@ -2,8 +2,6 @@ package net.aesten.werewolfmc.plugin.shop;
 
 import net.aesten.werewolfmc.plugin.items.base.ShopWerewolfItem;
 import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
-import net.azalealibrary.configuration.Configurable;
-import net.azalealibrary.configuration.property.ConfigurableProperty;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class ShopManager implements Configurable {
+public class ShopManager {
     private final List<ShopWerewolfItem> basicShopItems;
     private final List<ShopWerewolfItem> specialShopItems;
     private static final Comparator<ShopWerewolfItem> comparator = (o1, o2) -> {
@@ -81,15 +79,5 @@ public class ShopManager implements Configurable {
                 }
             }
         }
-    }
-
-    @Override
-    public String getName() {
-        return "werewolf-shop-config";
-    }
-
-    @Override
-    public List<ConfigurableProperty<?, ?>> getProperties() {
-        return new ArrayList<>(PlayerItem.getRegistry().values().stream().filter(item -> item instanceof ShopWerewolfItem).map(item -> ((ShopWerewolfItem) item).getCost()).toList());
     }
 }

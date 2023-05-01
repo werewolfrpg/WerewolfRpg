@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.packets;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -11,10 +12,13 @@ import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
 
 public class SpecInfoPacket extends PacketAdapter {
+    private final Comparator<PlayerInfoData> comparator = Comparator.comparingInt((PlayerInfoData data) -> WerewolfBackend.getBackend().getPdc().getScoreOfPlayer(data.getProfile().getUUID()).join()).reversed();
+
     public SpecInfoPacket(net.aesten.werewolfmc.WerewolfPlugin plugin) {
         super(plugin, PacketType.Play.Server.PLAYER_INFO);
     }
@@ -41,6 +45,8 @@ public class SpecInfoPacket extends PacketAdapter {
                         NativeGameMode.ADVENTURE, data.getDisplayName());
                 dataListIt.set(newData);
             }
+
+            dataList.sort(comparator);
 
             packet.getPlayerInfoDataLists().write(0, dataList);
             e.setPacket(packet);

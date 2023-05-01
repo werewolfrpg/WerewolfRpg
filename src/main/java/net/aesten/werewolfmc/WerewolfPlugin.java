@@ -45,13 +45,9 @@ public final class WerewolfPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //plugin configurations
-        Configurable shopConfig = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.load(this, shopConfig);
-        Configurable skeletonConfig = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.load(this, skeletonConfig);
-        Configurable scoreConfig = WerewolfGame.getScoreManager();
-        AzaleaConfigurationApi.load(this, scoreConfig);
+        //plugin configuration
+        Configurable config = WerewolfGame.getConfig();
+        AzaleaConfigurationApi.load(this, config);
 
         //register commands
         AzaleaCommandApi.register(this, WerewolfCommand.class);
@@ -75,13 +71,9 @@ public final class WerewolfPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        //plugin configurations
-        Configurable shopConfig = WerewolfGame.getShopManager();
-        AzaleaConfigurationApi.save(this, shopConfig);
-        Configurable skeletonConfig = WerewolfGame.getSkeletonManager();
-        AzaleaConfigurationApi.save(this, skeletonConfig);
-        Configurable scoreConfig = WerewolfGame.getScoreManager();
-        AzaleaConfigurationApi.save(this, scoreConfig);
+        //plugin configuration
+        Configurable config = WerewolfGame.getConfig();
+        AzaleaConfigurationApi.save(this, config);
 
         WerewolfGame.getMapManager().saveMaps();
 

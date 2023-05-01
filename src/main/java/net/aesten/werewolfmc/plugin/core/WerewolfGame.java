@@ -2,9 +2,7 @@ package net.aesten.werewolfmc.plugin.core;
 
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
-import net.aesten.werewolfmc.plugin.data.Role;
-import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
-import net.aesten.werewolfmc.plugin.data.TeamsManager;
+import net.aesten.werewolfmc.plugin.data.*;
 import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.items.registry.ItemManager;
 import net.aesten.werewolfmc.plugin.map.MapManager;
@@ -14,7 +12,6 @@ import net.aesten.werewolfmc.plugin.skeleton.SkeletonManager;
 import net.aesten.werewolfmc.plugin.statistics.ScoreManager;
 import net.aesten.werewolfmc.plugin.statistics.Tracker;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
-import net.aesten.werewolfmc.plugin.data.RolePool;
 import net.aesten.werewolfmc.plugin.map.WerewolfMap;
 import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.*;
@@ -36,6 +33,7 @@ import java.sql.Timestamp;
 public class WerewolfGame {
     private static WerewolfGame instance = new WerewolfGame();
     private static final Listener listener = new ItemManager();
+    private static final WerewolfConfig config = new WerewolfConfig();
     private static final SkeletonManager skeletonManager = new SkeletonManager();
     private static final ShopManager shopManager = new ShopManager();
     private static final ScoreManager scoreManager = new ScoreManager();
@@ -51,6 +49,7 @@ public class WerewolfGame {
     private WerewolfMap map;
     private boolean isPlaying;
     private boolean isNight;
+    private boolean isWerewolfNight;
     private Timestamp startTime;
     private Timestamp endTime;
     private final List<ArmorStand> displayNameArmorStands;
@@ -63,6 +62,7 @@ public class WerewolfGame {
         this.ticker = new Ticker();
         this.isPlaying = false;
         this.isNight = false;
+        this.isWerewolfNight = false;
         this.displayNameArmorStands = new ArrayList<>();
 
         instance = this;
@@ -78,6 +78,7 @@ public class WerewolfGame {
         this.map = previousGame.map;
         this.isPlaying = false;
         this.isNight = false;
+        this.isWerewolfNight = false;
         this.displayNameArmorStands = new ArrayList<>();
 
         instance = this;
@@ -85,6 +86,10 @@ public class WerewolfGame {
 
     public static WerewolfGame getInstance() {
         return instance;
+    }
+
+    public static WerewolfConfig getConfig() {
+        return config;
     }
 
     public static SkeletonManager getSkeletonManager() {
@@ -138,6 +143,14 @@ public class WerewolfGame {
 
     public void switchDayNight() {
         isNight = !isNight;
+    }
+
+    public boolean isWerewolfNight() {
+        return isWerewolfNight;
+    }
+
+    public void setWerewolfNight(boolean werewolfNight) {
+        isWerewolfNight = werewolfNight;
     }
 
     public boolean isPlaying() {

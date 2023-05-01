@@ -1,6 +1,12 @@
 package net.aesten.werewolfmc.plugin.utilities;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
+import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -115,5 +121,34 @@ public class WerewolfUtil {
             }
         }
         return directoryToBeDeleted.delete();
+    }
+
+    public static void applyPacketGlowing(Player viewer, WerewolfGame game) {
+        int duration = 2400;
+        for (Player player : game.getParticipants()) {
+            WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
+            if (data != null && data.isAlive() && data.getRole() != Role.WEREWOLF) {
+                // create the metadata packet
+                PacketContainer metadataPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+
+                // get the data watcher for the entity
+                WrappedDataWatcher dataWatcher = WrappedDataWatcher.getEntityWatcher(player);
+
+                // add a new data watcher item for the glowing effect with the specified duration
+                dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40);
+                dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(11, WrappedDataWatcher.Registry.get(Integer.class)), duration);
+
+                // set the entity ID and modified data watcher for the metadata packet
+                metadataPacket.getIntegers().write(0, player.getEntityId());
+                metadataPacket.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
+
+                // send the packet to the specific player
+                try {
+                    ProtocolLibrary.getProtocolManager().sendServerPacket(viewer, metadataPacket);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 }

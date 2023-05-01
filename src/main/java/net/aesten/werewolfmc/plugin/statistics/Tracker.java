@@ -54,7 +54,7 @@ public class Tracker {
 
     public void sendDataToDatabase(WerewolfGame game, Role winner) {
         WerewolfBackend backend = WerewolfBackend.getBackend();
-        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner.name));
+        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner != null ? winner.name : "Cancelled"));
         playerStats.values().forEach(stats -> {
             int gainedScore = WerewolfGame.getScoreManager().getCalculatedScore(stats);
             stats.setGain(gainedScore);

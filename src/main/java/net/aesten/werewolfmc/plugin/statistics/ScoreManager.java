@@ -4,11 +4,7 @@ import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
-import net.azalealibrary.configuration.Configurable;
-import net.azalealibrary.configuration.property.AssignmentPolicy;
-import net.azalealibrary.configuration.property.ConfigurableProperty;
 import net.azalealibrary.configuration.property.Property;
-import net.azalealibrary.configuration.property.PropertyType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.ChatColor;
@@ -19,52 +15,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScoreManager implements Configurable {
-    private static final AssignmentPolicy<Integer> POSITIVE = AssignmentPolicy.create(i -> i >= 0, "Score threshold should be positive");
-
-    private final Property<Integer> rank0 = Property.create(PropertyType.INTEGER, "score.rank.beginner", () -> 0).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank1 = Property.create(PropertyType.INTEGER, "score.rank.novice", () -> 100).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank2 = Property.create(PropertyType.INTEGER, "score.rank.apprentice", () -> 200).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank3 = Property.create(PropertyType.INTEGER, "score.rank.intermediate", () -> 300).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank4 = Property.create(PropertyType.INTEGER, "score.rank.skilled", () -> 500).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank5 = Property.create(PropertyType.INTEGER, "score.rank.experienced", () -> 700).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank6 = Property.create(PropertyType.INTEGER, "score.rank.veteran", () -> 1000).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank7 = Property.create(PropertyType.INTEGER, "score.rank.expert", () -> 1500).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank8 = Property.create(PropertyType.INTEGER, "score.rank.elite", () -> 2000).addPolicy(POSITIVE).done();
-    private final Property<Integer> rank9 = Property.create(PropertyType.INTEGER, "score.rank.legendary", () -> 3000).addPolicy(POSITIVE).done();
-
-    private final Property<Integer> vampireVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.vampire", () -> 25).done();
-    private final Property<Integer> traitorVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.traitor", () -> 20).done();
-    private final Property<Integer> baseVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.base", () -> 15).done();
-    private final Property<Integer> vampireDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.vampire", () -> 10).done();
-    private final Property<Integer> baseDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.base", () -> 5).done();
-
+public class ScoreManager {
     private final Map<Rank, Property<Integer>> rankThresholdMap = new HashMap<>();
 
     private final List<net.dv8tion.jda.api.entities.Role> roles = new ArrayList<>();
 
     public ScoreManager() {
-        rankThresholdMap.put(Rank.BEGINNER, rank0);
-        rankThresholdMap.put(Rank.NOVICE, rank1);
-        rankThresholdMap.put(Rank.APPRENTICE, rank2);
-        rankThresholdMap.put(Rank.INTERMEDIATE, rank3);
-        rankThresholdMap.put(Rank.SKILLED, rank4);
-        rankThresholdMap.put(Rank.EXPERIENCED, rank5);
-        rankThresholdMap.put(Rank.VETERAN, rank6);
-        rankThresholdMap.put(Rank.EXPERT, rank7);
-        rankThresholdMap.put(Rank.ELITE, rank8);
-        rankThresholdMap.put(Rank.LEGENDARY, rank9);
-    }
-
-    @Override
-    public String getName() {
-        return "werewolf-score-config";
-    }
-
-    @Override
-    public List<ConfigurableProperty<?, ?>> getProperties() {
-        return List.of(rank0, rank1, rank2, rank3, rank4, rank5, rank6, rank7, rank8, rank9,
-                vampireVictoryScoreGain, traitorVictoryScoreGain, baseVictoryScoreGain, vampireDefeatScoreGain, baseDefeatScoreGain);
+        rankThresholdMap.put(Rank.BEGINNER, WerewolfGame.getConfig().getRank0());
+        rankThresholdMap.put(Rank.NOVICE, WerewolfGame.getConfig().getRank1());
+        rankThresholdMap.put(Rank.APPRENTICE, WerewolfGame.getConfig().getRank2());
+        rankThresholdMap.put(Rank.INTERMEDIATE, WerewolfGame.getConfig().getRank3());
+        rankThresholdMap.put(Rank.SKILLED, WerewolfGame.getConfig().getRank4());
+        rankThresholdMap.put(Rank.EXPERIENCED, WerewolfGame.getConfig().getRank5());
+        rankThresholdMap.put(Rank.VETERAN, WerewolfGame.getConfig().getRank6());
+        rankThresholdMap.put(Rank.EXPERT, WerewolfGame.getConfig().getRank7());
+        rankThresholdMap.put(Rank.ELITE, WerewolfGame.getConfig().getRank8());
+        rankThresholdMap.put(Rank.LEGENDARY, WerewolfGame.getConfig().getRank9());
     }
 
     public Rank getPlayerRank(Player player) {
@@ -73,7 +39,7 @@ public class ScoreManager implements Configurable {
     }
 
     public Rank getScoreRank(int score) {
-        Map.Entry<Rank, Property<Integer>> bestEntry = Map.entry(Rank.BEGINNER, rank0);
+        Map.Entry<Rank, Property<Integer>> bestEntry = Map.entry(Rank.BEGINNER, WerewolfGame.getConfig().getRank0());
         for (Map.Entry<Rank, Property<Integer>> entry : rankThresholdMap.entrySet()) {
             if (score >= entry.getValue().get() && entry.getValue().get() >= bestEntry.getValue().get()) {
                 bestEntry = entry;
@@ -85,12 +51,12 @@ public class ScoreManager implements Configurable {
     public int getCalculatedScore(PlayerStats stats) {
         int score = 0;
         if (stats.getResult() == Result.VICTORY) {
-            if (stats.getRole() == Role.VAMPIRE) score += vampireVictoryScoreGain.get();
-            else if (stats.getRole() == Role.TRAITOR) score += traitorVictoryScoreGain.get();
-            else score += baseVictoryScoreGain.get();
+            if (stats.getRole() == Role.VAMPIRE) score += WerewolfGame.getConfig().getVampireVictoryScoreGain().get();
+            else if (stats.getRole() == Role.TRAITOR) score += WerewolfGame.getConfig().getTraitorVictoryScoreGain().get();
+            else score += WerewolfGame.getConfig().getBaseVictoryScoreGain().get();
         } else if (stats.getResult() == Result.DEFEAT) {
-            if (stats.getRole() == Role.VAMPIRE) score += vampireDefeatScoreGain.get();
-            else score += baseDefeatScoreGain.get();
+            if (stats.getRole() == Role.VAMPIRE) score += WerewolfGame.getConfig().getVampireDefeatScoreGain().get();
+            else score += WerewolfGame.getConfig().getBaseDefeatScoreGain().get();
         }
 
         score += stats.getTraitorsGuideUsed() * 2;

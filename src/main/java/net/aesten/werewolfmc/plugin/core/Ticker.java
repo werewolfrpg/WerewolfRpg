@@ -4,6 +4,7 @@ import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.data.TeamsManager;
+import net.aesten.werewolfmc.plugin.data.WerewolfConfig;
 import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
 import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
@@ -29,16 +30,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Optional;
+import java.util.Random;
 
 public class Ticker {
     private BossBar bar;
     private BukkitTask task;
     private int days;
+    private boolean werewolfNightHappened;
 
     public Ticker() {
         this.bar = Bukkit.createBossBar(ChatColor.YELLOW + "Day Time", BarColor.YELLOW, BarStyle.SEGMENTED_6);
         this.bar.setVisible(true);
-        this.days = 0;
+        this.days = 1;
+        this.werewolfNightHappened = false;
     }
 
     public void addPlayer(Player player) {
@@ -77,7 +81,6 @@ public class Ticker {
     }
 
     private void switchToNight(WerewolfGame game) {
-        days++;
         bar.setColor(BarColor.PURPLE);
         bar.setTitle(ChatColor.DARK_PURPLE + "Night Time");
         game.getMap().getWorld().setTime(18000L);
@@ -85,28 +88,50 @@ public class Ticker {
 
         WerewolfGame.getSkeletonManager().summonAllSkeletons(game.getMap());
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (game.getParticipants().contains(player)) {
-                WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
-                if (data.isAlive()) {
-                    if (data.getRole() == Role.VAMPIRE) {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
-                                        2400, 5,false, false, false));
-                    }
-                    WerewolfBot bot = WerewolfBot.getBot();
-                    if (bot != null && bot.isConfigured()) {
-                        long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId()).join();
-                        Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
-                        dcMember.ifPresent(member -> member.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been muted", ChatColor.GREEN)));
-                    }
-                }
+        game.setWerewolfNight(isWerewolfNight());
 
+        for (Player player : game.getParticipants()) {
+            WerewolfPlayerData data = game.getDataMap().get(player.getUniqueId());
+            if (data.isAlive()) {
+                if (data.getRole() == Role.VAMPIRE) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
+                                    2400, 5,false, false, false));
+                }
+                WerewolfBot bot = WerewolfBot.getBot();
+                if (bot != null && bot.isConfigured()) {
+                    long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId()).join();
+                    Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
+                    dcMember.ifPresent(member -> member.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been muted", ChatColor.GREEN)));
+                }
+                if (game.isWerewolfNight()) {
+                    werewolfNightHappened = true;
+                    WerewolfUtil.sendTitle(player, ChatColor.DARK_RED + "WEREWOLF NIGHT", ChatColor.GOLD + "Night " + days);
+                    if (data.getRole() == Role.WEREWOLF) {
+                        double r = new Random().nextDouble();
+                        if (r <= 0.25) {
+                            WerewolfUtil.sendPluginText(player, "You gained 2 potions of invisibility and 1 axe", ChatColor.DARK_RED);
+                            player.getInventory().addItem(PlayerItem.INVISIBILITY_POTION.getItem());
+                            player.getInventory().addItem(PlayerItem.INVISIBILITY_POTION.getItem());
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_AXE.getItem());
+                        } else if (r <= 0.5) {
+                            WerewolfUtil.sendPluginText(player, "You gained 3 dashes", ChatColor.DARK_RED);
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_DASH.getItem());
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_DASH.getItem());
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_DASH.getItem());
+                        } else {
+                            WerewolfUtil.sendPluginText(player, "All non-werewolf players are now glowing", ChatColor.DARK_RED);
+                            WerewolfUtil.applyPacketGlowing(player, game);
+                        }
+                    }
+                } else {
+                    WerewolfUtil.sendTitle(player, ChatColor.DARK_PURPLE + "NIGHT TIME", ChatColor.GOLD + "Night " + days);
+                }
             }
-            WerewolfUtil.sendTitle(player, ChatColor.DARK_PURPLE + "NIGHT TIME", ChatColor.GOLD + "Night " + days);
         }
     }
 
     private void switchToDay(WerewolfGame game) {
+        days++;
         bar.setColor(BarColor.YELLOW);
         bar.setTitle(ChatColor.YELLOW + "Day Time");
         game.getMap().getWorld().setTime(6000L);
@@ -191,5 +216,10 @@ public class Ticker {
                 }
             }
         }
+    }
+
+    private boolean isWerewolfNight() {
+        WerewolfConfig config = WerewolfGame.getConfig();
+        return config.getEnableWerewolfNight().get() && !werewolfNightHappened && config.getFirstWerewolfNight().get() <= days && config.getChanceWerewolfNight().get() >= new Random().nextDouble();
     }
 }
