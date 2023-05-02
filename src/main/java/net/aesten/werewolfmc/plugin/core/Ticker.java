@@ -118,6 +118,11 @@ public class Ticker {
                             player.getInventory().addItem(PlayerItem.WEREWOLF_DASH.getItem());
                             player.getInventory().addItem(PlayerItem.WEREWOLF_DASH.getItem());
                             player.getInventory().addItem(PlayerItem.WEREWOLF_DASH.getItem());
+                        } else if (r <= 0.75) {
+                            WerewolfUtil.sendPluginText(player, "You gained 3 traps", ChatColor.DARK_RED);
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_TRAP.getItem());
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_TRAP.getItem());
+                            player.getInventory().addItem(PlayerItem.WEREWOLF_TRAP.getItem());
                         } else {
                             WerewolfUtil.sendPluginText(player, "All non-werewolf players are now glowing", ChatColor.DARK_RED);
                             WerewolfUtil.applyPacketGlowing(player, game);

@@ -10,6 +10,7 @@ import java.util.Map;
 public enum PlayerItem {
     MUTER(new Muter()),
     WEREWOLF_DASH(new WerewolfDash()),
+    WEREWOLF_TRAP(new WerewolfTrap()),
     SKELETON_PUNISHER(new SkeletonPunisher()),
     EXQUISITE_MEAT(new ExquisiteMeat()),
     HUNTERS_BOW(new HuntersBow()),

@@ -19,10 +19,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class WerewolfUtil {
     public static void sendPluginText(CommandSender sender, String message) {
@@ -105,6 +109,25 @@ public class WerewolfUtil {
         }.runTaskLater(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), delay);
     }
 
+    public static void runRepeatTask(int length, int interval, Runnable runnable) {
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        }.runTaskTimer(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), 0, interval);
+        runDelayedTask(length, task::cancel);
+    }
+
+//    public static BukkitTask repeatingTask(int interval, Runnable runnable) {
+//        return new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                runnable.run();
+//            }
+//        }.runTaskTimer(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), 0, interval);
+//    }
+
     public static boolean areSameFaction(Role role1, Role role2) {
         return role1.factionRole() == role2.factionRole();
     }
@@ -150,5 +173,46 @@ public class WerewolfUtil {
                 }
             }
         }
+    }
+
+    public static void spawnCircleParticles(Player player, Location center, double radius, int amount) {
+        for (int i = 0; i < amount; i++) {
+            double angle = 2 * Math.PI * i / amount;
+            double x = center.getX() + radius * Math.cos(angle);
+            double z = center.getZ() + radius * Math.sin(angle);
+            Location loc = new Location(center.getWorld(), x, center.getY(), z);
+            player.spawnParticle(Particle.REDSTONE, loc, 1,  new Particle.DustOptions(Color.fromRGB(0, 200, 0), 1));
+        }
+    }
+
+    public static List<Location> getSpawnSpacesAround(Location center, int radius, int numberSpawns) {
+        Random random = new Random();
+        List<Location> spawns = new ArrayList<>();
+
+        int counter = 0;
+        int maxCount = 500;
+        while (spawns.size() < numberSpawns || counter < maxCount) {
+            // Calculate random angle and distance from center
+            double angle = random.nextDouble() * Math.PI * 2;
+            double distance = random.nextDouble() * radius;
+            double height = random.nextInt(radius*2) - radius;
+
+            // Calculate coordinates of potential spawn location
+            double x = center.getX() + Math.cos(angle) * distance;
+            double z = center.getZ() + Math.sin(angle) * distance;
+            double y = center.getY() + height;
+
+            Location spawn = new Location(center.getWorld(), x, y, z);
+            Location spawnClone = spawn.clone();
+
+            if (spawn.getBlock().isPassable() &&
+                    spawnClone.add(0,1,0).getBlock().isPassable() &&
+                    spawnClone.add(0,1,0).getBlock().isPassable() &&
+                    spawnClone.add(0,1,0).getBlock().isPassable()) {
+                spawns.add(spawn);
+            }
+            counter++;
+        }
+        return spawns;
     }
 }

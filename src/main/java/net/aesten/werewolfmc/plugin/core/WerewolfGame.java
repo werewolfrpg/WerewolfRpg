@@ -5,6 +5,7 @@ import net.aesten.werewolfmc.bot.WerewolfBot;
 import net.aesten.werewolfmc.plugin.data.*;
 import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.items.registry.ItemManager;
+import net.aesten.werewolfmc.plugin.items.registry.player.WerewolfTrap;
 import net.aesten.werewolfmc.plugin.map.MapManager;
 import net.aesten.werewolfmc.plugin.map.WorldManager;
 import net.aesten.werewolfmc.plugin.shop.ShopManager;
@@ -328,6 +329,7 @@ public class WerewolfGame {
         teamsManager.clear();
         HandlerList.unregisterAll(listener);
         HandlerList.unregisterAll(skeletonManager);
+        WerewolfTrap.clearTasks();
 
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {

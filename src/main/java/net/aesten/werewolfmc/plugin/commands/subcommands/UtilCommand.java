@@ -15,7 +15,8 @@ public class UtilCommand extends CommandNode {
                 new Heal(),
                 new Role(),
                 new Adventure(),
-                new Spectator()
+                new Spectator(),
+                new Test()
         );
     }
 
@@ -154,6 +155,19 @@ public class UtilCommand extends CommandNode {
         @Override
         public String getPermission() {
             return "werewolf.cmd.ww.util.spectator";
+        }
+    }
+
+    private static final class Test extends CommandNode {
+        public Test() {
+            super("test");
+        }
+
+        @Override
+        public void execute(CommandSender sender, Arguments arguments) {
+            if (sender instanceof Player player) {
+                WerewolfUtil.runRepeatTask(200, 5, () -> WerewolfUtil.spawnCircleParticles(player, player.getLocation(), 3, 300));
+            }
         }
     }
 }
