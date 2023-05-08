@@ -51,11 +51,6 @@ public class MapCommand extends CommandNode {
         help(sender);
     }
 
-    @Override
-    public String getPermission() {
-        return "werewolf.cmd.ww.map";
-    }
-
     private static final class Select extends CommandNode {
         public Select() {
             super("select");
@@ -190,11 +185,6 @@ public class MapCommand extends CommandNode {
             help(sender);
         }
 
-        @Override
-        public String getPermission() {
-            return "werewolf.cmd.ww.map.shop";
-        }
-
         private static final class Summon extends CommandNode {
             public Summon() {
                 super("summon");
@@ -311,11 +301,6 @@ public class MapCommand extends CommandNode {
             help(sender);
         }
 
-        @Override
-        public String getPermission() {
-            return "werewolf.cmd.ww.map.skeleton";
-        }
-
         private static final class Show extends CommandNode {
             public Show() {
                 super("show");
@@ -407,11 +392,6 @@ public class MapCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             help(sender);
-        }
-
-        @Override
-        public String getPermission() {
-            return "werewolf.cmd.ww.map.border";
         }
 
         private static final class Set extends CommandNode {

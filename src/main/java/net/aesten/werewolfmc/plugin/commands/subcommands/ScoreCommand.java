@@ -32,11 +32,6 @@ public class ScoreCommand extends CommandNode {
         help(sender);
     }
 
-    @Override
-    public String getPermission() {
-        return "werewolf.cmd.ww.score";
-    }
-
     private static final class Add extends CommandNode {
         public Add() {
             super("add");

@@ -34,11 +34,6 @@ public class WorldCommand extends CommandNode {
         help(sender);
     }
 
-    @Override
-    public String getPermission() {
-        return "werewolf.cmd.ww.world";
-    }
-
     private static final class List extends CommandNode {
         public List() {
             super("list");

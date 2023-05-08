@@ -3,8 +3,8 @@ package net.aesten.werewolfmc.plugin.items.registry.player;
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
+import net.aesten.werewolfmc.plugin.items.base.InteractItem;
 import net.aesten.werewolfmc.plugin.items.base.ItemStackBuilder;
-import net.aesten.werewolfmc.plugin.items.base.ProjectileItem;
 import net.aesten.werewolfmc.plugin.items.base.WerewolfItem;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
@@ -14,7 +14,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkeleton;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -23,8 +24,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class WerewolfTrap extends WerewolfItem implements ProjectileItem {
+public class WerewolfTrap extends WerewolfItem implements InteractItem {
     private static final List<BukkitTask> toCancel = new ArrayList<>();
 
     @Override
@@ -34,10 +36,10 @@ public class WerewolfTrap extends WerewolfItem implements ProjectileItem {
 
     @Override
     protected ItemStack getBaseItem() {
-        return ItemStackBuilder.builder(Material.EGG, 1)
+        return ItemStackBuilder.builder(Material.TRIPWIRE_HOOK, 1)
                 .addName(ChatColor.DARK_RED + "Werewolf Trap")
-                .addLore(ChatColor.GREEN + "Throw to use")
-                .addLore(ChatColor.BLUE + "Sets up a trap at the landing position")
+                .addLore(ChatColor.GREEN + "Click a block to use")
+                .addLore(ChatColor.BLUE + "Sets up a trap at the clicked position")
                 .addLore(ChatColor.BLUE + "Only werewolves can see the trap circle")
                 .addLore(ChatColor.BLUE + "Other roles can trigger the trap")
                 .addLore(ChatColor.BLUE + "Once triggered, wither skeletons are summoned")
@@ -46,38 +48,35 @@ public class WerewolfTrap extends WerewolfItem implements ProjectileItem {
     }
 
     @Override
-    public void onProjectileHit(ProjectileHitEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
-        Location landingPosition;
-        if (event.getHitEntity() instanceof Player player) {
-            landingPosition = player.getLocation();
-        } else if (event.getHitBlock() != null) {
-            landingPosition = event.getHitBlock().getLocation();
-        } else {
-            return;
-        }
-        BukkitTask task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                List<Player> players = game
-                        .getMap()
-                        .getWorld()
-                        .getNearbyEntities(landingPosition, 3, 3, 3)
-                        .stream()
-                        .filter(WerewolfTrap::isNonWerewolfAlivePlayers)
-                        .map(Player.class::cast)
-                        .toList();
-                if (players.size() > 0) {
-                    WerewolfUtil.getSpawnSpacesAround(landingPosition, 3, 5)
-                            .forEach(WerewolfTrap::summonWitherSkeleton);
-                    players.forEach(p -> p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1200, 1, false)));
-                    this.cancel();
-                } else {
-                    WerewolfGame.getTeamsManager().getFaction(Role.WEREWOLF).getPlayers().forEach(werewolf -> WerewolfUtil.spawnCircleParticles(werewolf, landingPosition, 3, 300));
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Location loc = Objects.requireNonNull(event.getClickedBlock()).getLocation().add(0,1,0);
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    List<Player> players = game
+                            .getMap()
+                            .getWorld()
+                            .getNearbyEntities(loc, 3, 3, 3)
+                            .stream()
+                            .filter(WerewolfTrap::isNonWerewolfAlivePlayers)
+                            .map(Player.class::cast)
+                            .toList();
+                    if (players.size() > 0) {
+                        WerewolfUtil.getSpawnSpacesAround(loc, 3, 5)
+                                .forEach(WerewolfTrap::summonWitherSkeleton);
+                        players.forEach(p -> p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1200, 1, false)));
+                        this.cancel();
+                    } else {
+                        WerewolfGame.getTeamsManager().getFaction(Role.WEREWOLF).getPlayers().forEach(werewolf -> WerewolfUtil.spawnCircleParticles(werewolf, loc, 3, 300));
+                    }
                 }
-            }
-        }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, 5);
-        toCancel.add(task);
+            }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, 5);
+            toCancel.add(task);
+        } else {
+            WerewolfUtil.sendErrorText(event.getPlayer(), "Click on a block to use");
+        }
     }
 
     private static boolean isNonWerewolfAlivePlayers(Entity entity) {

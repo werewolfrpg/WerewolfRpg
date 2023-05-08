@@ -121,7 +121,7 @@ public class GeneralEvents implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isOp()) {
             if (event.getClickedBlock() != null) {
                 switch (event.getClickedBlock().getType()) {
-                    case BARREL, LEVER, CAKE, CHEST, TRAPPED_CHEST, SPRUCE_TRAPDOOR ->
+                    case BARREL, LEVER, CAKE, CHEST, TRAPPED_CHEST ->
                             event.setCancelled(true);
                 }
             }

@@ -35,11 +35,6 @@ public class ItemCommand extends CommandNode {
         help(sender);
     }
 
-    @Override
-    public String getPermission() {
-        return "werewolf.cmd.ww.item";
-    }
-
     private static final class Get extends CommandNode {
         public Get() {
             super("get");

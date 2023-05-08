@@ -36,11 +36,6 @@ public class UtilCommand extends CommandNode {
         help(sender);
     }
 
-    @Override
-    public String getPermission() {
-        return "werewolf.cmd.ww.util";
-    }
-
     private static final class Spawn extends CommandNode {
         public Spawn() {
             super("spawn");

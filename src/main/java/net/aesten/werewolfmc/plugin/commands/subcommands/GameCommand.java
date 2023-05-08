@@ -46,11 +46,6 @@ public class GameCommand extends CommandNode {
         help(sender);
     }
 
-    @Override
-    public String getPermission() {
-        return "werewolf.cmd.ww.game";
-    }
-
     private static final class Start extends CommandNode {
         public Start() {
             super("start");
@@ -179,11 +174,6 @@ public class GameCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             help(sender);
-        }
-
-        @Override
-        public String getPermission() {
-            return "werewolf.cmd.ww.game.players";
         }
 
         private static final class Count extends CommandNode {
@@ -377,11 +367,6 @@ public class GameCommand extends CommandNode {
         @Override
         public void execute(CommandSender sender, Arguments arguments) {
             help(sender);
-        }
-
-        @Override
-        public String getPermission() {
-            return "werewolf.cmd.ww.game.roles";
         }
 
         private static final class List extends CommandNode {
