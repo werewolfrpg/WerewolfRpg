@@ -22,12 +22,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class WerewolfTrap extends WerewolfItem implements InteractItem {
     private static final List<BukkitTask> toCancel = new ArrayList<>();
+    private static final Map<Integer, Boolean> completed = new HashMap<>();
 
     @Override
     public String getId() {
@@ -51,6 +50,8 @@ public class WerewolfTrap extends WerewolfItem implements InteractItem {
     public void onPlayerInteract(PlayerInteractEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Player user = event.getPlayer();
+            user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
             Location loc = Objects.requireNonNull(event.getClickedBlock()).getLocation().add(0,1,0);
             BukkitTask task = new BukkitRunnable() {
                 @Override
@@ -63,10 +64,12 @@ public class WerewolfTrap extends WerewolfItem implements InteractItem {
                             .filter(WerewolfTrap::isNonWerewolfAlivePlayers)
                             .map(Player.class::cast)
                             .toList();
-                    if (players.size() > 0) {
+                    if (players.size() > 0 && !completed.get(getTaskId())) {
+                        completed.put(getTaskId(), true);
                         WerewolfUtil.getSpawnSpacesAround(loc, 3, 5)
                                 .forEach(WerewolfTrap::summonWitherSkeleton);
                         players.forEach(p -> p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1200, 1, false)));
+
                         this.cancel();
                     } else {
                         WerewolfGame.getTeamsManager().getFaction(Role.WEREWOLF).getPlayers().forEach(werewolf -> WerewolfUtil.spawnCircleParticles(werewolf, loc, 3, 300));
@@ -74,6 +77,7 @@ public class WerewolfTrap extends WerewolfItem implements InteractItem {
                 }
             }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, 5);
             toCancel.add(task);
+            completed.put(task.getTaskId(), false);
         } else {
             WerewolfUtil.sendErrorText(event.getPlayer(), "Click on a block to use");
         }

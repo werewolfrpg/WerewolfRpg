@@ -55,13 +55,17 @@ public class Tracker {
 
     public void sendDataToDatabase(WerewolfGame game, Role winner) {
         WerewolfBackend backend = WerewolfBackend.getBackend();
-        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner != null ? winner.name + " Victory" : "Cancelled"));
+        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getMap().getName(), game.getStartTime(), game.getEndTime(), winner != null ? winner.name + " Victory" : "Cancelled"));
         playerStats.values().forEach(stats -> {
             int gainedScore = WerewolfGame.getScoreManager().getCalculatedScore(stats);
-            stats.setGain(gainedScore);
+            if (winner != null) {
+                stats.setGain(gainedScore);
+                scoreDetails.put(stats.getPlayerId(), new ScoreDetail(backend.getPdc().addScoreToPlayer(stats.getPlayerId(), gainedScore).join().getScore(), gainedScore));
+            } else {
+                stats.setGain(0);
+            }
             stats.setMatchId(game.getMatchId());
             backend.getPsc().savePlayerStats(stats).join();
-            scoreDetails.put(stats.getPlayerId(), new ScoreDetail(backend.getPdc().addScoreToPlayer(stats.getPlayerId(), gainedScore).join().getScore(), gainedScore));
         });
         WerewolfPlugin.logConsole("Saved match " + game.getMatchId() + " in database");
     }
@@ -100,7 +104,12 @@ public class Tracker {
                     else if (game.getDataMap().get(id).isAlive()) status = "*Alive*";
                     else status = "*Dead*";
                     ScoreDetail sd = scoreDetails.get(id);
-                    embed.addField(name, status + "\n" + sd.score + " (+" + sd.gain + ")", true);
+                    if (sd == null) {
+                        embed.addField(name, status, true);
+                    } else {
+                        embed.addField(name, status + "\n" + sd.score + " (+" + sd.gain + ")", true);
+                    }
+
                     c.getAndIncrement();
                 });
                 if (c.get() % 3 != 0) {

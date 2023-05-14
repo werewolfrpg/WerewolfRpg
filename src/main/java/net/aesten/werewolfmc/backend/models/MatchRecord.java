@@ -17,6 +17,10 @@ public class MatchRecord {
     @SerializedName("match_id")
     private UUID matchId;
 
+    @Column(name = "map", nullable = false)
+    @SerializedName("map")
+    private String mapName;
+
     @Column(name = "start_time", nullable = false)
     @SerializedName("start_time")
     private Timestamp startTime;
@@ -25,12 +29,13 @@ public class MatchRecord {
     @SerializedName("end_time")
     private Timestamp endTime;
 
-    @Column(name = "winning_faction", nullable = false)
-    @SerializedName("winning_faction")
+    @Column(name = "end_trigger", nullable = false)
+    @SerializedName("end_trigger")
     private String endReason;
 
-    public MatchRecord(UUID matchId, Timestamp startTime, Timestamp endTime, String endReason) {
+    public MatchRecord(UUID matchId, String mapName, Timestamp startTime, Timestamp endTime, String endReason) {
         this.matchId = matchId;
+        this.mapName = mapName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.endReason = endReason;
@@ -45,6 +50,14 @@ public class MatchRecord {
 
     public void setMatchId(UUID matchId) {
         this.matchId = matchId;
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
+
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
     }
 
     public Timestamp getStartTime() {

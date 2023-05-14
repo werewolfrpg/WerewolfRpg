@@ -1,10 +1,7 @@
 package net.aesten.werewolfmc.plugin.map;
 
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -107,5 +104,6 @@ public class WorldManager {
         world.setGameRule(GameRule.DO_INSOMNIA, false);
         world.setGameRule(GameRule.NATURAL_REGENERATION, true);
         world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+        world.setDifficulty(Difficulty.EASY);
     }
 }

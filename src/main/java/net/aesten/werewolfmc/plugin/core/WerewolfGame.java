@@ -349,7 +349,8 @@ public class WerewolfGame {
                 player.setFoodLevel(20);
                 player.setSaturation(20);
 
-                WerewolfUtil.sendPluginText(player, "You gained " + ChatColor.LIGHT_PURPLE + scoreGains.get(player.getUniqueId()) + ChatColor.AQUA + " points");
+                Integer scoreGain = scoreGains.get(player.getUniqueId());
+                if (scoreGain != null) WerewolfUtil.sendPluginText(player, "You gained " + ChatColor.LIGHT_PURPLE + scoreGain + ChatColor.AQUA + " points");
                 scoreManager.assignPrefixSuffix(player);
 
                 WerewolfBot bot = WerewolfBot.getBot();
