@@ -215,16 +215,5 @@ public class PlayerDataController {
         }
     }
 
-    public void apiGetPlayerNumber(Context ctx) {
-        try {
-            Session session = sessionFactory.openSession();
-            TypedQuery<Long> query = session.createQuery("SELECT COUNT(*) FROM PlayerData", Long.class);
-            long result = query.getSingleResult();
-            session.close();
-            ctx.result("{count: " + result + "}");
-        } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
-            e.printStackTrace();
-        }
-    }
+
 }

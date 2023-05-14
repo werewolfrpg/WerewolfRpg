@@ -117,7 +117,6 @@ public class WerewolfBackend {
         app.get("/api/player/{discord_id}", pdc::apiGetPlayerFromDiscordId);
         app.get("/api/player/{minecraft_id}", pdc::apiGetPlayerFromMinecraftId);
         app.get("/api/players", pdc::apiGetAllPlayerData);
-        app.get("/api/players/count", pdc::apiGetPlayerNumber);
 
         app.post("/api/admin/match", mrc::apiRecordMatch);
         app.put("/api/admin/match/{match_id}", mrc::apiUpdateMatchRecord);
