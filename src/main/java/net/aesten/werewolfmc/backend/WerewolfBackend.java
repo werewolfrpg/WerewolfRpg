@@ -1,8 +1,13 @@
 package net.aesten.werewolfmc.backend;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.javalin.Javalin;
+import io.javalin.json.JsonMapper;
+import net.aesten.werewolfmc.WerewolfPlugin;
+import net.aesten.werewolfmc.backend.controllers.LeaderboardController;
 import net.aesten.werewolfmc.backend.controllers.MatchRecordController;
 import net.aesten.werewolfmc.backend.controllers.PlayerDataController;
 import net.aesten.werewolfmc.backend.controllers.PlayerStatsController;
@@ -16,8 +21,10 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,6 +43,7 @@ public class WerewolfBackend {
     private final PlayerDataController pdc;
     private final MatchRecordController mrc;
     private final PlayerStatsController psc;
+    private final LeaderboardController lbc;
     private UUID token;
 
     private WerewolfBackend() {
@@ -63,14 +71,31 @@ public class WerewolfBackend {
 
         SessionFactory sessionFactory = metadata.buildSessionFactory();
 
+        Gson gson = new GsonBuilder().create();
+        JsonMapper gsonMapper = new JsonMapper() {
+            @Override
+            public @NotNull String toJsonString(@NotNull Object obj, @NotNull Type type) {
+                return gson.toJson(obj, type);
+            }
+
+            @Override
+            public <T> @NotNull T fromJsonString(@NotNull String json, @NotNull Type targetType) {
+                return gson.fromJson(json, targetType);
+            }
+        };
+
         pdc = new PlayerDataController(sessionFactory);
         mrc = new MatchRecordController(sessionFactory);
         psc = new PlayerStatsController(sessionFactory);
+        lbc = new LeaderboardController(sessionFactory);
 
         if (config.getBackendCorsEnabled().get() && !config.getBackendCorsAllowedHosts().get().isEmpty()) {
-            app = Javalin.create(jConfig -> jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowedHosts().get().forEach(it::allowHost))));
+            app = Javalin.create(jConfig -> {
+                jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowedHosts().get().forEach(it::allowHost)));
+                jConfig.jsonMapper(gsonMapper);
+            });
         } else {
-            app = Javalin.create();
+            app = Javalin.create(jConfig -> jConfig.jsonMapper(gsonMapper));
         }
 
 
@@ -92,11 +117,14 @@ public class WerewolfBackend {
         app.get("/api/player/{discord_id}", pdc::apiGetPlayerFromDiscordId);
         app.get("/api/player/{minecraft_id}", pdc::apiGetPlayerFromMinecraftId);
         app.get("/api/players", pdc::apiGetAllPlayerData);
+        app.get("/api/players/count", pdc::apiGetPlayerNumber);
 
         app.post("/api/admin/match", mrc::apiRecordMatch);
         app.put("/api/admin/match/{match_id}", mrc::apiUpdateMatchRecord);
         app.delete("/api/admin/match/{match_id}", mrc::apiDeleteMatch);
-        app.get("/api/matches", mrc::apiGetAllMatches);
+        app.get("/api/match_history", mrc::apiGetAllMatches);
+        app.get("/api/match/{match_id}", mrc::apiGetRecordsOfMatch);
+        app.get("/api/match/{minecraft_id}", mrc::apiGetMatchHistoryOfPlayer);
 
         app.post("/api/admin/stats", psc::apiSavePlayerStats);
         app.put("/api/admin/stats/{id}", psc::apiUpdateStats);
@@ -104,6 +132,9 @@ public class WerewolfBackend {
         app.delete("/api/admin/stats/{minecraft_id}", psc::apiDeleteStatsByPlayerId);
         app.delete("/api/admin/stats/{id}", psc::apiDeleteStatsByPlayerIdAndMatchId);
         app.get("/api/stats", psc::apiGetAllStats);
+        app.get("/api/stats/{minecraft_id}", psc::apiGetGlobalStatsOfPlayer);
+
+        app.get("/api/leaderboard/{page}/{number}", lbc::apiGetPlayerIds);
 
         new Thread(() -> app.start(config.getBackendPort().get())).start();
 
@@ -115,13 +146,13 @@ public class WerewolfBackend {
     }
 
     public static void init() {
-        net.aesten.werewolfmc.WerewolfPlugin.logConsole("Enabling Javalin backend");
-        AzaleaConfigurationApi.load(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), config);
+        WerewolfPlugin.logConsole("Enabling Javalin backend");
+        AzaleaConfigurationApi.load(WerewolfPlugin.getPlugin(), config);
         try {
             backend = new WerewolfBackend();
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Javalin backend has been enabled");
+            WerewolfPlugin.logConsole("Javalin backend has been enabled");
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Could not enable backend");
+            WerewolfPlugin.logConsole("Could not enable backend");
             backend = null;
             throw new RuntimeException(e);
         }
@@ -129,9 +160,9 @@ public class WerewolfBackend {
 
     public static void shutDown() {
         if (backend != null) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Shutting down Javalin backend");
+            WerewolfPlugin.logConsole("Shutting down Javalin backend");
             backend.getApp().close();
-            AzaleaConfigurationApi.save(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), config);
+            AzaleaConfigurationApi.save(WerewolfPlugin.getPlugin(), config);
         }
     }
 
@@ -147,7 +178,7 @@ public class WerewolfBackend {
 
     private void regenToken() {
         token = UUID.randomUUID();
-        net.aesten.werewolfmc.WerewolfPlugin.logConsole("Admin token: " + token + " (valid " + config.getBackendTokenValidity().get() + " hours)");
+        WerewolfPlugin.logConsole("Admin token: " + token + " (valid " + config.getBackendTokenValidity().get() + " hours)");
         WerewolfUtil.runDelayedTask(20 * 3600 * config.getBackendTokenValidity().get(), this::regenToken);
     }
 
@@ -165,5 +196,9 @@ public class WerewolfBackend {
 
     public PlayerStatsController getPsc() {
         return psc;
+    }
+
+    public LeaderboardController getLbc() {
+        return lbc;
     }
 }

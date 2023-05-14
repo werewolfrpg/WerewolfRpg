@@ -2,6 +2,7 @@ package net.aesten.werewolfmc.bot;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
@@ -74,7 +75,7 @@ public class RegistrationListener extends ListenerAdapter {
             } else if (backend.getPdc().getAllMinecraftIds().join().contains(uuid)) {
                 event.reply("Your Minecraft ID account is already registered").setEphemeral(true).queue();
             } else {
-                backend.getPdc().registerPlayer(new PlayerData(uuid, event.getUser().getIdLong(), 0)).join();
+                backend.getPdc().registerPlayer(new PlayerData(uuid, mcid, event.getUser().getIdLong(), 0)).join();
                 List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf Player", true);
                 if (werewolfRole.size() != 0) {
                     Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).submit();
@@ -85,7 +86,7 @@ public class RegistrationListener extends ListenerAdapter {
                 }
 
                 event.reply("You are now registered!").setEphemeral(true).queue();
-                net.aesten.werewolfmc.WerewolfPlugin.logConsole("Player " + mcid + " (" + uuid + ") registered in server: " + event.getGuild().getName());
+                WerewolfPlugin.logConsole("Player " + mcid + " (" + uuid + ") registered in server: " + event.getGuild().getName());
             }
         }
     }

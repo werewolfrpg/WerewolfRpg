@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.items.registry;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
@@ -73,7 +74,7 @@ public class ItemManager implements Listener {
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player && WerewolfGame.getInstance().isParticipant(player)) {
-            event.getEntity().setMetadata("werewolf_projectile", new FixedMetadataValue(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), 1));
+            event.getEntity().setMetadata("werewolf_projectile", new FixedMetadataValue(WerewolfPlugin.getPlugin(), 1));
             if (event.getEntity().getType() == EntityType.ARROW) {
                 WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addArrowUsed();
             }
@@ -128,7 +129,7 @@ public class ItemManager implements Listener {
                         data.setHasAlreadyUsedDivination(true);
                         data.setRemainingDivinations(data.getRemainingDivinations() - 1);
                         targetData.setHasBeenDivinated(true);
-                        WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.color + role.name, net.aesten.werewolfmc.WerewolfPlugin.COLOR);
+                        WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.color + role.name, WerewolfPlugin.COLOR);
                         game.getTracker().getPlayerStats(player.getUniqueId()).addDivinationUsed();
                     }
                 } else {

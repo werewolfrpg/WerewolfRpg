@@ -97,3 +97,6 @@ public final class WerewolfPlugin extends JavaPlugin {
         Bukkit.getServer().getConsoleSender().sendMessage(CHAT_LOG + log);
     }
 }
+
+//todo add map in matchRecord
+//todo werewolf trap number???

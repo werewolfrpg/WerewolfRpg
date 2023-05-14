@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.map;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.azalealibrary.configuration.AzaleaConfigurationApi;
 import net.azalealibrary.configuration.FileConfiguration;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public class MapManager {
     }
 
     private void loadMaps() {
-        for (FileConfiguration fileConfiguration : AzaleaConfigurationApi.getAllFileConfigurations(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), "/werewolf-maps")) {
+        for (FileConfiguration fileConfiguration : AzaleaConfigurationApi.getAllFileConfigurations(WerewolfPlugin.getPlugin(), "/werewolf-maps")) {
             WerewolfMap mapConfig = new WerewolfMap(fileConfiguration.getName(), Objects.requireNonNull(Bukkit.getWorld(LOBBY)));
             fileConfiguration.load(mapConfig);
             AzaleaConfigurationApi.register(mapConfig);
@@ -38,14 +39,14 @@ public class MapManager {
     private void loadLobby() {
         if (maps.get(LOBBY) == null) {
             if (createMap(LOBBY, worldManager.getLobby())) {
-                net.aesten.werewolfmc.WerewolfPlugin.logConsole("Auto-generated lobby map");
+                WerewolfPlugin.logConsole("Auto-generated lobby map");
             }
         }
     }
 
     public void saveMaps() {
         for (WerewolfMap map : maps.values()) {
-            AzaleaConfigurationApi.getFileConfiguration(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(),  "werewolf-maps" + File.separator + map.getName()).save(map);
+            AzaleaConfigurationApi.getFileConfiguration(WerewolfPlugin.getPlugin(),  "werewolf-maps" + File.separator + map.getName()).save(map);
         }
     }
 
@@ -53,7 +54,7 @@ public class MapManager {
         if (maps.get(name) != null) return false;
         WerewolfMap newMap = new WerewolfMap(name, world);
         maps.put(name, newMap);
-        AzaleaConfigurationApi.getFileConfiguration(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), name).load(newMap);
+        AzaleaConfigurationApi.getFileConfiguration(WerewolfPlugin.getPlugin(), name).load(newMap);
         AzaleaConfigurationApi.register(newMap);
         return true;
     }
@@ -63,7 +64,7 @@ public class MapManager {
         if (maps.get(newMapName) != null) return false;
         WerewolfMap newMap = new WerewolfMap(map);
         maps.put(newMapName, newMap);
-        AzaleaConfigurationApi.getFileConfiguration(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), newMapName).load(newMap);
+        AzaleaConfigurationApi.getFileConfiguration(WerewolfPlugin.getPlugin(), newMapName).load(newMap);
         AzaleaConfigurationApi.register(newMap);
         return true;
     }

@@ -59,16 +59,16 @@ public class ScoreManager {
             else score += WerewolfGame.getConfig().getBaseDefeatScoreGain().get();
         }
 
-        score += stats.getTraitorsGuideUsed() * 2;
-        score += stats.getDivinationUsed() * 2;
-        score += stats.getAshUsed();
-        score += stats.getRevelationUsed();
-        score += stats.getInvisibilityUsed();
-        score += stats.getProtectionTriggered() * 3;
-        score += stats.getSneakNoticeTriggered() * 3;
-        score += stats.getStunGrenadeHitTargets() * 2;
-        score += stats.getCurseSpearMeleeCurses() * 3;
-        score += stats.getCurseSpearThrowCurses() * 4;
+        score += stats.getItemStats().getTraitorsGuideUsed() * 2;
+        score += stats.getItemStats().getDivinationUsed() * 2;
+        score += stats.getItemStats().getAshUsed();
+        score += stats.getItemStats().getRevelationUsed();
+        score += stats.getItemStats().getInvisibilityUsed();
+        score += stats.getItemStats().getProtection().getTriggered() * 3;
+        score += stats.getItemStats().getSneakNotice().getTriggered() * 3;
+        score += stats.getItemStats().getStunGrenade().getHit() * 2;
+        score += stats.getItemStats().getCurseSpear().getMelee().getCursed() * 3;
+        score += stats.getItemStats().getCurseSpear().getThrown().getCursed() * 4;
         score += stats.getKills() * 5;
 
         return score;

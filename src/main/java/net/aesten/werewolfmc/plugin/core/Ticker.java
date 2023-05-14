@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.core;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
 import net.aesten.werewolfmc.plugin.data.Role;
@@ -77,7 +78,7 @@ public class Ticker {
                     progress = 1.0;
                 }
             }
-        }.runTaskTimer(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), 0, 10);
+        }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, 10);
     }
 
     private void switchToNight(WerewolfGame game) {

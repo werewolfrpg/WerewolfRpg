@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
@@ -34,7 +35,7 @@ public class WerewolfUtil {
     }
 
     public static void sendPluginText(CommandSender sender, String message, ChatColor color) {
-        sender.sendMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + color + message);
+        sender.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + color + message);
     }
 
     public static void sendHelpText(CommandSender sender, String message) {
@@ -106,7 +107,7 @@ public class WerewolfUtil {
             public void run() {
                 runnable.run();
             }
-        }.runTaskLater(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), delay);
+        }.runTaskLater(WerewolfPlugin.getPlugin(), delay);
     }
 
     public static void runRepeatTask(int length, int interval, Runnable runnable) {
@@ -115,7 +116,7 @@ public class WerewolfUtil {
             public void run() {
                 runnable.run();
             }
-        }.runTaskTimer(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), 0, interval);
+        }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, interval);
         runDelayedTask(length, task::cancel);
     }
 
@@ -125,7 +126,7 @@ public class WerewolfUtil {
 //            public void run() {
 //                runnable.run();
 //            }
-//        }.runTaskTimer(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), 0, interval);
+//        }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, interval);
 //    }
 
     public static boolean areSameFaction(Role role1, Role role2) {

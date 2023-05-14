@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.events;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
@@ -55,7 +56,7 @@ public class GeneralEvents implements Listener {
                     WerewolfGame.getInstance().getParticipants().removeIf(p -> p.getUniqueId().equals(player.getUniqueId()));
                     WerewolfGame.getInstance().getParticipants().add(player);
                 }
-                event.setJoinMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG +
+                event.setJoinMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG +
                         ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " joined the server!");
             }
         }
@@ -76,13 +77,13 @@ public class GeneralEvents implements Listener {
             }
         }
         else {
-            event.setQuitMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " left the server!");
+            event.setQuitMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.AQUA + " left the server!");
         }
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
-        event.setLeaveMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + ChatColor.RED + event.getPlayer().getName() + ChatColor.AQUA + " tried to join server!");
+        event.setLeaveMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RED + event.getPlayer().getName() + ChatColor.AQUA + " tried to join server!");
     }
 
     //split chat between spectators and players when in-game
@@ -109,7 +110,7 @@ public class GeneralEvents implements Listener {
         if (WerewolfGame.getInstance().isPlaying()) {
             String message = event.getMessage();
             if (message.contains("/msg") || message.contains("/tell") || message.contains("/tellraw") || message.contains("/teammsg")) {
-                event.getPlayer().sendMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + ChatColor.RED + "You cannot use this command in-game!");
+                event.getPlayer().sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RED + "You cannot use this command in-game!");
                 event.setCancelled(true);
             }
         }

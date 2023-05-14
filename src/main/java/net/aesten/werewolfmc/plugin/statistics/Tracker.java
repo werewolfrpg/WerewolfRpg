@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.statistics;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.models.MatchRecord;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
@@ -54,7 +55,7 @@ public class Tracker {
 
     public void sendDataToDatabase(WerewolfGame game, Role winner) {
         WerewolfBackend backend = WerewolfBackend.getBackend();
-        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner != null ? winner.name : "Cancelled"));
+        backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getStartTime(), game.getEndTime(), winner != null ? winner.name + " Victory" : "Cancelled"));
         playerStats.values().forEach(stats -> {
             int gainedScore = WerewolfGame.getScoreManager().getCalculatedScore(stats);
             stats.setGain(gainedScore);
@@ -62,7 +63,7 @@ public class Tracker {
             backend.getPsc().savePlayerStats(stats).join();
             scoreDetails.put(stats.getPlayerId(), new ScoreDetail(backend.getPdc().addScoreToPlayer(stats.getPlayerId(), gainedScore).join().getScore(), gainedScore));
         });
-        net.aesten.werewolfmc.WerewolfPlugin.logConsole("Saved match " + game.getMatchId() + " in database");
+        WerewolfPlugin.logConsole("Saved match " + game.getMatchId() + " in database");
     }
 
     public void logMatchResult(WerewolfGame game, Role winner) {
@@ -119,13 +120,5 @@ public class Tracker {
         return scoreDetails.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().gain));
     }
 
-    private static final class ScoreDetail {
-        public final int score;
-        public final int gain;
-
-        public ScoreDetail(int score, int gain) {
-            this.score = score;
-            this.gain = gain;
-        }
-    }
+    private record ScoreDetail(int score, int gain) {}
 }

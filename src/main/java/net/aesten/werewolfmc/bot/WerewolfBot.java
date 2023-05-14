@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.bot;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.commands.BotCommand;
 import net.aesten.werewolfmc.bot.commands.CommandManager;
@@ -71,25 +72,25 @@ public class WerewolfBot {
     }
 
     public static void init() {
-        net.aesten.werewolfmc.WerewolfPlugin.logConsole("Enabling Discord bot");
-        AzaleaConfigurationApi.load(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), config);
+        WerewolfPlugin.logConsole("Enabling Discord bot");
+        AzaleaConfigurationApi.load(WerewolfPlugin.getPlugin(), config);
         if (config.getToken().get().equals("")) {
             bot = null;
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Discord bot token isn't defined, not enabling");
+            WerewolfPlugin.logConsole("Discord bot token isn't defined, not enabling");
         } else if (WerewolfBackend.getBackend() == null) {
             bot = null;
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Javalin backend is not enabled, cannot enable Discord bot");
+            WerewolfPlugin.logConsole("Javalin backend is not enabled, cannot enable Discord bot");
         } else {
             bot = new WerewolfBot();
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Discord bot has been enabled");
+            WerewolfPlugin.logConsole("Discord bot has been enabled");
         }
     }
 
     public static void shutDown() {
         if (bot != null) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Shutting down Discord bot");
+            WerewolfPlugin.logConsole("Shutting down Discord bot");
             bot.getJda().shutdown();
-            AzaleaConfigurationApi.save(net.aesten.werewolfmc.WerewolfPlugin.getPlugin(), config);
+            AzaleaConfigurationApi.save(WerewolfPlugin.getPlugin(), config);
         }
     }
 

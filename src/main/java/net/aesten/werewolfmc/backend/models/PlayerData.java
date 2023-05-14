@@ -13,7 +13,11 @@ public class PlayerData {
     @SerializedName("minecraft_id")
     private UUID mcId;
 
-    @Column(name = "discord_id", nullable = false)
+    @Column(name = "minecraft_username", nullable = false)
+    @SerializedName("minecraft_username")
+    private String mcName;
+
+    @Column(name = "discord_id", nullable = false, unique = true)
     @SerializedName("discord_id")
     private long dcId;
 
@@ -21,14 +25,14 @@ public class PlayerData {
     @SerializedName("score")
     private int score;
 
-    public PlayerData(UUID mcId, long dcId, int score) {
+    public PlayerData(UUID mcId, String mcName, long dcId, int score) {
         this.mcId = mcId;
+        this.mcName = mcName;
         this.dcId = dcId;
         this.score = score;
     }
 
     public PlayerData() {
-
     }
 
     public UUID getMcId() {
@@ -37,6 +41,14 @@ public class PlayerData {
 
     public void setMcId(UUID mcId) {
         this.mcId = mcId;
+    }
+
+    public String getMcName() {
+        return mcName;
+    }
+
+    public void setMcName(String mcName) {
+        this.mcName = mcName;
     }
 
     public long getDcId() {

@@ -2,6 +2,8 @@ package net.aesten.werewolfmc.backend.controllers;
 
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
+import net.aesten.werewolfmc.WerewolfPlugin;
+import net.aesten.werewolfmc.backend.dtos.GlobalStatDTO;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,7 +26,7 @@ public class PlayerStatsController {
             savePlayerStats(stats).join();
             ctx.status(201).json(stats);
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Error with api request");
+            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }
@@ -49,7 +51,7 @@ public class PlayerStatsController {
             session.close();
             ctx.status(200).json(newStats);
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Error with api request");
+            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }
@@ -69,7 +71,7 @@ public class PlayerStatsController {
             session.close();
             ctx.status(204);
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Error with api request");
+            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }
@@ -89,7 +91,7 @@ public class PlayerStatsController {
             session.close();
             ctx.status(204);
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Error with api request");
+            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }
@@ -109,7 +111,7 @@ public class PlayerStatsController {
             session.close();
             ctx.status(204);
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Error with api request");
+            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }
@@ -122,7 +124,27 @@ public class PlayerStatsController {
             ctx.json(results);
             session.close();
         } catch (Exception e) {
-            net.aesten.werewolfmc.WerewolfPlugin.logConsole("Error with api request");
+            WerewolfPlugin.logConsole("Error with api request");
+            e.printStackTrace();
+        }
+    }
+
+    public void apiGetGlobalStatsOfPlayer(Context ctx) {
+        try {
+            Session session = sessionFactory.openSession();
+            TypedQuery<PlayerStats> query = session.createQuery("FROM PlayerStats WHERE playerId = :uuid", PlayerStats.class);
+            UUID mcId = UUID.fromString(ctx.pathParam("minecraft_id"));
+            query.setParameter("uuid", mcId);
+            List<PlayerStats> playerStatsList = query.getResultList();
+            GlobalStatDTO globalStats = GlobalStatDTO.computeGlobalStats(playerStatsList);
+            session.close();
+            if (globalStats == null) {
+                ctx.result("{}");
+            } else {
+                ctx.json(globalStats);
+            }
+        } catch (Exception e) {
+            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }

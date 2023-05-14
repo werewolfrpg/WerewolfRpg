@@ -1,5 +1,6 @@
 package net.aesten.werewolfmc.plugin.core;
 
+import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
 import net.aesten.werewolfmc.plugin.data.*;
@@ -118,7 +119,7 @@ public class WerewolfGame {
     }
 
     public static void initMapManager() {
-        net.aesten.werewolfmc.WerewolfPlugin.logConsole("Initializing worlds and maps");
+        WerewolfPlugin.logConsole("Initializing worlds and maps");
         mapManager = new MapManager(new WorldManager());
     }
 
@@ -205,8 +206,8 @@ public class WerewolfGame {
     public static void start() {
         //set status and register listeners
         instance.isPlaying = true;
-        Bukkit.getPluginManager().registerEvents(listener, net.aesten.werewolfmc.WerewolfPlugin.getPlugin());
-        Bukkit.getPluginManager().registerEvents(skeletonManager, net.aesten.werewolfmc.WerewolfPlugin.getPlugin());
+        Bukkit.getPluginManager().registerEvents(listener, WerewolfPlugin.getPlugin());
+        Bukkit.getPluginManager().registerEvents(skeletonManager, WerewolfPlugin.getPlugin());
 
         //prepare map
         World world = instance.map.getWorld();
@@ -264,7 +265,7 @@ public class WerewolfGame {
                     //send role message to player
                     player.sendTitle(role.apparentRole().color + role.apparentRole().name,
                             ChatColor.GOLD + "GAME START", 2, 2, 40);
-                    player.sendMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
+                    player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
                             "You are a " + role.apparentRole().color + role.apparentRole().name);
 
                     //prepare player
@@ -291,7 +292,7 @@ public class WerewolfGame {
         if (werewolves.getSize() > 1) {
             String werewolfPlayers = String.join(", ", werewolves.getEntries());
             for (Player player : werewolves.getEntries().stream().map(Bukkit::getPlayerExact).toList()) {
-                player.sendMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
+                player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
                         "The werewolves are " + Role.WEREWOLF.color + werewolfPlayers);
             }
         }
@@ -341,7 +342,7 @@ public class WerewolfGame {
                 player.sendMessage(rolesList);
                 player.getInventory().clear();
                 player.sendTitle(getEndString(role), ChatColor.GOLD + "GAME END", 2, 2, 40);
-                player.sendMessage(net.aesten.werewolfmc.WerewolfPlugin.COLOR + net.aesten.werewolfmc.WerewolfPlugin.CHAT_LOG + getEndString(role));
+                player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + getEndString(role));
                 player.setGameMode(GameMode.SPECTATOR);
                 WerewolfUtil.removeAllPotionEffectsFromPlayer(player);
                 player.setHealth(20d);
