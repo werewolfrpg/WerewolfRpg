@@ -66,9 +66,9 @@ public class LeaderboardController {
         }
 
         public static final class Metadata {
-            @SerializedName("page_number")
+            @SerializedName("pageNumber")
             private int pageNumber;
-            @SerializedName("total_page_number")
+            @SerializedName("totalPageNumber")
             private int totalPageNumber;
             @SerializedName("entries")
             private int entries;

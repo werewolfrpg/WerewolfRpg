@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.javalin.Javalin;
 import io.javalin.json.JsonMapper;
+import io.javalin.plugin.bundled.CorsPluginConfig;
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.controllers.*;
 import net.aesten.werewolfmc.backend.models.MatchRecord;
@@ -92,7 +93,10 @@ public class WerewolfBackend {
                 jConfig.jsonMapper(gsonMapper);
             });
         } else {
-            app = Javalin.create(jConfig -> jConfig.jsonMapper(gsonMapper));
+            app = Javalin.create(jConfig -> {
+                jConfig.plugins.enableCors(cors -> cors.add(CorsPluginConfig::anyHost));
+                jConfig.jsonMapper(gsonMapper);
+            });
         }
 
 
