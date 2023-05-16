@@ -51,7 +51,8 @@ public class MatchHistoryController {
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
             List<MatchRecord> data = query.getResultList();
-            TypedQuery<Long> queryEntryNumber = session.createQuery("SELECT COUNT(*) FROM PlayerStats ps WHERE ps.playerId = :minecraft_id", Long.class);
+            TypedQuery<Long> queryEntryNumber = session.createQuery("SELECT COUNT(*) FROM PlayerStats WHERE playerId = :minecraft_id", Long.class);
+            queryEntryNumber.setParameter("minecraft_id", mcId);
             long totalEntries = queryEntryNumber.getSingleResult();
 
             session.close();
