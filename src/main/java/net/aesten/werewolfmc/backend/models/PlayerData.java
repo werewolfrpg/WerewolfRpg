@@ -10,15 +10,15 @@ import java.util.UUID;
 public class PlayerData {
     @Id
     @Column(name = "minecraft_id", nullable = false)
-    @SerializedName("minecraft_id")
+    @SerializedName("minecraftId")
     private UUID mcId;
 
     @Column(name = "minecraft_username", nullable = false)
-    @SerializedName("minecraft_username")
+    @SerializedName("minecraftUsername")
     private String mcName;
 
     @Column(name = "discord_id", nullable = false, unique = true)
-    @SerializedName("discord_id")
+    @SerializedName("discordId")
     private long dcId;
 
     @Column(name = "score", nullable = false)

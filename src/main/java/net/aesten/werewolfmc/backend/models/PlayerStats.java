@@ -15,10 +15,10 @@ public class PlayerStats {
     @SerializedName("id")
     private int id;
     @Column(name = "player_id", nullable = false)
-    @SerializedName("player_id")
+    @SerializedName("playerId")
     private UUID playerId;
     @Column(name = "match_id", nullable = false)
-    @SerializedName("match_id")
+    @SerializedName("matchId")
     private UUID matchId;
     @Column(name = "role", nullable = false)
     @SerializedName("role")
@@ -29,7 +29,7 @@ public class PlayerStats {
 
     //additional data
     @Column(name = "score_gain", nullable = false)
-    @SerializedName("score_gain")
+    @SerializedName("scoreGain")
     private int gain = 0;
 
     //basic stats
@@ -37,10 +37,10 @@ public class PlayerStats {
     @SerializedName("kills")
     private int kills = 0;
     @Column(name = "killer_id")
-    @SerializedName("killer_id")
+    @SerializedName("killerId")
     private UUID killerId;
     @Column(name = "death_cause")
-    @SerializedName("death_cause")
+    @SerializedName("deathCause")
     private String deathCause;
 
     //skeleton stats
@@ -103,47 +103,47 @@ public class PlayerStats {
     public static final class ItemStats {
         //usage stats
         @Column(name = "steaks_eaten", nullable = false)
-        @SerializedName("steaks_eaten")
+        @SerializedName("steaksEaten")
         private int steaksEaten = 0;
         @Column(name = "ash_used", nullable = false)
-        @SerializedName("ash_used")
+        @SerializedName("ashUsed")
         private int ashUsed = 0;
         @Column(name = "divination_used", nullable = false)
-        @SerializedName("divination_used")
+        @SerializedName("divinationUsed")
         private int divinationUsed = 0;
         @Column(name = "invisibility_used", nullable = false)
-        @SerializedName("invisibility_used")
+        @SerializedName("invisibilityUsed")
         private int invisibilityUsed = 0;
         @Column(name = "swiftness_used", nullable = false)
-        @SerializedName("swiftness_used")
+        @SerializedName("swiftnessUsed")
         private int swiftnessUsed = 0;
         @Column(name = "revelation_used", nullable = false)
-        @SerializedName("revelation_used")
+        @SerializedName("revelationUsed")
         private int revelationUsed = 0;
         @Column(name = "traitors_guide_used", nullable = false)
-        @SerializedName("traitors_guide_used")
+        @SerializedName("traitorsGuideUsed")
         private int traitorsGuideUsed = 0;
 
         //effectiveness stats
-        @SerializedName("curse_spear")
+        @SerializedName("curseSpear")
         private CurseSpearStats curseSpear = new CurseSpearStats();
 
         @SerializedName("arrow")
         private ArrowStats arrow = new ArrowStats();
 
-        @SerializedName("stun_grenade")
+        @SerializedName("stunGrenade")
         private StunGrenadeStats stunGrenade = new StunGrenadeStats();
 
-        @SerializedName("holy_star")
+        @SerializedName("holyStar")
         private HolyStarStats holyStar = new HolyStarStats();
 
         @SerializedName("protection")
         private ProtectionStats protection = new ProtectionStats();
 
-        @SerializedName("sneak_notice")
+        @SerializedName("sneakNotice")
         private SneakNoticeStats sneakNotice = new SneakNoticeStats();
 
-        @SerializedName("werewolf_axe")
+        @SerializedName("werewolfAxe")
         private WerewolfAxeStats werewolfAxe = new WerewolfAxeStats();
 
         public int getSteaksEaten() {
@@ -413,7 +413,7 @@ public class PlayerStats {
             @SerializedName("hits")
             private int hit = 0;
             @Column(name = "stun_grenade_hit_targets", nullable = false)
-            @SerializedName("hit_targets")
+            @SerializedName("hitTargets")
             private int affected_players = 0;
 
             public int getUsed() {

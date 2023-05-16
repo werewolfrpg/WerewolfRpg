@@ -113,7 +113,7 @@ public class WerewolfBackend {
 
         app.post("/api/admin/player", pdc::apiRegisterPlayer);
         app.put("/api/admin/player/{discord_id}", pdc::apiUpdatePlayer);
-        app.delete("/api/admin/player/discord_id/{discord_id}", pdc::apiDeletePlayerByDiscordId);
+        app.delete("/api/admin/player/{discord_id}", pdc::apiDeletePlayerByDiscordId);
         app.get("/api/player/{discord_id}", pdc::apiGetPlayerFromDiscordId);
         app.get("/api/player/{minecraft_id}", pdc::apiGetPlayerFromMinecraftId);
         app.get("/api/players", pdc::apiGetAllPlayerData);
@@ -121,9 +121,9 @@ public class WerewolfBackend {
         app.post("/api/admin/match", mrc::apiRecordMatch);
         app.put("/api/admin/match/{match_id}", mrc::apiUpdateMatchRecord);
         app.delete("/api/admin/match/{match_id}", mrc::apiDeleteMatch);
-        app.get("/api/match_history", mrc::apiGetAllMatches);
+        app.get("/api/matches", mrc::apiGetAllMatches);
         app.get("/api/match/{match_id}", mrc::apiGetRecordsOfMatch);
-        app.get("/api/match/minecraft_id/{minecraft_id}", mrc::apiGetMatchHistoryOfPlayer);
+        app.get("/api/match/player/{minecraft_id}", mrc::apiGetMatchHistoryOfPlayer);
 
         app.post("/api/admin/stats", psc::apiSavePlayerStats);
         app.put("/api/admin/stats/{id}", psc::apiUpdateStats);

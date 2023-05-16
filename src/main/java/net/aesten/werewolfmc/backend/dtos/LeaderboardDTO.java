@@ -8,17 +8,17 @@ import net.aesten.werewolfmc.plugin.statistics.Rank;
 import java.util.UUID;
 
 public class LeaderboardDTO {
-    @SerializedName("minecraft_id")
+    @SerializedName("minecraftId")
     private UUID mcId;
-    @SerializedName("minecraft_username")
+    @SerializedName("minecraftUsername")
     private String mcUsername;
     @SerializedName("score")
     private int score;
     @SerializedName("rank")
     private Rank rank;
-    @SerializedName("games_played")
+    @SerializedName("gamesPlayed")
     private long gamesPlayed;
-    @SerializedName("games_won")
+    @SerializedName("gamesWon")
     private long gamesWon;
 
     public LeaderboardDTO(PlayerData data, long gamesPlayed, long gamesWon) {

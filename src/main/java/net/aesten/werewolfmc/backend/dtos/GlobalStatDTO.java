@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class GlobalStatDTO {
-    @SerializedName("minecraft_id")
+    @SerializedName("minecraftId")
     private UUID playerID;
     @SerializedName("score")
     private int score;
@@ -19,7 +19,7 @@ public class GlobalStatDTO {
     private int kills;
     @SerializedName("deaths")
     private int deaths;
-    @SerializedName("game_stats")
+    @SerializedName("gameStats")
     private List<GameStats> gameStats;
     @SerializedName("skeletons")
     private PlayerStats.SkeletonStats skeletons;
