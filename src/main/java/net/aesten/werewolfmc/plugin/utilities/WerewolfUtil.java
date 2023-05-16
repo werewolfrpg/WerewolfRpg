@@ -192,7 +192,7 @@ public class WerewolfUtil {
 
         int counter = 0;
         int maxCount = 500;
-        while (spawns.size() < numberSpawns || counter < maxCount) {
+        while (spawns.size() < numberSpawns && counter < maxCount) {
             // Calculate random angle and distance from center
             double angle = random.nextDouble() * Math.PI * 2;
             double distance = random.nextDouble() * radius;

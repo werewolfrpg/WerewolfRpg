@@ -4,10 +4,13 @@ import com.google.gson.annotations.SerializedName;
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
 import net.aesten.werewolfmc.WerewolfPlugin;
+import net.aesten.werewolfmc.backend.dtos.LeaderboardDTO;
 import net.aesten.werewolfmc.backend.models.PlayerData;
+import net.aesten.werewolfmc.plugin.statistics.Result;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LeaderboardController {
@@ -27,10 +30,24 @@ public class LeaderboardController {
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
             List<PlayerData> results = query.getResultList();
-            TypedQuery<Long> query2 = session.createQuery("SELECT COUNT(*) FROM PlayerData", Long.class);
-            long result = query2.getSingleResult();
+            TypedQuery<Long> queryPlayerNumber = session.createQuery("SELECT COUNT(*) FROM PlayerData", Long.class);
+            long playerNumber = queryPlayerNumber.getSingleResult();
+
+            List<LeaderboardDTO> data = new ArrayList<>();
+            results.forEach(pd -> {
+                TypedQuery<Long> queryWonGames = session.createQuery("SELECT COUNT(*) FROM PlayerStats WHERE playerId = :minecraft_id AND result = :victory", Long.class);
+                queryWonGames.setParameter("minecraft_id", pd.getMcId());
+                queryWonGames.setParameter("victory", Result.VICTORY);
+                long gamesWon = queryWonGames.getSingleResult();
+                TypedQuery<Long> queryLostGames = session.createQuery("SELECT COUNT(*) FROM PlayerStats WHERE playerId = :minecraft_id AND result = :defeat", Long.class);
+                queryLostGames.setParameter("minecraft_id", pd.getMcId());
+                queryLostGames.setParameter("defeat", Result.DEFEAT);
+                long gamesLost = queryLostGames.getSingleResult();
+                data.add(new LeaderboardDTO(pd, gamesWon + gamesLost, gamesWon));
+            });
+
             session.close();
-            ctx.json(new PlayerDataResponse(results, pageNumber, entries, result));
+            ctx.json(new PlayerDataResponse(data, pageNumber, entries, playerNumber));
         } catch (Exception e) {
             WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
@@ -41,9 +58,9 @@ public class LeaderboardController {
         @SerializedName("meta")
         private Metadata metadata;
         @SerializedName("data")
-        private List<PlayerData> data;
+        private List<LeaderboardDTO> data;
 
-        public PlayerDataResponse(List<PlayerData> data, int pageNumber, int entriesPerPage, long playerNumber) {
+        public PlayerDataResponse(List<LeaderboardDTO> data, int pageNumber, int entriesPerPage, long playerNumber) {
             this.data = data;
             this.metadata = new Metadata(pageNumber, entriesPerPage, playerNumber, data.size());
         }
@@ -86,6 +103,22 @@ public class LeaderboardController {
             public void setEntries(int entries) {
                 this.entries = entries;
             }
+        }
+
+        public Metadata getMetadata() {
+            return metadata;
+        }
+
+        public void setMetadata(Metadata metadata) {
+            this.metadata = metadata;
+        }
+
+        public List<LeaderboardDTO> getData() {
+            return data;
+        }
+
+        public void setData(List<LeaderboardDTO> data) {
+            this.data = data;
         }
     }
 }

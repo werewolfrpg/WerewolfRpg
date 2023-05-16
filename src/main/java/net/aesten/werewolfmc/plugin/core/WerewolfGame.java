@@ -334,7 +334,7 @@ public class WerewolfGame {
 
         //loop on players and remove other entities
         for (Entity entity : instance.map.getWorld().getEntities()) {
-            if (entity.getType().equals(EntityType.SKELETON) || entity.getType().equals(EntityType.DROPPED_ITEM)) {
+            if (entity.getType().equals(EntityType.SKELETON) || entity.getType().equals(EntityType.DROPPED_ITEM) || entity.getType().equals(EntityType.WITHER_SKELETON)) {
                 entity.remove();
             }
             else if (entity instanceof Player player) {

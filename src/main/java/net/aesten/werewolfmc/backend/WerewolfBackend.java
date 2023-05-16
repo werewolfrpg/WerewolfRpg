@@ -123,7 +123,7 @@ public class WerewolfBackend {
         app.delete("/api/admin/match/{match_id}", mrc::apiDeleteMatch);
         app.get("/api/match_history", mrc::apiGetAllMatches);
         app.get("/api/match/{match_id}", mrc::apiGetRecordsOfMatch);
-        app.get("/api/match/{minecraft_id}", mrc::apiGetMatchHistoryOfPlayer);
+        app.get("/api/match/minecraft_id/{minecraft_id}", mrc::apiGetMatchHistoryOfPlayer);
 
         app.post("/api/admin/stats", psc::apiSavePlayerStats);
         app.put("/api/admin/stats/{id}", psc::apiUpdateStats);
