@@ -116,19 +116,6 @@ public class PlayerStatsController {
         }
     }
 
-    public void apiGetAllStats(Context ctx) {
-        try {
-            Session session = sessionFactory.openSession();
-            TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats", PlayerStats.class);
-            List<PlayerStats> results = query.getResultList();
-            ctx.json(results);
-            session.close();
-        } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
-            e.printStackTrace();
-        }
-    }
-
     public void apiGetGlobalStatsOfPlayer(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
@@ -139,10 +126,25 @@ public class PlayerStatsController {
             GlobalStatDTO globalStats = GlobalStatDTO.computeGlobalStats(playerStatsList);
             session.close();
             if (globalStats == null) {
-                ctx.result("{}");
+                ctx.status(404);
             } else {
                 ctx.json(globalStats);
             }
+        } catch (Exception e) {
+            WerewolfPlugin.logConsole("Error with api request");
+            e.printStackTrace();
+        }
+    }
+
+    public void apiGetAllPlayerStatsOfMatch(Context ctx) {
+        try {
+            Session session = sessionFactory.openSession();
+            TypedQuery<PlayerStats> query = session.createQuery("FROM PlayerStats WHERE matchId = :match_id", PlayerStats.class);
+            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
+            query.setParameter("match_id", matchId);
+            List<PlayerStats> results = query.getResultList();
+            session.close();
+            ctx.json(results);
         } catch (Exception e) {
             WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();

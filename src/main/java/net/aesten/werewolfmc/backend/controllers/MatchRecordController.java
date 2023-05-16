@@ -88,21 +88,6 @@ public class MatchRecordController {
         }
     }
 
-    public void apiGetRecordsOfMatch(Context ctx) {
-        try {
-            Session session = sessionFactory.openSession();
-            TypedQuery<MatchRecord> query = session.createQuery("FROM MatchRecord WHERE matchId = :match_id", MatchRecord.class);
-            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-            query.setParameter("match_id", matchId);
-            List<MatchRecord> results = query.getResultList();
-            session.close();
-            ctx.json(results);
-        } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
-            e.printStackTrace();
-        }
-    }
-
     public void apiGetMatchHistoryOfPlayer(Context ctx) {
         try {
             Session session = sessionFactory.openSession();

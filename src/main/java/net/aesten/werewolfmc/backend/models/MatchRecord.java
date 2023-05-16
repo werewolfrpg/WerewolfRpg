@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import net.aesten.werewolfmc.plugin.data.Role;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -29,16 +30,16 @@ public class MatchRecord {
     @SerializedName("endTime")
     private Timestamp endTime;
 
-    @Column(name = "end_trigger", nullable = false)
-    @SerializedName("endTrigger")
-    private String endReason;
+    @Column(name = "winner")
+    @SerializedName("winner")
+    private Role winner;
 
-    public MatchRecord(UUID matchId, String mapName, Timestamp startTime, Timestamp endTime, String endReason) {
+    public MatchRecord(UUID matchId, String mapName, Timestamp startTime, Timestamp endTime, Role winner) {
         this.matchId = matchId;
         this.mapName = mapName;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.endReason = endReason;
+        this.winner = winner;
     }
 
     public MatchRecord() {
@@ -76,11 +77,11 @@ public class MatchRecord {
         this.endTime = endTime;
     }
 
-    public String getEndReason() {
-        return endReason;
+    public Role getWinner() {
+        return winner;
     }
 
-    public void setEndReason(String endReason) {
-        this.endReason = endReason;
+    public void setWinner(Role winner) {
+        this.winner = winner;
     }
 }

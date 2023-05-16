@@ -35,7 +35,7 @@ public class WerewolfTrap extends WerewolfItem implements InteractItem {
 
     @Override
     protected ItemStack getBaseItem() {
-        return ItemStackBuilder.builder(Material.TRIPWIRE_HOOK, 1)
+        return ItemStackBuilder.builder(Material.WITHER_ROSE, 1)
                 .addName(ChatColor.DARK_RED + "Werewolf Trap")
                 .addLore(ChatColor.GREEN + "Click a block to use")
                 .addLore(ChatColor.BLUE + "Sets up a trap at the clicked position")
