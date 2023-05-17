@@ -2,8 +2,11 @@ package net.aesten.werewolfmc.backend.dtos;
 
 import com.google.gson.annotations.SerializedName;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
+import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
+import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Role;
+import net.aesten.werewolfmc.plugin.statistics.Rank;
 import net.aesten.werewolfmc.plugin.statistics.Result;
 
 import java.util.ArrayList;
@@ -13,8 +16,20 @@ import java.util.UUID;
 public class GlobalStatDTO {
     @SerializedName("minecraftId")
     private UUID playerID;
+    @SerializedName("minecraftUsername")
+    private String username;
     @SerializedName("score")
     private int score;
+    @SerializedName("ranking")
+    private int ranking;
+    @SerializedName("title")
+    private Rank title;
+    @SerializedName("nextTitle")
+    private Rank nextTitle;
+    @SerializedName("scoreOverCurrentTitle")
+    private int scoreOverCurrentRank;
+    @SerializedName("scoreUntilNextTileMax")
+    private int rankScoreDiff;
     @SerializedName("kills")
     private int kills;
     @SerializedName("deaths")
@@ -88,7 +103,17 @@ public class GlobalStatDTO {
         GlobalStatDTO globalStats = new GlobalStatDTO();
 
         globalStats.playerID = stats.get(0).getPlayerId();
-        globalStats.score = WerewolfBackend.getBackend().getPdc().getScoreOfPlayer(globalStats.playerID).join();
+
+        PlayerData playerData = WerewolfBackend.getBackend().getPdc().getPlayerDataOfPlayer(globalStats.playerID).join();
+
+        globalStats.username = playerData.getMcName();
+        globalStats.score = playerData.getScore();
+        globalStats.ranking = WerewolfBackend.getBackend().getPdc().getPlayerRanking(globalStats.playerID).join();
+        globalStats.title = WerewolfGame.getScoreManager().getScoreRank(globalStats.score);
+        globalStats.nextTitle = WerewolfGame.getScoreManager().getNextKey(globalStats.title);
+        int currentRankThreshold = WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.title);
+        globalStats.scoreOverCurrentRank = globalStats.score - currentRankThreshold;
+        globalStats.rankScoreDiff = globalStats.nextTitle != null ? WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.nextTitle) - currentRankThreshold : 0;
         globalStats.kills = stats.stream().mapToInt(PlayerStats::getKills).sum();
         globalStats.deaths = (int) stats.stream().filter(s -> s.getKillerId() != null).count();
 
@@ -178,12 +203,60 @@ public class GlobalStatDTO {
         this.playerID = playerID;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public int getScore() {
         return score;
     }
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public int getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
+    }
+
+    public Rank getTitle() {
+        return title;
+    }
+
+    public void setTitle(Rank title) {
+        this.title = title;
+    }
+
+    public Rank getNextTitle() {
+        return nextTitle;
+    }
+
+    public void setNextTitle(Rank nextTitle) {
+        this.nextTitle = nextTitle;
+    }
+
+    public int getScoreOverCurrentRank() {
+        return scoreOverCurrentRank;
+    }
+
+    public void setScoreOverCurrentRank(int scoreOverCurrentRank) {
+        this.scoreOverCurrentRank = scoreOverCurrentRank;
+    }
+
+    public int getRankScoreDiff() {
+        return rankScoreDiff;
+    }
+
+    public void setRankScoreDiff(int rankScoreDiff) {
+        this.rankScoreDiff = rankScoreDiff;
     }
 
     public int getKills() {

@@ -10,13 +10,10 @@ import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ScoreManager {
-    private final Map<Rank, Property<Integer>> rankThresholdMap = new HashMap<>();
+    private final LinkedHashMap<Rank, Property<Integer>> rankThresholdMap = new LinkedHashMap<>();
 
     private final List<net.dv8tion.jda.api.entities.Role> roles = new ArrayList<>();
 
@@ -33,6 +30,10 @@ public class ScoreManager {
         rankThresholdMap.put(Rank.LEGENDARY, WerewolfGame.getConfig().getRank9());
     }
 
+    public int getScoreThresholdOfRank(Rank rank) {
+        return rankThresholdMap.get(rank).get();
+    }
+
     public Rank getPlayerRank(Player player) {
         int score = WerewolfBackend.getBackend().getPdc().getScoreOfPlayer(player.getUniqueId()).join();
         return getScoreRank(score);
@@ -46,6 +47,13 @@ public class ScoreManager {
             }
         }
         return bestEntry.getKey();
+    }
+
+    public Rank getNextKey(Rank key) {
+        List<Rank> keys = new ArrayList<>(rankThresholdMap.keySet());
+        int index = keys.indexOf(key);
+        if (index < 0 || index >= keys.size() - 1) return null;
+        return keys.get(index + 1);
     }
 
     public int getCalculatedScore(PlayerStats stats) {

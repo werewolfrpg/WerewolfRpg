@@ -113,35 +113,41 @@ public class PlayerDataController {
     }
 
     public CompletableFuture<Integer> getScoreOfPlayer(UUID minecraftId) {
-        return CompletableFuture.supplyAsync(() -> {
-            Session session = sessionFactory.openSession();
-            PlayerData data = session.get(PlayerData.class, minecraftId);
-            if (data == null) {
-                throw new NotFoundResponse("Player not found");
-            }
-            session.close();
-            return data.getScore();
-        });
+        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId).getScore());
     }
 
     public CompletableFuture<Long> getDiscordIdOfPlayer(UUID minecraftId) {
-        return CompletableFuture.supplyAsync(() -> {
-            Session session = sessionFactory.openSession();
-            PlayerData data = session.get(PlayerData.class, minecraftId);
-            if (data == null) {
-                throw new NotFoundResponse("Player not found");
-            }
-            session.close();
-            return data.getDcId();
-        });
+        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId).getDcId());
+    }
+
+    public CompletableFuture<String> getMinecraftUsernameOfPlayer(UUID minecraftId) {
+        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId).getMcName());
+    }
+
+    public CompletableFuture<PlayerData> getPlayerDataOfPlayer(UUID minecraftId) {
+        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId));
+    }
+
+    private PlayerData getPlayerDataByMinecraftId(UUID minecraftId) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        PlayerData data = session.get(PlayerData.class, minecraftId);
+        if (data == null) {
+            throw new NotFoundResponse("Player not found");
+        }
+        tx.commit();
+        session.close();
+        return data;
     }
 
     public CompletableFuture<UUID> getMinecraftIdFromDiscordId(long discordId) {
         return CompletableFuture.supplyAsync(() -> {
             Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
             TypedQuery<PlayerData> query = session.createQuery("from PlayerData where dcId = :discord_id", PlayerData.class);
             query.setParameter("discord_id", discordId);
             List<PlayerData> results = query.getResultList();
+            tx.commit();
             session.close();
             if (results.size() != 0) return results.get(0).getMcId();
             return null;
@@ -159,8 +165,10 @@ public class PlayerDataController {
 
     public List<PlayerData> getAllPlayerData() {
         Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
         TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
         List<PlayerData> results = query.getResultList();
+        tx.commit();
         session.close();
         return results;
     }
@@ -168,8 +176,10 @@ public class PlayerDataController {
     public CompletableFuture<List<UUID>> getAllMinecraftIds() {
         return CompletableFuture.supplyAsync(() -> {
             Session session = sessionFactory.openSession();
-            TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
-            List<UUID> results = query.getResultList().stream().map(PlayerData::getMcId).toList();
+            Transaction tx = session.beginTransaction();
+            TypedQuery<UUID> query = session.createQuery("select mcId from PlayerData", UUID.class);
+            List<UUID> results = query.getResultList();
+            tx.commit();
             session.close();
             return results;
         });
@@ -178,8 +188,10 @@ public class PlayerDataController {
     public CompletableFuture<List<Long>> getAllDiscordIds() {
         return CompletableFuture.supplyAsync(() -> {
             Session session = sessionFactory.openSession();
-            TypedQuery<PlayerData> query = session.createQuery("from PlayerData", PlayerData.class);
-            List<Long> results = query.getResultList().stream().map(PlayerData::getDcId).toList();
+            Transaction tx = session.beginTransaction();
+            TypedQuery<Long> query = session.createQuery("select dcId from PlayerData", Long.class);
+            List<Long> results = query.getResultList();
+            tx.commit();
             session.close();
             return results;
         });
@@ -188,10 +200,12 @@ public class PlayerDataController {
     public void apiGetPlayerFromDiscordId(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
             long discordId = Long.parseLong(ctx.pathParam("discord_id"));
             TypedQuery<PlayerData> query = session.createQuery("from PlayerData where dcId = :discord_id", PlayerData.class);
             query.setParameter("discord_id", discordId);
             List<PlayerData> data = query.getResultList();
+            tx.commit();
             session.close();
             ctx.json(data);
         } catch (Exception e) {
@@ -203,10 +217,12 @@ public class PlayerDataController {
     public void apiGetPlayerFromMinecraftId(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
             UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
             TypedQuery<PlayerData> query = session.createQuery("from PlayerData where mcId = :minecraft_id", PlayerData.class);
             query.setParameter("minecraft_id", minecraftId);
             List<PlayerData> data = query.getResultList();
+            tx.commit();
             session.close();
             ctx.json(data);
         } catch (Exception e) {
@@ -215,5 +231,15 @@ public class PlayerDataController {
         }
     }
 
-
+    public CompletableFuture<Integer> getPlayerRanking(UUID minecraftId) {
+        return CompletableFuture.supplyAsync(() -> {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            TypedQuery<UUID> query = session.createQuery("select mcId from PlayerData order by score desc", UUID.class);
+            List<UUID> results = query.getResultList();
+            tx.commit();
+            session.close();
+            return 1 + results.indexOf(minecraftId);
+        });
+    }
 }

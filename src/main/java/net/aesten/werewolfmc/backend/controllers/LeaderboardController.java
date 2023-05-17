@@ -4,11 +4,13 @@ import com.google.gson.annotations.SerializedName;
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
 import net.aesten.werewolfmc.WerewolfPlugin;
+import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.dtos.LeaderboardDTO;
 import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.plugin.statistics.Result;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,29 +25,31 @@ public class LeaderboardController {
     public void apiGetPlayerIds(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
-            TypedQuery<PlayerData> query = session.createQuery("FROM PlayerData pd ORDER BY pd.score DESC", PlayerData.class);
+            Transaction tx = session.beginTransaction();
+            TypedQuery<PlayerData> query = session.createQuery("from PlayerData pd order by pd.score desc ", PlayerData.class);
             int pageNumber = Integer.parseInt(ctx.pathParam("page"));
             int entries = Integer.parseInt(ctx.pathParam("number"));
             int firstResult = (pageNumber - 1) * entries;
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
             List<PlayerData> results = query.getResultList();
-            TypedQuery<Long> queryPlayerNumber = session.createQuery("SELECT COUNT(*) FROM PlayerData", Long.class);
+            TypedQuery<Long> queryPlayerNumber = session.createQuery("select count(*) from PlayerData", Long.class);
             long playerNumber = queryPlayerNumber.getSingleResult();
 
             List<LeaderboardDTO> data = new ArrayList<>();
             results.forEach(pd -> {
-                TypedQuery<Long> queryWonGames = session.createQuery("SELECT COUNT(*) FROM PlayerStats WHERE playerId = :minecraft_id AND result = :victory", Long.class);
+                TypedQuery<Long> queryWonGames = session.createQuery("select count(*) from PlayerStats where playerId = :minecraft_id and result = :victory", Long.class);
                 queryWonGames.setParameter("minecraft_id", pd.getMcId());
                 queryWonGames.setParameter("victory", Result.VICTORY);
                 long gamesWon = queryWonGames.getSingleResult();
-                TypedQuery<Long> queryLostGames = session.createQuery("SELECT COUNT(*) FROM PlayerStats WHERE playerId = :minecraft_id AND result = :defeat", Long.class);
+                TypedQuery<Long> queryLostGames = session.createQuery("select count(*) from PlayerStats where playerId = :minecraft_id and result = :defeat", Long.class);
                 queryLostGames.setParameter("minecraft_id", pd.getMcId());
                 queryLostGames.setParameter("defeat", Result.DEFEAT);
                 long gamesLost = queryLostGames.getSingleResult();
-                data.add(new LeaderboardDTO(pd, gamesWon + gamesLost, gamesWon));
+                int ranking = WerewolfBackend.getBackend().getPdc().getPlayerRanking(pd.getMcId()).join();
+                data.add(new LeaderboardDTO(pd, gamesWon + gamesLost, gamesWon, ranking));
             });
-
+            tx.commit();
             session.close();
             ctx.json(new PlayerDataResponse(data, pageNumber, entries, playerNumber));
         } catch (Exception e) {

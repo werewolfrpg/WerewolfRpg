@@ -7,6 +7,7 @@ import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.models.MatchRecord;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,16 +22,17 @@ public class MatchHistoryController {
     public void apiGetMatchHistory(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
-            TypedQuery<MatchRecord> query = session.createQuery("FROM MatchRecord ORDER BY endTime DESC", MatchRecord.class);
+            Transaction tx = session.beginTransaction();
+            TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord order by endTime desc", MatchRecord.class);
             int pageNumber = Integer.parseInt(ctx.pathParam("page"));
             int entries = Integer.parseInt(ctx.pathParam("number"));
             int firstResult = (pageNumber - 1) * entries;
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
             List<MatchRecord> data = query.getResultList();
-            TypedQuery<Long> queryEntryNumber = session.createQuery("SELECT COUNT(*) FROM MatchRecord", Long.class);
+            TypedQuery<Long> queryEntryNumber = session.createQuery("select count(*) from MatchRecord", Long.class);
             long totalEntries = queryEntryNumber.getSingleResult();
-
+            tx.commit();
             session.close();
             ctx.json(new MatchHistory(data, pageNumber, entries, totalEntries));
         } catch (Exception e) {
@@ -42,7 +44,8 @@ public class MatchHistoryController {
     public void apiGetMatchHistoryOfPlayer(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
-            TypedQuery<MatchRecord> query = session.createQuery("FROM MatchRecord WHERE matchId IN (SELECT ps.matchId FROM PlayerStats ps WHERE ps.playerId = :minecraft_id) ORDER BY endTime DESC", MatchRecord.class);
+            Transaction tx = session.beginTransaction();
+            TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord where matchId in (select ps.matchId from PlayerStats ps where ps.playerId = :minecraft_id) order by endTime desc ", MatchRecord.class);
             int pageNumber = Integer.parseInt(ctx.pathParam("page"));
             int entries = Integer.parseInt(ctx.pathParam("number"));
             int firstResult = (pageNumber - 1) * entries;
@@ -51,10 +54,10 @@ public class MatchHistoryController {
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
             List<MatchRecord> data = query.getResultList();
-            TypedQuery<Long> queryEntryNumber = session.createQuery("SELECT COUNT(*) FROM PlayerStats WHERE playerId = :minecraft_id", Long.class);
+            TypedQuery<Long> queryEntryNumber = session.createQuery("select count(*) from PlayerStats where playerId = :minecraft_id", Long.class);
             queryEntryNumber.setParameter("minecraft_id", mcId);
             long totalEntries = queryEntryNumber.getSingleResult();
-
+            tx.commit();
             session.close();
             ctx.json(new MatchHistory(data, pageNumber, entries, totalEntries));
         } catch (Exception e) {

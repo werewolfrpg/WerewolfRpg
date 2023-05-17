@@ -1,6 +1,7 @@
 package net.aesten.werewolfmc.backend.dtos;
 
 import com.google.gson.annotations.SerializedName;
+import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.statistics.Rank;
@@ -14,18 +15,21 @@ public class LeaderboardDTO {
     private String mcUsername;
     @SerializedName("score")
     private int score;
-    @SerializedName("rank")
-    private Rank rank;
+    @SerializedName("ranking")
+    private int ranking;
+    @SerializedName("title")
+    private Rank title;
     @SerializedName("gamesPlayed")
     private long gamesPlayed;
     @SerializedName("gamesWon")
     private long gamesWon;
 
-    public LeaderboardDTO(PlayerData data, long gamesPlayed, long gamesWon) {
+    public LeaderboardDTO(PlayerData data, long gamesPlayed, long gamesWon, int ranking) {
         this.mcId = data.getMcId();
         this.mcUsername = data.getMcName();
         this.score = data.getScore();
-        this.rank = WerewolfGame.getScoreManager().getScoreRank(score);
+        this.ranking = ranking;
+        this.title = WerewolfGame.getScoreManager().getScoreRank(score);
         this.gamesPlayed = gamesPlayed;
         this.gamesWon = gamesWon;
     }
@@ -54,12 +58,20 @@ public class LeaderboardDTO {
         this.score = score;
     }
 
-    public Rank getRank() {
-        return rank;
+    public int getRanking() {
+        return ranking;
     }
 
-    public void setRank(Rank rank) {
-        this.rank = rank;
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
+    }
+
+    public Rank getTitle() {
+        return title;
+    }
+
+    public void setTitle(Rank title) {
+        this.title = title;
     }
 
     public long getGamesPlayed() {

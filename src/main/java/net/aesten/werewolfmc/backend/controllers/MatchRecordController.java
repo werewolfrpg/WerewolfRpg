@@ -2,14 +2,12 @@ package net.aesten.werewolfmc.backend.controllers;
 
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
-import jakarta.persistence.TypedQuery;
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.models.MatchRecord;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -69,34 +67,6 @@ public class MatchRecordController {
             tx.commit();
             session.close();
             ctx.status(204);
-        } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
-            e.printStackTrace();
-        }
-    }
-
-    public void apiGetAllMatches(Context ctx) {
-        try {
-            Session session = sessionFactory.openSession();
-            TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord", MatchRecord.class);
-            List<MatchRecord> results = query.getResultList();
-            session.close();
-            ctx.json(results);
-        } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
-            e.printStackTrace();
-        }
-    }
-
-    public void apiGetMatchHistoryOfPlayer(Context ctx) {
-        try {
-            Session session = sessionFactory.openSession();
-            TypedQuery<MatchRecord> query = session.createQuery("FROM MatchRecord m WHERE m.matchId IN (SELECT ps.matchId FROM PlayerStats ps WHERE ps.playerId = :minecraft_id)", MatchRecord.class);
-            UUID mcId = UUID.fromString(ctx.pathParam("minecraft_id"));
-            query.setParameter("minecraft_id", mcId);
-            List<MatchRecord> results = query.getResultList();
-            session.close();
-            ctx.json(results);
         } catch (Exception e) {
             WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();

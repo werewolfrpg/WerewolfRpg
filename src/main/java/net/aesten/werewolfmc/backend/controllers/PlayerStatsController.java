@@ -101,13 +101,13 @@ public class PlayerStatsController {
             UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
             UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
             Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
+            Transaction tx = session.beginTransaction();
             TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :player_id and matchId = :match_id", PlayerStats.class);
             query.setParameter("player_id", minecraftId);
             query.setParameter("match_id", matchId);
             List<PlayerStats> objectsToDelete = query.getResultList();
             objectsToDelete.forEach(session::remove);
-            transaction.commit();
+            tx.commit();
             session.close();
             ctx.status(204);
         } catch (Exception e) {
@@ -119,11 +119,13 @@ public class PlayerStatsController {
     public void apiGetGlobalStatsOfPlayer(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
-            TypedQuery<PlayerStats> query = session.createQuery("FROM PlayerStats WHERE playerId = :uuid", PlayerStats.class);
+            Transaction tx = session.beginTransaction();
+            TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :uuid", PlayerStats.class);
             UUID mcId = UUID.fromString(ctx.pathParam("minecraft_id"));
             query.setParameter("uuid", mcId);
             List<PlayerStats> playerStatsList = query.getResultList();
             GlobalStatDTO globalStats = GlobalStatDTO.computeGlobalStats(playerStatsList);
+            tx.commit();
             session.close();
             if (globalStats == null) {
                 ctx.status(404);
@@ -139,10 +141,12 @@ public class PlayerStatsController {
     public void apiGetAllPlayerStatsOfMatch(Context ctx) {
         try {
             Session session = sessionFactory.openSession();
-            TypedQuery<PlayerStats> query = session.createQuery("FROM PlayerStats WHERE matchId = :match_id", PlayerStats.class);
+            Transaction tx = session.beginTransaction();
+            TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where matchId = :match_id", PlayerStats.class);
             UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
             query.setParameter("match_id", matchId);
             List<PlayerStats> results = query.getResultList();
+            tx.commit();
             session.close();
             ctx.json(results);
         } catch (Exception e) {
