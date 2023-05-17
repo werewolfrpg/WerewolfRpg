@@ -1,7 +1,6 @@
 package net.aesten.werewolfmc.backend.dtos;
 
 import com.google.gson.annotations.SerializedName;
-import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.statistics.Rank;

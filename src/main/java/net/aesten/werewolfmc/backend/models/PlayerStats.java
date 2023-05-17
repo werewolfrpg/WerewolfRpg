@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.statistics.Result;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -50,16 +53,16 @@ public class PlayerStats {
     @Embeddable
     public static final class SkeletonStats {
         @Column(name = "killed_basic_skeletons", nullable = false)
-        @SerializedName("killed_basic_skeletons")
+        @SerializedName("killedBasicSkeletons")
         private int killedBasicSkeletons = 0;
         @Column(name = "killed_lucky_skeletons", nullable = false)
-        @SerializedName("killed_lucky_skeletons")
+        @SerializedName("killedLuckySkeletons")
         private int killedLuckySkeletons = 0;
         @Column(name = "killed_special_skeletons", nullable = false)
-        @SerializedName("killed_special_skeletons")
+        @SerializedName("killedSpecialSkeletons")
         private int killedSpecialSkeletons = 0;
         @Column(name = "basic_skeleton_emerald_drops", nullable = false)
-        @SerializedName("basic_skeleton_emerald_drops")
+        @SerializedName("basicSkeletonEmeraldDrops")
         private int basicSkeletonEmeraldDrops = 0;
 
         public int getKilledBasicSkeletons() {
@@ -96,467 +99,102 @@ public class PlayerStats {
     }
 
     //item stats
+    @OneToMany(cascade = CascadeType.ALL)
     @SerializedName("items")
-    private ItemStats itemStats = new ItemStats();
-
-    @Embeddable
-    public static final class ItemStats {
-        //usage stats
-        @Column(name = "steaks_eaten", nullable = false)
-        @SerializedName("steaksEaten")
-        private int steaksEaten = 0;
-        @Column(name = "ash_used", nullable = false)
-        @SerializedName("ashUsed")
-        private int ashUsed = 0;
-        @Column(name = "divination_used", nullable = false)
-        @SerializedName("divinationUsed")
-        private int divinationUsed = 0;
-        @Column(name = "invisibility_used", nullable = false)
-        @SerializedName("invisibilityUsed")
-        private int invisibilityUsed = 0;
-        @Column(name = "swiftness_used", nullable = false)
-        @SerializedName("swiftnessUsed")
-        private int swiftnessUsed = 0;
-        @Column(name = "revelation_used", nullable = false)
-        @SerializedName("revelationUsed")
-        private int revelationUsed = 0;
-        @Column(name = "traitors_guide_used", nullable = false)
-        @SerializedName("traitorsGuideUsed")
-        private int traitorsGuideUsed = 0;
-
-        //effectiveness stats
-        @SerializedName("curseSpear")
-        private CurseSpearStats curseSpear = new CurseSpearStats();
-
-        @SerializedName("arrow")
-        private ArrowStats arrow = new ArrowStats();
-
-        @SerializedName("stunGrenade")
-        private StunGrenadeStats stunGrenade = new StunGrenadeStats();
-
-        @SerializedName("holyStar")
-        private HolyStarStats holyStar = new HolyStarStats();
-
-        @SerializedName("protection")
-        private ProtectionStats protection = new ProtectionStats();
-
-        @SerializedName("sneakNotice")
-        private SneakNoticeStats sneakNotice = new SneakNoticeStats();
-
-        @SerializedName("werewolfAxe")
-        private WerewolfAxeStats werewolfAxe = new WerewolfAxeStats();
-
-        public int getSteaksEaten() {
-            return steaksEaten;
-        }
-
-        public int getAshUsed() {
-            return ashUsed;
-        }
-
-        public int getDivinationUsed() {
-            return divinationUsed;
-        }
-
-        public int getInvisibilityUsed() {
-            return invisibilityUsed;
-        }
-
-        public int getSwiftnessUsed() {
-            return swiftnessUsed;
-        }
-
-        public int getRevelationUsed() {
-            return revelationUsed;
-        }
-
-        public int getTraitorsGuideUsed() {
-            return traitorsGuideUsed;
-        }
-
-        public CurseSpearStats getCurseSpear() {
-            return curseSpear;
-        }
-
-        public ArrowStats getArrow() {
-            return arrow;
-        }
-
-        public StunGrenadeStats getStunGrenade() {
-            return stunGrenade;
-        }
-
-        public HolyStarStats getHolyStar() {
-            return holyStar;
-        }
-
-        public ProtectionStats getProtection() {
-            return protection;
-        }
-
-        public SneakNoticeStats getSneakNotice() {
-            return sneakNotice;
-        }
-
-        public WerewolfAxeStats getWerewolfAxe() {
-            return werewolfAxe;
-        }
-
-        public void setSteaksEaten(int steaksEaten) {
-            this.steaksEaten = steaksEaten;
-        }
-
-        public void setAshUsed(int ashUsed) {
-            this.ashUsed = ashUsed;
-        }
-
-        public void setDivinationUsed(int divinationUsed) {
-            this.divinationUsed = divinationUsed;
-        }
-
-        public void setInvisibilityUsed(int invisibilityUsed) {
-            this.invisibilityUsed = invisibilityUsed;
-        }
-
-        public void setSwiftnessUsed(int swiftnessUsed) {
-            this.swiftnessUsed = swiftnessUsed;
-        }
-
-        public void setRevelationUsed(int revelationUsed) {
-            this.revelationUsed = revelationUsed;
-        }
-
-        public void setTraitorsGuideUsed(int traitorsGuideUsed) {
-            this.traitorsGuideUsed = traitorsGuideUsed;
-        }
-
-        public void setCurseSpear(CurseSpearStats curseSpear) {
-            this.curseSpear = curseSpear;
-        }
-
-        public void setArrow(ArrowStats arrow) {
-            this.arrow = arrow;
-        }
-
-        public void setStunGrenade(StunGrenadeStats stunGrenade) {
-            this.stunGrenade = stunGrenade;
-        }
-
-        public void setHolyStar(HolyStarStats holyStar) {
-            this.holyStar = holyStar;
-        }
-
-        public void setProtection(ProtectionStats protection) {
-            this.protection = protection;
-        }
-
-        public void setSneakNotice(SneakNoticeStats sneakNotice) {
-            this.sneakNotice = sneakNotice;
-        }
-
-        public void setWerewolfAxe(WerewolfAxeStats werewolfAxe) {
-            this.werewolfAxe = werewolfAxe;
-        }
-
-        @Embeddable
-        public static final class CurseSpearStats {
-            @SerializedName("melee")
-            private MeleeStats melee = new MeleeStats();
-            @SerializedName("thrown")
-            private ThrownStats thrown = new ThrownStats();
-
-            @Embeddable
-            public static final class MeleeStats {
-                @Column(name = "curse_spear_melee_used", nullable = false)
-                @SerializedName("used")
-                private int used = 0;
-                @Column(name = "curse_spear_melee_curses", nullable = false)
-                @SerializedName("cursed")
-                private int cursed = 0;
-                @Column(name = "curse_spear_melee_kills", nullable = false)
-                @SerializedName("killed")
-                private int killed = 0;
-
-                public int getUsed() {
-                    return used;
-                }
-
-                public void setUsed(int used) {
-                    this.used = used;
-                }
-
-                public int getCursed() {
-                    return cursed;
-                }
-
-                public void setCursed(int cursed) {
-                    this.cursed = cursed;
-                }
-
-                public int getKilled() {
-                    return killed;
-                }
-
-                public void setKilled(int killed) {
-                    this.killed = killed;
-                }
-            }
-
-            @Embeddable
-            public static final class ThrownStats {
-                @Column(name = "curse_spear_throw_used", nullable = false)
-                @SerializedName("used")
-                private int used = 0;
-                @Column(name = "curse_spear_throw_hits", nullable = false)
-                @SerializedName("hits")
-                private int hit = 0;
-                @Column(name = "curse_spear_throw_curses", nullable = false)
-                @SerializedName("cursed")
-                private int cursed = 0;
-                @Column(name = "curse_spear_throw_kills", nullable = false)
-                @SerializedName("killed")
-                private int killed = 0;
-
-                public int getUsed() {
-                    return used;
-                }
-
-                public void setUsed(int used) {
-                    this.used = used;
-                }
-
-                public int getHit() {
-                    return hit;
-                }
-
-                public void setHit(int hit) {
-                    this.hit = hit;
-                }
-
-                public int getCursed() {
-                    return cursed;
-                }
-
-                public void setCursed(int cursed) {
-                    this.cursed = cursed;
-                }
-
-                public int getKilled() {
-                    return killed;
-                }
-
-                public void setKilled(int killed) {
-                    this.killed = killed;
-                }
-            }
-
-            public MeleeStats getMelee() {
-                return melee;
-            }
-
-            public void setMelee(MeleeStats melee) {
-                this.melee = melee;
-            }
-
-            public ThrownStats getThrown() {
-                return thrown;
-            }
-
-            public void setThrown(ThrownStats thrown) {
-                this.thrown = thrown;
-            }
-        }
-
-        @Embeddable
-        public static final class ArrowStats {
-            @Column(name = "arrow_used", nullable = false)
-            @SerializedName("used")
-            private int used = 0;
-            @Column(name = "arrow_hits", nullable = false)
-            @SerializedName("hits")
-            private int hit = 0;
-            @Column(name = "arrow_kills", nullable = false)
-            @SerializedName("kills")
-            private int killed = 0;
-
-            public int getUsed() {
-                return used;
-            }
-
-            public void setUsed(int used) {
-                this.used = used;
-            }
-
-            public int getHit() {
-                return hit;
-            }
-
-            public void setHit(int hit) {
-                this.hit = hit;
-            }
-
-            public int getKilled() {
-                return killed;
-            }
-
-            public void setKilled(int killed) {
-                this.killed = killed;
-            }
-        }
-
-        @Embeddable
-        public static final class StunGrenadeStats {
-            @Column(name = "stun_grenade_used", nullable = false)
-            @SerializedName("used")
-            private int used = 0;
-            @Column(name = "stun_grenade_hits", nullable = false)
-            @SerializedName("hits")
-            private int hit = 0;
-            @Column(name = "stun_grenade_hit_targets", nullable = false)
-            @SerializedName("hitTargets")
-            private int affected_players = 0;
-
-            public int getUsed() {
-                return used;
-            }
-
-            public void setUsed(int used) {
-                this.used = used;
-            }
-
-            public int getHit() {
-                return hit;
-            }
-
-            public void setHit(int hit) {
-                this.hit = hit;
-            }
-
-            public int getAffected_players() {
-                return affected_players;
-            }
-
-            public void setAffected_players(int affected_players) {
-                this.affected_players = affected_players;
-            }
-        }
-
-        @Embeddable
-        public static final class HolyStarStats {
-            @Column(name = "holy_star_used", nullable = false)
-            @SerializedName("used")
-            private int used = 0;
-            @Column(name = "holy_star_killed", nullable = false)
-            @SerializedName("killed")
-            private int killed = 0;
-
-            public int getUsed() {
-                return used;
-            }
-
-            public void setUsed(int used) {
-                this.used = used;
-            }
-
-            public int getKilled() {
-                return killed;
-            }
-
-            public void setKilled(int killed) {
-                this.killed = killed;
-            }
-        }
-
-        @Embeddable
-        public static final class ProtectionStats {
-            @Column(name = "protection_used", nullable = false)
-            @SerializedName("used")
-            private int used = 0;
-            @Column(name = "protection_activated", nullable = false)
-            @SerializedName("activated")
-            private int activated = 0;
-            @Column(name = "protection_triggered", nullable = false)
-            @SerializedName("triggered")
-            private int triggered = 0;
-
-            public int getUsed() {
-                return used;
-            }
-
-            public void setUsed(int used) {
-                this.used = used;
-            }
-
-            public int getActivated() {
-                return activated;
-            }
-
-            public void setActivated(int activated) {
-                this.activated = activated;
-            }
-
-            public int getTriggered() {
-                return triggered;
-            }
-
-            public void setTriggered(int triggered) {
-                this.triggered = triggered;
-            }
-        }
-
-        @Embeddable
-        public static final class SneakNoticeStats {
-            @Column(name = "sneak_notice_used", nullable = false)
-            @SerializedName("used")
-            private int used = 0;
-            @Column(name = "sneak_notice_trigerred", nullable = false)
-            @SerializedName("triggered")
-            private int triggered = 0;
-
-            public int getUsed() {
-                return used;
-            }
-
-            public void setUsed(int used) {
-                this.used = used;
-            }
-
-            public int getTriggered() {
-                return triggered;
-            }
-
-            public void setTriggered(int triggered) {
-                this.triggered = triggered;
-            }
-        }
-
-        @Embeddable
-        public static final class WerewolfAxeStats {
-            @Column(name = "werewolf_axe_used", nullable = false)
-            @SerializedName("used")
-            private int used = 0;
-            @Column(name = "werewolf_axe_kills", nullable = false)
-            @SerializedName("killed")
-            private int killed = 0;
-
-            public int getUsed() {
-                return used;
-            }
-
-            public void setUsed(int used) {
-                this.used = used;
-            }
-
-            public int getKilled() {
-                return killed;
-            }
-
-            public void setKilled(int killed) {
-                this.killed = killed;
-            }
-        }
+    private List<ItemStats> itemStats = initItemStats();
+
+    private List<ItemStats> initItemStats() {
+        List<ItemStats> stats = new ArrayList<>();
+
+        ItemStats steakStat = new ItemStats("Exquisite Meat");
+        steakStat.getStats().put("eaten", 0);
+        stats.add(steakStat);
+
+        ItemStats ashStat = new ItemStats("Ash of the Dead");
+        ashStat.getStats().put("used", 0);
+        stats.add(ashStat);
+
+        ItemStats divStat = new ItemStats("Divination");
+        divStat.getStats().put("used", 0);
+        stats.add(divStat);
+
+        ItemStats invisibilityStat = new ItemStats("Invisibility Potion");
+        invisibilityStat.getStats().put("used", 0);
+        stats.add(invisibilityStat);
+
+        ItemStats swiftnessStat = new ItemStats("Swiftness Potion");
+        swiftnessStat.getStats().put("used", 0);
+        stats.add(swiftnessStat);
+
+        ItemStats revelationStat = new ItemStats("Revelation");
+        revelationStat.getStats().put("used", 0);
+        stats.add(revelationStat);
+
+        ItemStats traitorStat = new ItemStats("Traitor's Guide");
+        traitorStat.getStats().put("used", 0);
+        stats.add(traitorStat);
+
+        ItemStats curseSpearMeleeStat = new ItemStats("Curse Spear (Melee)");
+        curseSpearMeleeStat.getStats().put("used", 0);
+        curseSpearMeleeStat.getStats().put("cursed", 0);
+        curseSpearMeleeStat.getStats().put("killed", 0);
+        stats.add(curseSpearMeleeStat);
+
+        ItemStats curseSpearThrownStat = new ItemStats("Curse Spear (Thrown)");
+        curseSpearThrownStat.getStats().put("used", 0);
+        curseSpearThrownStat.getStats().put("hit", 0);
+        curseSpearThrownStat.getStats().put("cursed", 0);
+        curseSpearThrownStat.getStats().put("killed", 0);
+        stats.add(curseSpearThrownStat);
+
+        ItemStats bowStat = new ItemStats("Hunter's Bow");
+        bowStat.getStats().put("used", 0);
+        bowStat.getStats().put("hit", 0);
+        bowStat.getStats().put("killed", 0);
+        stats.add(bowStat);
+
+        ItemStats grenadeStat = new ItemStats("Stun Grenade");
+        grenadeStat.getStats().put("used", 0);
+        grenadeStat.getStats().put("hit", 0);
+        grenadeStat.getStats().put("hitTargets", 0);
+        stats.add(grenadeStat);
+
+        ItemStats starStat = new ItemStats("Holy Star");
+        starStat.getStats().put("used", 0);
+        starStat.getStats().put("killed", 0);
+        stats.add(starStat);
+
+        ItemStats protectionStat = new ItemStats("Protection");
+        protectionStat.getStats().put("used", 0);
+        protectionStat.getStats().put("activated", 0);
+        protectionStat.getStats().put("triggered", 0);
+        stats.add(protectionStat);
+
+        ItemStats noticeStat = new ItemStats("Sneak Notice");
+        noticeStat.getStats().put("used", 0);
+        noticeStat.getStats().put("triggered", 0);
+        stats.add(noticeStat);
+
+        ItemStats axeStat = new ItemStats("Werewolf Axe");
+        axeStat.getStats().put("used", 0);
+        axeStat.getStats().put("killed", 0);
+        stats.add(axeStat);
+
+        ItemStats trapStat = new ItemStats("Werewolf Trap");
+        trapStat.getStats().put("placed", 0);
+        trapStat.getStats().put("activated", 0);
+        stats.add(trapStat);
+
+        return stats;
     }
 
+    public ItemStats getByItemName(String itemName) {
+        return this.itemStats.stream().filter(is -> is.getItemName().equals(itemName)).findAny().orElse(new ItemStats());
+    }
+
+    private void incrementValue(String itemName, String field) {
+        this.itemStats.stream().filter(is -> is.getItemName().equals(itemName)).findAny().ifPresent(is -> is.getStats().put(field, is.getStats().get(field) + 1));
+    }
 
     public PlayerStats(UUID playerId) {
         this.playerId = playerId;
@@ -603,94 +241,102 @@ public class PlayerStats {
     public void addBasicSkeletonEmeraldDrops() {
         this.skeletonStats.basicSkeletonEmeraldDrops += 1;
     }
-    
+
     public void addSteaksEaten() {
-        this.itemStats.steaksEaten += 1;
+        incrementValue("Exquisite Meat", "eaten");
     }
     
     public void addAsheUsed() {
-        this.itemStats.ashUsed += 1;
+        incrementValue("Ash of the Dead", "used");
     }
     
     public void addDivinationUsed() {
-        this.itemStats.divinationUsed += 1;
+        incrementValue("Divination", "used");
     }
     
     public void addInvisibilityUsed() {
-        this.itemStats.invisibilityUsed += 1;
+        incrementValue("Invisibility Potion", "used");
     }
     
     public void addSwiftnessUsed() {
-        this.itemStats.swiftnessUsed += 1;
+        incrementValue("Swiftness Potion", "used");
     }
     
     public void addRevelationUsed() {
-        this.itemStats.revelationUsed += 1;
+        incrementValue("Revelation", "used");
     }
     
     public void addTraitorsGuideUsed() {
-        this.itemStats.traitorsGuideUsed += 1;
+        incrementValue("Traitor's Guide", "used");
     }
     
     public void addCurseSpearMeleeUsed(boolean cursed, boolean killed) {
-        this.itemStats.curseSpear.melee.used += 1;
-        if (cursed) this.itemStats.curseSpear.melee.cursed += 1;
-        if (killed) this.itemStats.curseSpear.melee.killed += 1;
+        incrementValue("Curse Spear (Melee)", "used");
+        if (cursed) incrementValue("Curse Spear (Melee)", "cursed");
+        if (killed) incrementValue("Curse Spear (Melee)", "killed");
     }
     
     public void addCurseSpearThrowUsed() {
-        this.itemStats.curseSpear.thrown.used += 1;
+        incrementValue("Curse Spear (Thrown)", "used");
     }
     
     public void addCurseSpearThrowHits(boolean cursed, boolean killed) {
-        this.itemStats.curseSpear.thrown.hit += 1;
-        if (cursed) this.itemStats.curseSpear.thrown.cursed += 1;
-        if (killed) this.itemStats.curseSpear.thrown.killed += 1;
+        incrementValue("Curse Spear (Thrown)", "hit");
+        if (cursed) incrementValue("Curse Spear (Thrown)", "cursed");
+        if (killed) incrementValue("Curse Spear (Thrown)", "killed");
     }
 
     public void addArrowUsed() {
-        this.itemStats.arrow.used += 1;
+        incrementValue("Hunter's Bow", "used");
     }
 
     public void addArrowHits(boolean killed) {
-        this.itemStats.arrow.hit += 1;
-        if (killed) this.itemStats.arrow.killed += 1;
+        incrementValue("Hunter's Bow", "hit");
+        if (killed) incrementValue("Hunter's Bow", "killed");
     }
 
     public void addStunGrenadeUsed() {
-        this.itemStats.stunGrenade.used += 1;
+        incrementValue("Stun Grenade", "used");
     }
     
     public void addStunGrenadeHits(int targets) {
-        this.itemStats.stunGrenade.hit += 1;
-        this.itemStats.stunGrenade.affected_players += targets;
+        incrementValue("Stun Grenade", "hit");
+        incrementValue("Stun Grenade", "hitTargets");
     }
 
     public void addHolyStarUsed(boolean killed) {
-        this.itemStats.holyStar.used += 1;
-        if (killed) this.itemStats.holyStar.killed += 1;
+        incrementValue("Holy Star", "used");
+        if (killed) incrementValue("Holy Star", "killed");
     }
     
     public void addProtectionUsed(boolean activated) {
-        this.itemStats.protection.used += 1;
-        if (activated) this.itemStats.protection.activated += 1;
+        incrementValue("Protection", "used");
+        if (activated) incrementValue("Protection", "activated");
     }
     
     public void addProtectionTriggered() {
-        this.itemStats.protection.triggered += 1;
+        incrementValue("Protection", "triggered");
     }
 
     public void addSneakNoticeUsed() {
-        this.itemStats.sneakNotice.used += 1;
+        incrementValue("Sneak Notice", "used");
     }
     
     public void addSneakNoticeTriggered() {
-        this.itemStats.sneakNotice.triggered += 1;
+        incrementValue("Sneak Notice", "triggered");
     }
 
     public void addWerewolfAxeUsed(boolean killed) {
-        this.itemStats.werewolfAxe.used += 1;
-        if (killed) this.itemStats.werewolfAxe.killed += 1;
+        incrementValue("Werewolf Axe", "used");
+        if (killed) incrementValue("Werewolf Axe", "killed");
+    }
+
+    public void addWerewolfTrapUsed() {
+        incrementValue("Werewolf Trap", "placed");
+    }
+
+    public void addWerewolfTrapTriggered() {
+        incrementValue("Werewolf Trap", "activated");
     }
 
     public void setGain(int gain) {
@@ -737,9 +383,7 @@ public class PlayerStats {
         return skeletonStats;
     }
 
-    public ItemStats getItemStats() {
+    public List<ItemStats> getItemStats() {
         return itemStats;
     }
-
-
 }

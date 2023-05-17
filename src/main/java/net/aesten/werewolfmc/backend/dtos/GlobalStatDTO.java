@@ -2,6 +2,7 @@ package net.aesten.werewolfmc.backend.dtos;
 
 import com.google.gson.annotations.SerializedName;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
+import net.aesten.werewolfmc.backend.models.ItemStats;
 import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
@@ -9,9 +10,7 @@ import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.statistics.Rank;
 import net.aesten.werewolfmc.plugin.statistics.Result;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class GlobalStatDTO {
     @SerializedName("minecraftId")
@@ -26,8 +25,6 @@ public class GlobalStatDTO {
     private Rank title;
     @SerializedName("nextTitle")
     private Rank nextTitle;
-    @SerializedName("scoreOverCurrentThreshold")
-    private int scoreOverCurrentThreshold;
     @SerializedName("currentThreshold")
     private int currentThreshold;
     @SerializedName("nextThreshold")
@@ -41,7 +38,7 @@ public class GlobalStatDTO {
     @SerializedName("skeletons")
     private PlayerStats.SkeletonStats skeletons;
     @SerializedName("items")
-    private PlayerStats.ItemStats items;
+    private List<ItemStats> items;
 
     private static final class GameStats {
         @SerializedName("role")
@@ -115,7 +112,6 @@ public class GlobalStatDTO {
         globalStats.nextTitle = WerewolfGame.getScoreManager().getNextKey(globalStats.title);
         globalStats.currentThreshold = WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.title);
         globalStats.nextThreshold = globalStats.nextTitle != null ? WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.nextTitle) : -1;
-        globalStats.scoreOverCurrentThreshold = globalStats.score - globalStats.currentThreshold;
         globalStats.kills = stats.stream().mapToInt(PlayerStats::getKills).sum();
         globalStats.deaths = (int) stats.stream().filter(s -> s.getKillerId() != null).count();
 
@@ -154,47 +150,45 @@ public class GlobalStatDTO {
         globalStats.skeletons = skeletonStats;
 
         //item stats
-        PlayerStats.ItemStats itemStats = new PlayerStats.ItemStats();
-        itemStats.setSteaksEaten(stats.stream().mapToInt(s -> s.getItemStats().getSteaksEaten()).sum());
-        itemStats.setAshUsed(stats.stream().mapToInt(s -> s.getItemStats().getAshUsed()).sum());
-        itemStats.setDivinationUsed(stats.stream().mapToInt(s -> s.getItemStats().getDivinationUsed()).sum());
-        itemStats.setInvisibilityUsed(stats.stream().mapToInt(s -> s.getItemStats().getInvisibilityUsed()).sum());
-        itemStats.setSwiftnessUsed(stats.stream().mapToInt(s -> s.getItemStats().getSwiftnessUsed()).sum());
-        itemStats.setRevelationUsed(stats.stream().mapToInt(s -> s.getItemStats().getRevelationUsed()).sum());
-        itemStats.setTraitorsGuideUsed(stats.stream().mapToInt(s -> s.getItemStats().getTraitorsGuideUsed()).sum());
+        globalStats.items = new ArrayList<>();
 
-        itemStats.getCurseSpear().getMelee().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getMelee().getUsed()).sum());
-        itemStats.getCurseSpear().getMelee().setCursed(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getMelee().getCursed()).sum());
-        itemStats.getCurseSpear().getMelee().setKilled(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getMelee().getKilled()).sum());
-        itemStats.getCurseSpear().getThrown().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getThrown().getUsed()).sum());
-        itemStats.getCurseSpear().getThrown().setHit(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getThrown().getHit()).sum());
-        itemStats.getCurseSpear().getThrown().setCursed(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getThrown().getCursed()).sum());
-        itemStats.getCurseSpear().getThrown().setKilled(stats.stream().mapToInt(s -> s.getItemStats().getCurseSpear().getThrown().getKilled()).sum());
-
-        itemStats.getArrow().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getArrow().getUsed()).sum());
-        itemStats.getArrow().setHit(stats.stream().mapToInt(s -> s.getItemStats().getArrow().getHit()).sum());
-        itemStats.getArrow().setKilled(stats.stream().mapToInt(s -> s.getItemStats().getArrow().getKilled()).sum());
-
-        itemStats.getStunGrenade().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getStunGrenade().getUsed()).sum());
-        itemStats.getStunGrenade().setHit(stats.stream().mapToInt(s -> s.getItemStats().getStunGrenade().getHit()).sum());
-        itemStats.getStunGrenade().setAffected_players(stats.stream().mapToInt(s -> s.getItemStats().getStunGrenade().getAffected_players()).sum());
-
-        itemStats.getHolyStar().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getHolyStar().getUsed()).sum());
-        itemStats.getHolyStar().setKilled(stats.stream().mapToInt(s -> s.getItemStats().getHolyStar().getKilled()).sum());
-
-        itemStats.getProtection().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getProtection().getUsed()).sum());
-        itemStats.getProtection().setActivated(stats.stream().mapToInt(s -> s.getItemStats().getProtection().getActivated()).sum());
-        itemStats.getProtection().setTriggered(stats.stream().mapToInt(s -> s.getItemStats().getProtection().getTriggered()).sum());
-
-        itemStats.getSneakNotice().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getSneakNotice().getUsed()).sum());
-        itemStats.getSneakNotice().setTriggered(stats.stream().mapToInt(s -> s.getItemStats().getSneakNotice().getTriggered()).sum());
-
-        itemStats.getWerewolfAxe().setUsed(stats.stream().mapToInt(s -> s.getItemStats().getWerewolfAxe().getUsed()).sum());
-        itemStats.getWerewolfAxe().setKilled(stats.stream().mapToInt(s -> s.getItemStats().getWerewolfAxe().getKilled()).sum());
-
-        globalStats.items = itemStats;
+        globalStats.items.add(createItemStatsFor(stats, "Exquisite Meat"));
+        globalStats.items.add(createItemStatsFor(stats, "Ash of the Dead"));
+        globalStats.items.add(createItemStatsFor(stats, "Divination"));
+        globalStats.items.add(createItemStatsFor(stats, "Invisibility Potion"));
+        globalStats.items.add(createItemStatsFor(stats, "Swiftness Potion"));
+        globalStats.items.add(createItemStatsFor(stats, "Revelation"));
+        globalStats.items.add(createItemStatsFor(stats, "Traitor's Guide"));
+        globalStats.items.add(createItemStatsFor(stats, "Curse Spear (Melee)"));
+        globalStats.items.add(createItemStatsFor(stats, "Curse Spear (Thrown)"));
+        globalStats.items.add(createItemStatsFor(stats, "Hunter's Bow"));
+        globalStats.items.add(createItemStatsFor(stats, "Stun Grenade"));
+        globalStats.items.add(createItemStatsFor(stats, "Holy Star"));
+        globalStats.items.add(createItemStatsFor(stats, "Protection"));
+        globalStats.items.add(createItemStatsFor(stats, "Sneak Notice"));
+        globalStats.items.add(createItemStatsFor(stats, "Werewolf Axe"));
+        globalStats.items.add(createItemStatsFor(stats, "Werewolf Trap"));
 
         return globalStats;
+    }
+
+    private static Map<String, Integer> sumMaps(List<Map<String, Integer>> maps) {
+        Map<String, Integer> sumMap = new HashMap<>();
+
+        for (Map<String, Integer> map : maps) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                String key = entry.getKey();
+                int value = entry.getValue();
+
+                sumMap.put(key, sumMap.getOrDefault(key, 0) + value);
+            }
+        }
+
+        return sumMap;
+    }
+
+    private static ItemStats createItemStatsFor(List<PlayerStats> stats, String itemName) {
+        return new ItemStats("itemName", sumMaps(stats.stream().map(ps -> ps.getByItemName(itemName)).map(ItemStats::getStats).toList()));
     }
 
     public UUID getPlayerID() {
@@ -245,14 +239,6 @@ public class GlobalStatDTO {
         this.nextTitle = nextTitle;
     }
 
-    public int getScoreOverCurrentThreshold() {
-        return scoreOverCurrentThreshold;
-    }
-
-    public void setScoreOverCurrentThreshold(int scoreOverCurrentThreshold) {
-        this.scoreOverCurrentThreshold = scoreOverCurrentThreshold;
-    }
-
     public int getCurrentThreshold() {
         return currentThreshold;
     }
@@ -301,11 +287,6 @@ public class GlobalStatDTO {
         this.skeletons = skeletons;
     }
 
-    public PlayerStats.ItemStats getItems() {
-        return items;
-    }
 
-    public void setItems(PlayerStats.ItemStats items) {
-        this.items = items;
-    }
+
 }
