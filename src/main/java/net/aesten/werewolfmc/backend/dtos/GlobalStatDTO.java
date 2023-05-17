@@ -26,10 +26,12 @@ public class GlobalStatDTO {
     private Rank title;
     @SerializedName("nextTitle")
     private Rank nextTitle;
-    @SerializedName("scoreOverCurrentTitle")
-    private int scoreOverCurrentRank;
-    @SerializedName("scoreUntilNextTileMax")
-    private int rankScoreDiff;
+    @SerializedName("scoreOverCurrentThreshold")
+    private int scoreOverCurrentThreshold;
+    @SerializedName("currentThreshold")
+    private int currentThreshold;
+    @SerializedName("nextThreshold")
+    private int nextThreshold;
     @SerializedName("kills")
     private int kills;
     @SerializedName("deaths")
@@ -111,9 +113,9 @@ public class GlobalStatDTO {
         globalStats.ranking = WerewolfBackend.getBackend().getPdc().getPlayerRanking(globalStats.playerID).join();
         globalStats.title = WerewolfGame.getScoreManager().getScoreRank(globalStats.score);
         globalStats.nextTitle = WerewolfGame.getScoreManager().getNextKey(globalStats.title);
-        int currentRankThreshold = WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.title);
-        globalStats.scoreOverCurrentRank = globalStats.score - currentRankThreshold;
-        globalStats.rankScoreDiff = globalStats.nextTitle != null ? WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.nextTitle) - currentRankThreshold : 0;
+        globalStats.currentThreshold = WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.title);
+        globalStats.nextThreshold = globalStats.nextTitle != null ? WerewolfGame.getScoreManager().getScoreThresholdOfRank(globalStats.nextTitle) : -1;
+        globalStats.scoreOverCurrentThreshold = globalStats.score - globalStats.currentThreshold;
         globalStats.kills = stats.stream().mapToInt(PlayerStats::getKills).sum();
         globalStats.deaths = (int) stats.stream().filter(s -> s.getKillerId() != null).count();
 
@@ -243,20 +245,28 @@ public class GlobalStatDTO {
         this.nextTitle = nextTitle;
     }
 
-    public int getScoreOverCurrentRank() {
-        return scoreOverCurrentRank;
+    public int getScoreOverCurrentThreshold() {
+        return scoreOverCurrentThreshold;
     }
 
-    public void setScoreOverCurrentRank(int scoreOverCurrentRank) {
-        this.scoreOverCurrentRank = scoreOverCurrentRank;
+    public void setScoreOverCurrentThreshold(int scoreOverCurrentThreshold) {
+        this.scoreOverCurrentThreshold = scoreOverCurrentThreshold;
     }
 
-    public int getRankScoreDiff() {
-        return rankScoreDiff;
+    public int getCurrentThreshold() {
+        return currentThreshold;
     }
 
-    public void setRankScoreDiff(int rankScoreDiff) {
-        this.rankScoreDiff = rankScoreDiff;
+    public void setCurrentThreshold(int currentThreshold) {
+        this.currentThreshold = currentThreshold;
+    }
+
+    public int getNextThreshold() {
+        return nextThreshold;
+    }
+
+    public void setNextThreshold(int nextThreshold) {
+        this.nextThreshold = nextThreshold;
     }
 
     public int getKills() {

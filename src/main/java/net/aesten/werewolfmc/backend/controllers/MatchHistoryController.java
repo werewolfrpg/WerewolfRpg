@@ -24,8 +24,8 @@ public class MatchHistoryController {
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord order by endTime desc", MatchRecord.class);
-            int pageNumber = Integer.parseInt(ctx.pathParam("page"));
-            int entries = Integer.parseInt(ctx.pathParam("number"));
+            int pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
+            int entries = ctx.queryParamAsClass("number", Integer.class).getOrDefault(50);
             int firstResult = (pageNumber - 1) * entries;
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
@@ -46,8 +46,8 @@ public class MatchHistoryController {
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord where matchId in (select ps.matchId from PlayerStats ps where ps.playerId = :minecraft_id) order by endTime desc ", MatchRecord.class);
-            int pageNumber = Integer.parseInt(ctx.pathParam("page"));
-            int entries = Integer.parseInt(ctx.pathParam("number"));
+            int pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
+            int entries = ctx.queryParamAsClass("number", Integer.class).getOrDefault(5);
             int firstResult = (pageNumber - 1) * entries;
             UUID mcId = UUID.fromString(ctx.pathParam("minecraft_id"));
             query.setParameter("minecraft_id", mcId);

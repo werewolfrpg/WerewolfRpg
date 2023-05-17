@@ -114,27 +114,27 @@ public class WerewolfBackend {
 
         app.post("/api/admin/player", pdc::apiRegisterPlayer);
         app.put("/api/admin/player", pdc::apiUpdatePlayer);
-        app.delete("/api/admin/player/{minecraft_id}", pdc::apiDeletePlayerByDiscordId);
-        app.get("/api/player/{minecraft_id}", pdc::apiGetPlayerFromMinecraftId);
-        app.get("/api/player/discord/{discord_id}", pdc::apiGetPlayerFromDiscordId);
+        app.delete("/api/admin/player/:minecraft_id", pdc::apiDeletePlayerByDiscordId);
+        app.get("/api/player/:minecraft_id", pdc::apiGetPlayerFromMinecraftId);
+        app.get("/api/player/discord/:discord_id", pdc::apiGetPlayerFromDiscordId);
         app.get("/api/players", pdc::apiGetAllPlayerData);
 
         app.post("/api/admin/match", mrc::apiRecordMatch);
-        app.put("/api/admin/match/{match_id}", mrc::apiUpdateMatchRecord);
-        app.delete("/api/admin/match/{match_id}", mrc::apiDeleteMatch);
+        app.put("/api/admin/match/:match_id", mrc::apiUpdateMatchRecord);
+        app.delete("/api/admin/match/:match_id", mrc::apiDeleteMatch);
 
         app.post("/api/admin/stats", psc::apiSavePlayerStats);
-        app.put("/api/admin/stats/{id}", psc::apiUpdateStats);
-        app.delete("/api/admin/stats/{match_id}", psc::apiDeleteStatsByMatchId);
-        app.delete("/api/admin/stats/{minecraft_id}", psc::apiDeleteStatsByPlayerId);
-        app.delete("/api/admin/stats/{id}", psc::apiDeleteStatsByPlayerIdAndMatchId);
-        app.get("/api/stats/match/{match_id}", psc::apiGetAllPlayerStatsOfMatch);
-        app.get("/api/stats/{minecraft_id}", psc::apiGetGlobalStatsOfPlayer);
+        app.put("/api/admin/stats/:id", psc::apiUpdateStats);
+        app.delete("/api/admin/stats/:match_id", psc::apiDeleteStatsByMatchId);
+        app.delete("/api/admin/stats/:minecraft_id", psc::apiDeleteStatsByPlayerId);
+        app.delete("/api/admin/stats/:id", psc::apiDeleteStatsByPlayerIdAndMatchId);
+        app.get("/api/stats/match/:match_id", psc::apiGetAllPlayerStatsOfMatch);
+        app.get("/api/stats/:minecraft_id", psc::apiGetGlobalStatsOfPlayer);
 
-        app.get("/api/leaderboard/{page}/{number}", lbc::apiGetPlayerIds);
+        app.get("/api/leaderboard", lbc::apiGetPlayerIds); //has query parameters for pagination
 
-        app.get("/api/matches/{page}/{number}", mhc::apiGetMatchHistory);
-        app.get("/api/match/player/{minecraft_id}/{page}/{number}", mhc::apiGetMatchHistoryOfPlayer);
+        app.get("/api/matches", mhc::apiGetMatchHistory); //has query parameters for pagination
+        app.get("/api/match/player/:minecraft_id", mhc::apiGetMatchHistoryOfPlayer); //has query parameters for pagination
 
         new Thread(() -> app.start(config.getBackendPort().get())).start();
 

@@ -27,8 +27,8 @@ public class LeaderboardController {
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerData> query = session.createQuery("from PlayerData pd order by pd.score desc ", PlayerData.class);
-            int pageNumber = Integer.parseInt(ctx.pathParam("page"));
-            int entries = Integer.parseInt(ctx.pathParam("number"));
+            int pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
+            int entries = ctx.queryParamAsClass("number", Integer.class).getOrDefault(20);
             int firstResult = (pageNumber - 1) * entries;
             query.setFirstResult(firstResult);
             query.setMaxResults(entries);
