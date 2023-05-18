@@ -188,7 +188,7 @@ public class GlobalStatDTO {
     }
 
     private static ItemStats createItemStatsFor(List<PlayerStats> stats, String itemName) {
-        return new ItemStats("itemName", sumMaps(stats.stream().map(ps -> ps.getByItemName(itemName)).map(ItemStats::getStats).toList()));
+        return new ItemStats(itemName, sumMaps(stats.stream().map(ps -> ps.getByItemName(itemName)).map(ItemStats::getStats).toList()));
     }
 
     public UUID getPlayerID() {

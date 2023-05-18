@@ -66,7 +66,7 @@ public class ScoreCommand extends CommandNode {
             int score = backend.getPdc().addScoreToPlayer(uuid, gain).join().getScore();
             WerewolfGame.getScoreManager().assignRole(dcId, WerewolfBot.getBot().getGuild(), WerewolfGame.getScoreManager().getScoreRank(score));
             WerewolfGame.getScoreManager().assignPrefixSuffix(player, score);
-            WerewolfUtil.sendPluginText(sender, arguments.get(0) + " now has " + score + " score");
+            WerewolfUtil.sendPluginText(sender, arguments.get(1) + " now has " + score + " score");
         }
 
         @Override
