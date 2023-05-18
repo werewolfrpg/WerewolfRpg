@@ -20,8 +20,9 @@ public class MatchHistoryController {
     }
 
     public void apiGetMatchHistory(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord order by endTime desc", MatchRecord.class);
             int pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
@@ -33,17 +34,21 @@ public class MatchHistoryController {
             TypedQuery<Long> queryEntryNumber = session.createQuery("select count(*) from MatchRecord", Long.class);
             long totalEntries = queryEntryNumber.getSingleResult();
             tx.commit();
-            session.close();
             ctx.json(new MatchHistory(data, pageNumber, entries, totalEntries));
         } catch (Exception e) {
             WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiGetMatchHistoryOfPlayer(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<MatchRecord> query = session.createQuery("from MatchRecord where matchId in (select ps.matchId from PlayerStats ps where ps.playerId = :minecraft_id) order by endTime desc ", MatchRecord.class);
             int pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
@@ -58,11 +63,14 @@ public class MatchHistoryController {
             queryEntryNumber.setParameter("minecraft_id", mcId);
             long totalEntries = queryEntryNumber.getSingleResult();
             tx.commit();
-            session.close();
             ctx.json(new MatchHistory(data, pageNumber, entries, totalEntries));
         } catch (Exception e) {
             WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 

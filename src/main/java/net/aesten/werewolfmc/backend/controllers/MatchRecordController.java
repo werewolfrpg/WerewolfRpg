@@ -31,17 +31,27 @@ public class MatchRecordController {
 
     public CompletableFuture<Void> recordMatch(MatchRecord matchRecord) {
         return CompletableFuture.runAsync(() -> {
-            Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction();
-            session.persist(matchRecord);
-            tx.commit();
-            session.close();
+            Session session = null;
+            try {
+                session = sessionFactory.openSession();
+                Transaction tx = session.beginTransaction();
+                session.persist(matchRecord);
+                tx.commit();
+                session.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (session != null && session.isOpen()) {
+                    session.close();
+                }
+            }
         });
     }
 
     public void apiUpdateMatchRecord(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             MatchRecord newRecord = ctx.bodyAsClass(MatchRecord.class);
             session.merge(newRecord);
@@ -49,15 +59,19 @@ public class MatchRecordController {
             session.close();
             ctx.status(200).json(newRecord);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiDeleteMatch(Context ctx) {
+        Session session = null;
         try {
             UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             MatchRecord matchRecord = session.get(MatchRecord.class, matchId);
             if (matchRecord == null) {
@@ -65,11 +79,13 @@ public class MatchRecordController {
             }
             session.remove(matchRecord);
             tx.commit();
-            session.close();
             ctx.status(204);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 }

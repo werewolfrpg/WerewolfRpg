@@ -26,40 +26,51 @@ public class PlayerStatsController {
             savePlayerStats(stats).join();
             ctx.status(201).json(stats);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
         }
     }
 
     public CompletableFuture<Void> savePlayerStats(PlayerStats stats) {
         return CompletableFuture.runAsync(() -> {
-            Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction();
-            session.persist(stats);
-            tx.commit();
-            session.close();
+            Session session = null;
+            try {
+                session = sessionFactory.openSession();
+                Transaction tx = session.beginTransaction();
+                session.persist(stats);
+                tx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (session != null && session.isOpen()) {
+                    session.close();
+                }
+            }
         });
     }
 
     public void apiUpdateStats(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             PlayerStats newStats = ctx.bodyAsClass(PlayerStats.class);
             session.merge(newStats);
             tx.commit();
-            session.close();
             ctx.status(200).json(newStats);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiDeleteStatsByMatchId(Context ctx) {
+        Session session = null;
         try {
             UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where matchId = :match_id", PlayerStats.class);
             query.setParameter("match_id", matchId);
@@ -68,18 +79,21 @@ public class PlayerStatsController {
                 session.remove(stats);
             }
             tx.commit();
-            session.close();
             ctx.status(204);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiDeleteStatsByPlayerId(Context ctx) {
+        Session session = null;
         try {
             UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :player_id", PlayerStats.class);
             query.setParameter("player_id", minecraftId);
@@ -88,19 +102,22 @@ public class PlayerStatsController {
                 session.remove(stats);
             }
             tx.commit();
-            session.close();
             ctx.status(204);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiDeleteStatsByPlayerIdAndMatchId(Context ctx) {
+        Session session = null;
         try {
             UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
             UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :player_id and matchId = :match_id", PlayerStats.class);
             query.setParameter("player_id", minecraftId);
@@ -108,17 +125,20 @@ public class PlayerStatsController {
             List<PlayerStats> objectsToDelete = query.getResultList();
             objectsToDelete.forEach(session::remove);
             tx.commit();
-            session.close();
             ctx.status(204);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiGetGlobalStatsOfPlayer(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :uuid", PlayerStats.class);
             UUID mcId = UUID.fromString(ctx.pathParam("minecraft_id"));
@@ -126,32 +146,37 @@ public class PlayerStatsController {
             List<PlayerStats> playerStatsList = query.getResultList();
             GlobalStatDTO globalStats = GlobalStatDTO.computeGlobalStats(playerStatsList);
             tx.commit();
-            session.close();
             if (globalStats == null) {
                 ctx.status(404);
             } else {
                 ctx.json(globalStats);
             }
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
     public void apiGetAllPlayerStatsOfMatch(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where matchId = :match_id", PlayerStats.class);
             UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
             query.setParameter("match_id", matchId);
             List<PlayerStats> results = query.getResultList();
             tx.commit();
-            session.close();
             ctx.json(results);
         } catch (Exception e) {
-            WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 }

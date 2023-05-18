@@ -23,8 +23,9 @@ public class LeaderboardController {
     }
 
     public void apiGetPlayerIds(Context ctx) {
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
             TypedQuery<PlayerData> query = session.createQuery("from PlayerData pd order by pd.score desc ", PlayerData.class);
             int pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
@@ -37,7 +38,7 @@ public class LeaderboardController {
             long playerNumber = queryPlayerNumber.getSingleResult();
 
             List<LeaderboardDTO> data = new ArrayList<>();
-            results.forEach(pd -> {
+            for (PlayerData pd : results) {
                 TypedQuery<Long> queryWonGames = session.createQuery("select count(*) from PlayerStats where playerId = :minecraft_id and result = :victory", Long.class);
                 queryWonGames.setParameter("minecraft_id", pd.getMcId());
                 queryWonGames.setParameter("victory", Result.VICTORY);
@@ -48,13 +49,16 @@ public class LeaderboardController {
                 long gamesLost = queryLostGames.getSingleResult();
                 int ranking = WerewolfBackend.getBackend().getPdc().getPlayerRanking(pd.getMcId()).join();
                 data.add(new LeaderboardDTO(pd, gamesWon + gamesLost, gamesWon, ranking));
-            });
+            }
             tx.commit();
-            session.close();
             ctx.json(new PlayerDataResponse(data, pageNumber, entries, playerNumber));
         } catch (Exception e) {
             WerewolfPlugin.logConsole("Error with api request");
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
