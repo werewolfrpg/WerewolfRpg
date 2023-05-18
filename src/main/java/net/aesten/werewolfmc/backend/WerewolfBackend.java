@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
@@ -70,7 +71,9 @@ public class WerewolfBackend {
 
         SessionFactory sessionFactory = metadata.buildSessionFactory();
 
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Timestamp.class, new UnixTimestampTypeAdapter())
+                .create();
         JsonMapper gsonMapper = new JsonMapper() {
             @Override
             public @NotNull String toJsonString(@NotNull Object obj, @NotNull Type type) {
