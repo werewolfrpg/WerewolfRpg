@@ -10,7 +10,7 @@ import net.aesten.werewolfmc.plugin.data.Role;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "MatchRecord")
 @Table(name = "match_records")
 public class MatchRecord {
     @Id

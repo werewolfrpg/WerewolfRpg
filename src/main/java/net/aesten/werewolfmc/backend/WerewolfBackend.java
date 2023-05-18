@@ -9,6 +9,7 @@ import io.javalin.json.JsonMapper;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.controllers.*;
+import net.aesten.werewolfmc.backend.models.ItemStats;
 import net.aesten.werewolfmc.backend.models.MatchRecord;
 import net.aesten.werewolfmc.backend.models.PlayerData;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
@@ -64,6 +65,7 @@ public class WerewolfBackend {
                 .addAnnotatedClass(PlayerData.class)
                 .addAnnotatedClass(MatchRecord.class)
                 .addAnnotatedClass(PlayerStats.class)
+                .addAnnotatedClass(ItemStats.class)
                 .buildMetadata();
 
         SessionFactory sessionFactory = metadata.buildSessionFactory();

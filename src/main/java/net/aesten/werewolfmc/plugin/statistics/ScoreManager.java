@@ -67,16 +67,16 @@ public class ScoreManager {
             else score += WerewolfGame.getConfig().getBaseDefeatScoreGain().get();
         }
 
-        score += stats.getItemStats().getTraitorsGuideUsed() * 2;
-        score += stats.getItemStats().getDivinationUsed() * 2;
-        score += stats.getItemStats().getAshUsed();
-        score += stats.getItemStats().getRevelationUsed();
-        score += stats.getItemStats().getInvisibilityUsed();
-        score += stats.getItemStats().getProtection().getTriggered() * 3;
-        score += stats.getItemStats().getSneakNotice().getTriggered() * 3;
-        score += stats.getItemStats().getStunGrenade().getHit() * 2;
-        score += stats.getItemStats().getCurseSpear().getMelee().getCursed() * 3;
-        score += stats.getItemStats().getCurseSpear().getThrown().getCursed() * 4;
+        score += stats.getByItemName("Traitor's Guide").getStats().get("used") * 2;
+        score += stats.getByItemName("Divination").getStats().get("used") * 2;
+        score += stats.getByItemName("Ash of the Dead").getStats().get("used");
+        score += stats.getByItemName("Revelation").getStats().get("used");
+        score += stats.getByItemName("Invisibility Potion").getStats().get("used");
+        score += stats.getByItemName("Protection").getStats().get("triggered") * 3;
+        score += stats.getByItemName("Sneak Notice").getStats().get("triggered") * 3;
+        score += stats.getByItemName("Stun Grenade").getStats().get("hitTargets") * 2;
+        score += stats.getByItemName("Curse Spear (Melee)").getStats().get("cursed") * 3;
+        score += stats.getByItemName("Curse Spear (Thrown)").getStats().get("cursed") * 4;
         score += stats.getKills() * 5;
 
         return score;

@@ -7,10 +7,9 @@ import net.aesten.werewolfmc.plugin.statistics.Result;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "PlayerStats")
 @Table(name = "player_stats")
 public class PlayerStats {
     @Id
@@ -100,6 +99,7 @@ public class PlayerStats {
 
     //item stats
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="items")
     @SerializedName("items")
     private List<ItemStats> itemStats = initItemStats();
 

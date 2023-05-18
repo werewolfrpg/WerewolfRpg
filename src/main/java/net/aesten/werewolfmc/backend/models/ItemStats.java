@@ -6,10 +6,11 @@ import jakarta.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Entity
+@Entity(name = "ItemStats")
 @Table(name = "item_stats")
 public class ItemStats {
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "item_name", nullable = false)
@@ -17,8 +18,9 @@ public class ItemStats {
     private String itemName;
     @ElementCollection
     @CollectionTable(name = "item_stats_kv", joinColumns = @JoinColumn(name = "item_stats_id"))
-    @MapKeyColumn(name = "key_name")
-    @Column(name = "value")
+    @MapKeyColumn(name = "stat_key")
+    @Column(name = "stat_value")
+    @MapKeyJoinColumn(name = "stat_id")
     @SerializedName("stats")
     private Map<String, Integer> stats;
 
