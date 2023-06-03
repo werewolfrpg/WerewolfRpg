@@ -1,95 +1,97 @@
 package net.aesten.werewolfmc.plugin.data;
 
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
 public class TeamsManager {
-    private final Map<Role, Faction> factions;
+    private final Map<Faction, List<Player>> factions = new HashMap<>();
+    private final List<PlayerData> playerData = new ArrayList<>();
 
     public TeamsManager() {
-        Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard();
-        this.factions = new HashMap<>();
+        init();
+    }
 
-        Team villagers = board.registerNewTeam("Villager");
-        villagers.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        villagers.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-        villagers.setCanSeeFriendlyInvisibles(false);
-        factions.put(Role.VILLAGER, new Faction(villagers));
+    public void clear() {
+        Arrays.stream(Role.values()).forEach(role -> role.getTeam().getEntries().forEach(role.getTeam()::removeEntry));
+        factions.clear();
+        playerData.clear();
+        init();
+    }
 
-        Team werewolves = board.registerNewTeam("Werewolf");
-        werewolves.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        werewolves.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
-        werewolves.setCanSeeFriendlyInvisibles(true);
-        factions.put(Role.WEREWOLF, new Faction(werewolves));
-
-        Team traitors = board.registerNewTeam("Traitor");
-        traitors.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        traitors.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-        traitors.setCanSeeFriendlyInvisibles(false);
-        factions.put(Role.TRAITOR, new Faction(traitors));
-
-        Team vampires = board.registerNewTeam("Vampire");
-        vampires.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        vampires.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-        vampires.setCanSeeFriendlyInvisibles(false);
-        factions.put(Role.VAMPIRE, new Faction(vampires));
-
-        Team possessed = board.registerNewTeam("Possessed");
-        possessed.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        possessed.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-        possessed.setCanSeeFriendlyInvisibles(false);
-        factions.put(Role.POSSESSED, new Faction(possessed));
-
-        Team spectators = board.registerNewTeam("Spectator");
-        spectators.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        spectators.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
-        spectators.setCanSeeFriendlyInvisibles(true);
-        spectators.setColor(ChatColor.GRAY);
-        factions.put(Role.SPECTATOR, new Faction(spectators));
+    private void init() {
+        factions.put(Faction.VILLAGER, new ArrayList<>());
+        factions.put(Faction.WEREWOLF, new ArrayList<>());
+        factions.put(Faction.OTHER, new ArrayList<>());
     }
 
     public void registerPlayerRole(Player player, Role role) {
-        factions.get(role).register(player);
+        playerData.add(new PlayerData(player, role));
+        role.getTeam().addEntry(player.getName());
+        if (role.isCountInFaction()) factions.get(role.getFaction()).add(player);
+    }
+
+    public void switchRole(Player player, Role newRole) {
+        PlayerData playerData = getPlayerData(player);
+        if (playerData == null) return;
+        WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setRole(newRole);
+        playerData.role = newRole;
+        Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
+        role.getTeam().removeEntry(player.getName());
+        newRole.getTeam().addEntry(player.getName());
+        if (role.isCountInFaction()) factions.get(role.getFaction()).remove(player);
+        if (newRole.isCountInFaction()) factions.get(newRole.getFaction()).add(player);
     }
 
     public void playerDied(Player player) {
         Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
-        factions.get(role).remove(player);
+        if (role.isCountInFaction()) factions.get(role.getFaction()).remove(player);
     }
 
-    public void clear() {
-        factions.values().forEach(Faction::clear);
+    public int getFactionSize(Faction faction) {
+        return factions.get(faction).size();
     }
 
-    public Faction getFaction(Role role) {
-        return factions.get(role);
+    public void unregisterTeams() {
+        Arrays.stream(Role.values()).map(Role::getTeam).forEach(Team::unregister);
     }
 
-    public int getFactionSize(Role role) {
-        switch (role) {
-            case WEREWOLF, VAMPIRE -> {
-                return factions.get(role).getPlayers().size();
-            }
-            case VILLAGER -> {
-                return factions.get(role).getPlayers().size() + factions.get(Role.POSSESSED).getPlayers().size();
-            }
-            default -> {
-                return -1;
-            }
+    public Map<Faction, List<PlayerData>> getData() {
+        Map<Faction, List<PlayerData>> map = new LinkedHashMap<>();
+        map.put(Faction.VILLAGER, new ArrayList<>());
+        map.put(Faction.WEREWOLF, new ArrayList<>());
+        map.put(Faction.OTHER, new ArrayList<>());
+        playerData.forEach(data -> map.get(data.getRole().getFaction()).add(data));
+        return map;
+    }
+
+    public PlayerData getPlayerData(Player player) {
+        return playerData.stream().filter(data -> data.getUuid().equals(player.getUniqueId())).findAny().orElse(null);
+    }
+
+    public static final class PlayerData {
+        private final UUID uuid;
+        private final String name;
+        private Role role;
+
+        public PlayerData(Player player, Role role) {
+            this.uuid = player.getUniqueId();
+            this.name = player.getName();
+            this.role = role;
         }
-    }
 
-    public void unregisterAll() {
-        factions.values().stream().map(Faction::getTeam).forEach(Team::unregister);
-    }
+        public UUID getUuid() {
+            return uuid;
+        }
 
-    public Map<Role, Faction> getFactions() {
-        return factions;
+        public String getName() {
+            return name;
+        }
+
+        public Role getRole() {
+            return role;
+        }
     }
 }

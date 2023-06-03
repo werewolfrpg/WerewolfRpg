@@ -25,7 +25,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -263,10 +262,8 @@ public class WerewolfGame {
                     teamsManager.registerPlayerRole(player, role);
 
                     //send role message to player
-                    player.sendTitle(role.apparentRole().color + role.apparentRole().name,
-                            ChatColor.GOLD + "GAME START", 2, 2, 40);
-                    player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
-                            "You are a " + role.apparentRole().color + role.apparentRole().name);
+                    player.sendTitle(role.getBelievedRole().getColor() + role.getBelievedRole().getName(), ChatColor.GOLD + "GAME START", 2, 2, 40);
+                    player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET + "You are a " + role.getBelievedRole().getColor() + role.getBelievedRole().getName());
 
                     //prepare player
                     player.setGameMode(GameMode.ADVENTURE);
@@ -282,34 +279,32 @@ public class WerewolfGame {
                     count++;
                 } else {
                     player.setGameMode(GameMode.SPECTATOR);
-                    teamsManager.registerPlayerRole(player, Role.SPECTATOR);
                 }
             }
 
         }
 
-        Team werewolves = teamsManager.getFaction(Role.WEREWOLF).getTeam();
-        if (werewolves.getSize() > 1) {
-            String werewolfPlayers = String.join(", ", werewolves.getEntries());
-            for (Player player : werewolves.getEntries().stream().map(Bukkit::getPlayerExact).toList()) {
-                player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
-                        "The werewolves are " + Role.WEREWOLF.color + werewolfPlayers);
-            }
+        Set<String> werewolves = Role.WEREWOLF.getTeam().getEntries();
+        String werewolfPlayers = String.join(", ", werewolves);
+        for (Player player : werewolves.stream().map(Bukkit::getPlayerExact).toList()) {
+            player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
+                    "The werewolves are " + Role.WEREWOLF.getColor() + werewolfPlayers);
         }
+
 
         instance.ticker.start();
         instance.startTime = new Timestamp(System.currentTimeMillis());
     }
 
-    private static void stop(Role role) {
+    private static void stop(Faction faction) {
         //stop ticker
         instance.ticker.stop();
         instance.endTime = new Timestamp(System.currentTimeMillis());
 
         //prepare and send stats
-        instance.tracker.setResults(role);
-        instance.tracker.sendDataToDatabase(instance, role);
-        instance.tracker.logMatchResult(instance, role);
+        instance.tracker.setResults(faction);
+        instance.tracker.sendDataToDatabase(instance, faction);
+        instance.tracker.logMatchResult(instance, faction);
 
         //clear skulls
         instance.map.getSkullLocations().forEach(v -> WerewolfUtil.resetSkull(instance.map.getWorld(), v));
@@ -341,8 +336,8 @@ public class WerewolfGame {
                 WerewolfUtil.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
                 player.sendMessage(rolesList);
                 player.getInventory().clear();
-                player.sendTitle(getEndString(role), ChatColor.GOLD + "GAME END", 2, 2, 40);
-                player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + getEndString(role));
+                player.sendTitle(getEndString(faction), ChatColor.GOLD + "GAME END", 2, 2, 40);
+                player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + getEndString(faction));
                 player.setGameMode(GameMode.SPECTATOR);
                 WerewolfUtil.removeAllPotionEffectsFromPlayer(player);
                 player.setHealth(20d);
@@ -377,53 +372,40 @@ public class WerewolfGame {
     }
 
     public static void endGame() {
-        if (teamsManager.getFactionSize(Role.VAMPIRE) != 0) {
-            stop(Role.VAMPIRE);
+        if (teamsManager.getFactionSize(Faction.OTHER) != 0) {
+            stop(Faction.OTHER);
         }
-        else if (teamsManager.getFactionSize(Role.VILLAGER) == 0) {
-            stop(Role.WEREWOLF);
+        else if (teamsManager.getFactionSize(Faction.VILLAGER) == 0) {
+            stop(Faction.WEREWOLF);
         }
         else {
-            stop(Role.VILLAGER);
+            stop(Faction.VILLAGER);
         }
     }
 
-    private static String getEndString(Role role) {
-        if (role == null) return ChatColor.YELLOW + "Game Cancelled";
-        return role.color + role.name + " Victory!";
+    private static String getEndString(Faction faction) {
+        if (faction == null) return ChatColor.YELLOW + "Game Cancelled";
+        return faction.getColor() + faction.getName() + " Victory!";
     }
 
     private static String getMatchText() {
-        TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        Collection<String> villagers = teamsManager.getFaction(Role.VILLAGER).getInitialPlayers().values();
-        Collection<String> werewolves = teamsManager.getFaction(Role.WEREWOLF).getInitialPlayers().values();
-        Collection<String> traitors = teamsManager.getFaction(Role.TRAITOR).getInitialPlayers().values();
-        Collection<String> vampires = teamsManager.getFaction(Role.VAMPIRE).getInitialPlayers().values();
-        Collection<String> possessed = teamsManager.getFaction(Role.POSSESSED).getInitialPlayers().values();
-
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(ChatColor.AQUA + "======Werewolf Match Role======" + "\n");
-        builder.append(ChatColor.GREEN + "Villagers:" + "\n");
-        builder.append("> " + String.join(", ", villagers) + "\n");
-        builder.append(ChatColor.DARK_RED + "Werewolves:" + "\n");
-        builder.append("> " + String.join(", ", werewolves) + "\n");
-
-        if (traitors.size() > 0) {
-            builder.append(ChatColor.LIGHT_PURPLE + "Traitors:" + "\n");
-            builder.append("> " + String.join(", ", traitors) + "\n");
-        }
-        if (traitors.size() > 0) {
-            builder.append(ChatColor.DARK_PURPLE + "Vampire:" + "\n");
-            builder.append("> " + String.join(", ", vampires) + "\n");
-        }
-        if (traitors.size() > 0) {
-            builder.append(ChatColor.YELLOW + "Possessed:" + "\n");
-            builder.append("> " + String.join(", ", possessed) + "\n");
-        }
-
-        builder.append(ChatColor.AQUA + "======Werewolf Match Role======" + "\n");
-
+        StringBuilder builder = new StringBuilder(ChatColor.AQUA + "======Werewolf Match Role======" + "\n");
+        getTeamsManager().getData().forEach((faction, playerDataList) -> {
+            if (!playerDataList.isEmpty()) {
+                builder.append(faction.getColor())
+                        .append(faction.getName())
+                        .append("\n");
+                playerDataList.forEach(playerData -> builder.append(ChatColor.RESET)
+                        .append("> ")
+                        .append(playerData.getName())
+                        .append(" (")
+                        .append(playerData.getRole().getColor())
+                        .append(playerData.getRole().getName())
+                        .append(")")
+                        .append("\n"));
+            }
+        });
+        builder.append(ChatColor.AQUA).append("===============================");
         return builder.toString();
     }
 }

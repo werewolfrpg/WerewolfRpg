@@ -378,10 +378,10 @@ public class GameCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 RolePool pool = WerewolfGame.getInstance().getPool();
                 WerewolfUtil.sendPluginText(sender, "Current role configuration:");
-                WerewolfUtil.sendPluginText(sender, "Werewolves: " + pool.getWerewolfNumber(), Role.WEREWOLF.color);
-                WerewolfUtil.sendPluginText(sender, "Traitors: " + pool.getTraitorNumber(), Role.TRAITOR.color);
-                WerewolfUtil.sendPluginText(sender, "Vampires: " + pool.getVampireNumber(), Role.VAMPIRE.color);
-                WerewolfUtil.sendPluginText(sender, "Possessed: " + pool.getPossessedNumber(), Role.POSSESSED.color);
+                WerewolfUtil.sendPluginText(sender, "Werewolves: " + pool.getWerewolfNumber(), Role.WEREWOLF.getColor());
+                WerewolfUtil.sendPluginText(sender, "Traitors: " + pool.getTraitorNumber(), Role.TRAITOR.getColor());
+                WerewolfUtil.sendPluginText(sender, "Vampires: " + pool.getVampireNumber(), Role.VAMPIRE.getColor());
+                WerewolfUtil.sendPluginText(sender, "Possessed: " + pool.getPossessedNumber(), Role.POSSESSED.getColor());
             }
 
             @Override
@@ -426,7 +426,7 @@ public class GameCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 Integer werewolfNumber = arguments.find(0, "int", Integer::parseInt);
                 WerewolfGame.getInstance().getPool().setWerewolfNumber(werewolfNumber);
-                WerewolfUtil.sendPluginText(sender, "Changed " + Role.WEREWOLF.color + Role.WEREWOLF.name + ChatColor.AQUA + " number to " + ChatColor.GOLD + werewolfNumber);
+                WerewolfUtil.sendPluginText(sender, "Changed " + Role.WEREWOLF.getColor() + Role.WEREWOLF.getName() + ChatColor.AQUA + " number to " + ChatColor.GOLD + werewolfNumber);
             }
 
             @Override
@@ -450,7 +450,7 @@ public class GameCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 Integer traitorNumber = arguments.find(0, "int", Integer::parseInt);
                 WerewolfGame.getInstance().getPool().setTraitorNumber(traitorNumber);
-                WerewolfUtil.sendPluginText(sender, "Changed " + Role.TRAITOR.color + Role.TRAITOR.name + ChatColor.AQUA + " number to " + ChatColor.GOLD + traitorNumber);
+                WerewolfUtil.sendPluginText(sender, "Changed " + Role.TRAITOR.getColor() + Role.TRAITOR.getName() + ChatColor.AQUA + " number to " + ChatColor.GOLD + traitorNumber);
             }
 
             @Override
@@ -474,7 +474,7 @@ public class GameCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 Integer vampireNumber = arguments.find(0, "int", Integer::parseInt);
                 WerewolfGame.getInstance().getPool().setVampireNumber(vampireNumber);
-                WerewolfUtil.sendPluginText(sender, "Changed " + Role.VAMPIRE.color + Role.VAMPIRE.name + ChatColor.AQUA + " number to " + ChatColor.GOLD + vampireNumber);
+                WerewolfUtil.sendPluginText(sender, "Changed " + Role.VAMPIRE.getColor() + Role.VAMPIRE.getName() + ChatColor.AQUA + " number to " + ChatColor.GOLD + vampireNumber);
             }
 
             @Override
@@ -498,7 +498,7 @@ public class GameCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 Integer possessedNumber = arguments.find(0, "int", Integer::parseInt);
                 WerewolfGame.getInstance().getPool().setPossessedNumber(possessedNumber);
-                WerewolfUtil.sendPluginText(sender, "Changed " + Role.POSSESSED.color + Role.POSSESSED.name + ChatColor.AQUA + " number to " + ChatColor.GOLD + possessedNumber);
+                WerewolfUtil.sendPluginText(sender, "Changed " + Role.POSSESSED.getColor() + Role.POSSESSED.getName() + ChatColor.AQUA + " number to " + ChatColor.GOLD + possessedNumber);
             }
 
             @Override

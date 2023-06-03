@@ -1,53 +1,26 @@
 package net.aesten.werewolfmc.plugin.data;
 
-import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.ChatColor;
 
-import java.util.*;
+public enum Faction {
+    VILLAGER("Villagers", ChatColor.GREEN),
+    WEREWOLF("Werewolves", ChatColor.DARK_RED),
+    OTHER("Third Party", ChatColor.LIGHT_PURPLE);
 
-public class Faction {
-    private final Team team;
-    private final Map<UUID, String> initialPlayers;
-    private final List<Player> players;
+    private final String factionName;
+    private final ChatColor factionColor;
 
-    public Faction(Team team) {
-        this.team = team;
-        this.initialPlayers = new HashMap<>();
-        this.players = new ArrayList<>();
+    Faction(String factionName, ChatColor factionColor) {
+        this.factionName = factionName;
+        this.factionColor = factionColor;
     }
 
-    public Team getTeam() {
-        return team;
+    public String getName() {
+        return factionName;
     }
 
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public Map<UUID, String> getInitialPlayers() {
-        return initialPlayers;
-    }
-
-    public void register(Player player) {
-        team.addEntry(player.getName());
-        players.add(player);
-        initialPlayers.put(player.getUniqueId(), player.getName());
-    }
-
-    public void remove(Player player) {
-        team.removeEntry(player.getName());
-        players.remove(player);
-    }
-
-    public void clear() {
-        removeAllEntries(team);
-        players.clear();
-        initialPlayers.clear();
-    }
-
-    private void removeAllEntries(Team team) {
-        for (String s : team.getEntries()) {
-            team.removeEntry(s);
-        }
+    public ChatColor getColor() {
+        return factionColor;
     }
 }
+

@@ -23,6 +23,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -94,16 +95,17 @@ public class WerewolfBackend {
 
         if (config.getBackendCorsEnabled().get() && !config.getBackendCorsAllowedHosts().get().isEmpty()) {
             app = Javalin.create(jConfig -> {
+                jConfig.staticFiles.add(WerewolfPlugin.getPlugin().getDataFolder() + File.separator + "werewolf-maps" + File.separator + "thumbnails");
                 jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowedHosts().get().forEach(it::allowHost)));
                 jConfig.jsonMapper(gsonMapper);
             });
         } else {
             app = Javalin.create(jConfig -> {
+                jConfig.staticFiles.add(WerewolfPlugin.getPlugin().getDataFolder() + File.separator + "werewolf-maps" + File.separator + "thumbnails");
                 jConfig.plugins.enableCors(cors -> cors.add(CorsPluginConfig::anyHost));
                 jConfig.jsonMapper(gsonMapper);
             });
         }
-
 
         app.before("/api/admin/*", ctx -> {
             String authHeader = ctx.header("Authorization");
@@ -189,6 +191,10 @@ public class WerewolfBackend {
 
     public static WerewolfBackend getBackend() {
         return backend;
+    }
+
+    public static BackendConfig getConfig() {
+        return config;
     }
 
     public PlayerDataController getPdc() {

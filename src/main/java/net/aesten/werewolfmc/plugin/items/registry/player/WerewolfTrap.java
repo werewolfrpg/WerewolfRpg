@@ -2,7 +2,7 @@ package net.aesten.werewolfmc.plugin.items.registry.player;
 
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
-import net.aesten.werewolfmc.plugin.data.Role;
+import net.aesten.werewolfmc.plugin.data.Faction;
 import net.aesten.werewolfmc.plugin.items.base.InteractItem;
 import net.aesten.werewolfmc.plugin.items.base.ItemStackBuilder;
 import net.aesten.werewolfmc.plugin.items.base.WerewolfItem;
@@ -69,15 +69,20 @@ public class WerewolfTrap extends WerewolfItem implements InteractItem {
                         WerewolfUtil.getSpawnSpacesAround(loc, 3, 5)
                                 .forEach(WerewolfTrap::summonWitherSkeleton);
                         players.forEach(p -> p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 1200, 1, false)));
-
+                        game.getTracker().getPlayerStats(user.getUniqueId()).addWerewolfTrapTriggered();
                         this.cancel();
                     } else {
-                        WerewolfGame.getTeamsManager().getFaction(Role.WEREWOLF).getPlayers().forEach(werewolf -> WerewolfUtil.spawnCircleParticles(werewolf, loc, 3, 300));
+                        players.forEach(player -> {
+                            if (WerewolfGame.getTeamsManager().getPlayerData(player).getRole().getFaction() == Faction.WEREWOLF) {
+                                WerewolfUtil.spawnCircleParticles(player, loc, 3, 300);
+                            }
+                        });
                     }
                 }
             }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, 5);
             toCancel.add(task);
             completed.put(task.getTaskId(), false);
+            game.getTracker().getPlayerStats(user.getUniqueId()).addWerewolfTrapUsed();
         } else {
             WerewolfUtil.sendErrorText(event.getPlayer(), "Click on a block to use");
         }
@@ -85,7 +90,7 @@ public class WerewolfTrap extends WerewolfItem implements InteractItem {
 
     private static boolean isNonWerewolfAlivePlayers(Entity entity) {
         if (entity instanceof Player player) {
-            return !WerewolfGame.getTeamsManager().getFaction(Role.WEREWOLF).getPlayers().contains(player);
+            return WerewolfGame.getTeamsManager().getPlayerData(player).getRole().getFaction() != Faction.WEREWOLF;
         }
         return false;
     }

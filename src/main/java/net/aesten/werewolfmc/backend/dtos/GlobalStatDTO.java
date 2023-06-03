@@ -117,7 +117,7 @@ public class GlobalStatDTO {
 
         //game stats
         List<GameStats> gameStatsList = new ArrayList<>();
-        List<PlayerStats> filteredData = stats.stream().filter(s -> s.getResult() != Result.DISCONNECTED && s.getResult() != Result.CANCELLED).toList();
+        List<PlayerStats> filteredData = stats.stream().filter(s -> s.getResult() != Result.CANCELLED).toList();
 
         List<PlayerStats> villagerData = filteredData.stream().filter(s -> s.getRole() == Role.VILLAGER).toList();
         int villagerVictories = (int) villagerData.stream().filter(s -> s.getResult() == Result.VICTORY).count();

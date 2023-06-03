@@ -16,6 +16,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class TraitorsGuide extends ShopWerewolfItem implements InteractItem {
@@ -58,10 +61,13 @@ public class TraitorsGuide extends ShopWerewolfItem implements InteractItem {
         Player user = event.getPlayer();
         user.getInventory().getItemInMainHand().setAmount(user.getInventory().getItemInMainHand().getAmount()-1);
         game.getMap().getWorld().playSound(user.getLocation(), Sound.ENTITY_VILLAGER_WORK_LIBRARIAN, 0.8f,1);
-        String werewolf = WerewolfGame.getTeamsManager().getFaction(Role.WEREWOLF).getTeam().getEntries().stream().toList()
-                .get(new Random().nextInt(game.getPool().getWerewolfNumber()));
-        WerewolfUtil.sendPluginText(user, werewolf + " is a werewolf!", ChatColor.RED);
-
+        List<Player> werewolves = new ArrayList<>(WerewolfGame.getInstance().getParticipants()
+                .stream()
+                .filter(player -> WerewolfGame.getTeamsManager().getPlayerData(player).getRole() == Role.WEREWOLF)
+                .toList());
+        Collections.shuffle(werewolves);
+        String werewolf = werewolves.get(0).getName();
+        WerewolfUtil.sendPluginText(user, werewolf + " is a werewolf!", Role.WEREWOLF.getColor());
         WerewolfGame.getInstance().getTracker().getPlayerStats(user.getUniqueId()).addTraitorsGuideUsed();
     }
 }

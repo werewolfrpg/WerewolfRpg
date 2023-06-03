@@ -14,8 +14,6 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
-import net.aesten.werewolfmc.plugin.core.WerewolfGame;
-import net.aesten.werewolfmc.plugin.data.Role;
 
 public class SpecInfoPacket extends PacketAdapter {
     private final Comparator<PlayerInfoData> comparator = Comparator.comparingInt((PlayerInfoData data) -> WerewolfBackend.getBackend().getPdc().getScoreOfPlayer(data.getProfile().getUUID()).join()).reversed();
@@ -30,7 +28,6 @@ public class SpecInfoPacket extends PacketAdapter {
             PlayerInfoAction action = e.getPacket().getPlayerInfoAction().read(0);
             if (action != PlayerInfoAction.ADD_PLAYER && action != PlayerInfoAction.UPDATE_GAME_MODE) return;
 
-            String playerName = e.getPlayer().getName();
             PacketContainer packet = e.getPacket().shallowClone();
 
             List<PlayerInfoData> dataList = packet.getPlayerInfoDataLists().read(0);
@@ -39,16 +36,13 @@ public class SpecInfoPacket extends PacketAdapter {
                 PlayerInfoData data = dataListIt.next();
                 WrappedGameProfile profile = data.getProfile();
                 NativeGameMode gameMode = data.getGameMode();
-                if (gameMode != NativeGameMode.SPECTATOR || profile.getName().equals(playerName) ||
-                        WerewolfGame.getTeamsManager().getFaction(Role.SPECTATOR).getTeam().getEntries().contains(profile.getName())) continue;
-
+                if (gameMode != NativeGameMode.SPECTATOR) continue;
                 PlayerInfoData newData = new PlayerInfoData(profile, data.getLatency(),
                         NativeGameMode.ADVENTURE, data.getDisplayName());
                 dataListIt.set(newData);
             }
 
             dataList.sort(comparator);
-
             packet.getPlayerInfoDataLists().write(0, dataList);
             e.setPacket(packet);
         } catch (Exception ex) {

@@ -14,6 +14,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.entity.Player;
 
 import java.awt.Color;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -36,24 +37,23 @@ public class Tracker {
         return specificDeathCauses;
     }
 
-    public void setResults(Role winningRole) {
-        playerStats.values().forEach(
-                stats -> {
-                    if (winningRole == null) {
+    public void setResults(Faction winningFaction) {
+        playerStats.values().forEach(stats -> {
+                    if (winningFaction == null) {
                         stats.setResult(Result.CANCELLED);
                     }
                     else if (stats.getResult() == null) {
-                        if (WerewolfUtil.areSameFaction(stats.getRole(), winningRole)) {
+                        if (stats.getRole().getFaction() == winningFaction) {
                             stats.setResult(Result.VICTORY);
                         }
                         else {
                             stats.setResult(Result.DEFEAT);
                         }
                     }
-                });
+        });
     }
 
-    public void sendDataToDatabase(WerewolfGame game, Role winner) {
+    public void sendDataToDatabase(WerewolfGame game, Faction winner) {
         WerewolfBackend backend = WerewolfBackend.getBackend();
         backend.getMrc().recordMatch(new MatchRecord(game.getMatchId(), game.getMap().getName(), game.getStartTime(), game.getEndTime(), winner));
         playerStats.values().forEach(stats -> {
@@ -70,7 +70,7 @@ public class Tracker {
         WerewolfPlugin.logConsole("Saved match " + game.getMatchId() + " in database");
     }
 
-    public void logMatchResult(WerewolfGame game, Role winner) {
+    public void logMatchResult(WerewolfGame game, Faction winner) {
         WerewolfBot bot = WerewolfBot.getBot();
         if (bot == null) return;
 
@@ -82,7 +82,7 @@ public class Tracker {
             embed.setColor(Color.YELLOW);
         }
         else {
-            result = winner.name + " Victory";
+            result = winner.getName() + " Victory";
             embed.setColor(Color.CYAN);
         }
 
@@ -93,25 +93,23 @@ public class Tracker {
         embed.setDescription("Map: " + game.getMap().getName() + "\nDuration: " + duration + "\nMatchId: " + game.getMatchId());
 
         AtomicInteger c = new AtomicInteger();
-        for (Faction faction : WerewolfGame.getTeamsManager().getFactions().values()) {
-            if (faction.getInitialPlayers().size() > 0) {
+        WerewolfGame.getTeamsManager().getData().forEach((faction, playerDataList) -> {
+            if (!playerDataList.isEmpty()) {
                 embed.addField("===============", "", true);
-                embed.addField(faction.getTeam().getName() + " (" + faction.getInitialPlayers().size() + ")", "", true);
+                embed.addField(faction.getName() + " (" + playerDataList.size() + ")", "", true);
                 embed.addField("===============", "", true);
-                faction.getInitialPlayers().forEach((id, name) -> {
-                    String status;
-                    if (playerStats.get(id).getResult() == Result.DISCONNECTED) status = "*Disconnected*";
-                    else if (game.getDataMap().get(id).isAlive()) status = "*Alive*";
-                    else status = "*Dead*";
-                    ScoreDetail sd = scoreDetails.get(id);
-                    if (sd == null) {
-                        embed.addField(name, status, true);
-                    } else {
-                        embed.addField(name, status + "\n" + sd.score + " (+" + sd.gain + ")", true);
-                    }
 
+                playerDataList.forEach(playerData -> {
+                    String status = game.getDataMap().get(playerData.getUuid()).isAlive() ? "A" : "D";
+                    ScoreDetail sd = scoreDetails.get(playerData.getUuid());
+                    if (sd == null) {
+                        embed.addField(playerData.getName() + " (" + status + ")", playerData.getRole().getName(), true);
+                    } else {
+                        embed.addField(playerData.getName() + " (" + status + ")", playerData.getRole().getName() + "\n" + sd.score + " (+" + sd.gain + ")", true);
+                    }
                     c.getAndIncrement();
                 });
+
                 if (c.get() % 3 != 0) {
                     embed.addField("", "", true);
                 }
@@ -119,6 +117,12 @@ public class Tracker {
                     embed.addField("", "", true);
                 }
                 c.set(0);
+            }
+        });
+
+        if (WerewolfBackend.getBackend() != null) {
+            if (!game.getMap().getImage().equals("")) {
+                embed.setImage(WerewolfBackend.getConfig().getBackendUrl().get() + File.separator + game.getMap().getImage());
             }
         }
 

@@ -38,7 +38,7 @@ public final class WerewolfPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        logConsole("Loading Werewolf");
+        logConsole("Loading the Werewolf Plugin");
         plugin = this;
     }
 
@@ -77,7 +77,7 @@ public final class WerewolfPlugin extends JavaPlugin {
         WerewolfGame.getMapManager().saveMaps();
 
         //unregister teams
-        WerewolfGame.getTeamsManager().unregisterAll();
+        WerewolfGame.getTeamsManager().unregisterTeams();
 
         //unregister packet
         ProtocolLibrary.getProtocolManager().removePacketListener(specInfoPacket);

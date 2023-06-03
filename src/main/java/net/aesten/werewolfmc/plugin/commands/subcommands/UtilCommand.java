@@ -96,7 +96,7 @@ public class UtilCommand extends CommandNode {
             if (sender instanceof Player player) {
                 if (WerewolfGame.getInstance().isPlaying()) {
                     net.aesten.werewolfmc.plugin.data.Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
-                    WerewolfUtil.sendPluginText(sender, "Your role is: " + role.color + role.name);
+                    WerewolfUtil.sendPluginText(sender, "Your role is: " + role.getColor() + role.getName());
                 } else {
                     WerewolfUtil.sendErrorText(sender, "This command only works during a game");
                 }

@@ -1,6 +1,7 @@
 package net.aesten.werewolfmc.plugin.items.registry.player;
 
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
+import net.aesten.werewolfmc.plugin.data.Faction;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
 import net.aesten.werewolfmc.plugin.items.base.InteractItem;
@@ -62,7 +63,7 @@ public class Protection extends ShopWerewolfItem implements InteractItem {
         if (data.hasAlreadyUsedProtection()) {
             WerewolfUtil.sendPluginText(user, "You have already used one protection this night", ChatColor.RED);
         }
-        else if (data.getRole() == Role.VILLAGER || data.getRole() == Role.POSSESSED) {
+        else if (data.getRole().getFaction() == Faction.VILLAGER) {
             data.setHasActiveProtection(true);
             data.setHasAlreadyUsedProtection(true);
             user.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 5, false, false, false));

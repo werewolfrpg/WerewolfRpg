@@ -19,6 +19,7 @@ public class BackendConfig implements Configurable {
     private final Property<String> jdbcUsername = Property.create(PropertyType.STRING, "jdbc.username", () -> "sa").done();
     private final Property<String> jdbcPassword = Property.create(PropertyType.STRING, "jdbc.password", () -> "werewolf").done();
     private final Property<Integer> backendPort = Property.create(PropertyType.INTEGER, "backend.port", () -> 8085).done();
+    private final Property<String> backendUrl = Property.create(PropertyType.STRING, "backend.url", () -> "backend.werewolf.com").done();
     private final Property<Boolean> backendShowSql = Property.create(PropertyType.BOOLEAN, "backend.hibernate_show_sql", () -> false)
             .description("can be enabled for debugging database issues")
             .done();
@@ -50,6 +51,10 @@ public class BackendConfig implements Configurable {
         return backendPort;
     }
 
+    public Property<String> getBackendUrl() {
+        return backendUrl;
+    }
+
     public Property<Boolean> getBackendShowSql() {
         return backendShowSql;
     }
@@ -73,6 +78,6 @@ public class BackendConfig implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        return List.of(jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword, backendPort, backendShowSql, backendTokenValidity, backendCorsEnabled, backendCorsAllowedHosts);
+        return List.of(jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword, backendPort, backendShowSql, backendUrl, backendTokenValidity, backendCorsEnabled, backendCorsAllowedHosts);
     }
 }
