@@ -36,7 +36,7 @@ public class GameDataController {
     public void apiGetRolesFactions(Context ctx) {
         Map<Faction, FactionRoleInfo> infoMap = new HashMap<>();
         Arrays.stream(Faction.values()).forEach(faction -> infoMap.put(faction, new FactionRoleInfo(faction)));
-        Arrays.stream(Role.values()).forEach(role -> infoMap.get(role.getFaction()).roles.add(new RoleInfo(role)));
+        Arrays.stream(Role.values()).forEach(role -> infoMap.get(role.getFaction()).roles.put(role, new RoleInfo(role)));
         ctx.json(infoMap);
     }
 
@@ -46,12 +46,12 @@ public class GameDataController {
         @SerializedName("factionColor")
         private final String factionColor;
         @SerializedName("factionRoles")
-        private final List<RoleInfo> roles;
+        private final Map<Role, RoleInfo> roles;
 
         public FactionRoleInfo(Faction faction) {
             this.factionName = faction.getName();
             this.factionColor = faction.getColorCode();
-            this.roles = new ArrayList<>();
+            this.roles = new HashMap<>();
         }
     }
 
