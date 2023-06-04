@@ -37,6 +37,7 @@ public class TeamsManager {
         PlayerData playerData = getPlayerData(player);
         if (playerData == null) return;
         WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setRole(newRole);
+        WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setRole(newRole);
         playerData.role = newRole;
         Role role = WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).getRole();
         role.getTeam().removeEntry(player.getName());

@@ -12,7 +12,6 @@ import net.aesten.werewolfmc.plugin.items.base.WerewolfItem;
 import net.aesten.werewolfmc.plugin.items.registry.AdminItem;
 import net.aesten.werewolfmc.plugin.map.WerewolfMap;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
-import net.aesten.werewolfmc.plugin.statistics.Result;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -161,6 +160,18 @@ public class GeneralEvents implements Listener {
                  player.setGameMode(GameMode.SPECTATOR);
                  player.getInventory().clear();
                  player.getActivePotionEffects().clear();
+
+                 //handle vampire-servant
+                 if (WerewolfGame.getInstance().getDataMap().get(id).getRole() == Role.VAMPIRE) {
+                     for (Player participant : WerewolfGame.getInstance().getParticipants()) {
+                         if (WerewolfGame.getInstance().getDataMap().get(participant.getUniqueId()).getRole() == Role.SERVANT) {
+                             participant.setHealth(0);
+                             PlayerStats stats = WerewolfGame.getInstance().getTracker().getPlayerStats(participant.getUniqueId());
+                             stats.setKiller(participant.getUniqueId());
+                             stats.setDeathCause("vampire_death");
+                         }
+                     }
+                 }
 
                  //stats
                  AbstractMap.SimpleEntry<String, UUID> deathData = WerewolfGame.getInstance().getTracker().getSpecificDeathCauses().get(id);

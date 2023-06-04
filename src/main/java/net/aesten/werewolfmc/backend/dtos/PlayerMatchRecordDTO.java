@@ -21,14 +21,17 @@ public class PlayerMatchRecordDTO {
     private Faction winner;
     @SerializedName("role")
     private Role role;
+    @SerializedName("score")
+    private int score;
 
-    public PlayerMatchRecordDTO(MatchRecord record, Role role) {
+    public PlayerMatchRecordDTO(MatchRecord record, Role role, int score) {
         matchId = record.getMatchId();
         mapName = record.getMapName();
         startTime = record.getStartTime();
         endTime = record.getEndTime();
         winner = record.getWinner();
         this.role = role;
+        this.score = score;
     }
 
     public UUID getMatchId() {
@@ -77,5 +80,13 @@ public class PlayerMatchRecordDTO {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

@@ -27,7 +27,8 @@ public enum PlayerItem {
     HOLY_STAR(new HolyStar()),
     SNEAK_NOTICE(new SneakNotice()),
     ASH_OF_THE_DEAD(new AshOfTheDead()),
-    CURSE_SPEAR(new CurseSpear());
+    CURSE_SPEAR(new CurseSpear()),
+    VAMPIRE_FANG(new VampireFang());
 
     private static final Map<String, WerewolfItem> registry = new HashMap<>();
 

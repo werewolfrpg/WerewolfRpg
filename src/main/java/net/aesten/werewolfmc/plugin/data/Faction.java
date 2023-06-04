@@ -1,16 +1,17 @@
 package net.aesten.werewolfmc.plugin.data;
 
-import org.bukkit.ChatColor;
+
+import net.md_5.bungee.api.ChatColor;
 
 public enum Faction {
-    VILLAGER("Villagers", ChatColor.GREEN),
-    WEREWOLF("Werewolves", ChatColor.DARK_RED),
-    OTHER("Third Party", ChatColor.LIGHT_PURPLE);
+    VILLAGER("Villagers", "#55ff55"),
+    WEREWOLF("Werewolves","#aa0000"),
+    OTHER("Third Party", "#ffff55");
 
     private final String factionName;
-    private final ChatColor factionColor;
+    private final String factionColor;
 
-    Faction(String factionName, ChatColor factionColor) {
+    Faction(String factionName, String factionColor) {
         this.factionName = factionName;
         this.factionColor = factionColor;
     }
@@ -20,6 +21,10 @@ public enum Faction {
     }
 
     public ChatColor getColor() {
+        return ChatColor.of(factionColor);
+    }
+
+    public String getColorCode() {
         return factionColor;
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class WerewolfMap implements Configurable {
     private final String name;
+    private final Property<String> description;
     private final Property<String> image;
     private final Property<World> world;
     private final Property<Location> mapSpawn;
@@ -27,6 +28,7 @@ public class WerewolfMap implements Configurable {
 
     public WerewolfMap(String mapName, World world) {
         this.name = mapName;
+        this.description = Property.create(PropertyType.STRING, "description", () -> "A shiny new map!").done();
         this.image = Property.create(PropertyType.STRING, "image", () -> "image.png").done();
         this.world = Property.create(CUSTOM_WORLD, "world", () -> world).done();
         this.mapSpawn = Property.create(PropertyType.LOCATION, "spawn", world::getSpawnLocation).done();
@@ -38,6 +40,7 @@ public class WerewolfMap implements Configurable {
 
     public WerewolfMap(WerewolfMap map) {
         this.name = map.name;
+        this.description = map.description;
         this.image = map.image;
         this.world = map.world;
         this.mapSpawn = map.mapSpawn;
@@ -45,6 +48,10 @@ public class WerewolfMap implements Configurable {
         this.borderSize = map.borderSize;
         this.skullLocations = map.skullLocations;
         this.skeletonSpawnLocations = map.skeletonSpawnLocations;
+    }
+
+    public String getDescription() {
+        return description.get();
     }
 
     public String getImage() {
@@ -82,7 +89,7 @@ public class WerewolfMap implements Configurable {
 
     @Override
     public List<ConfigurableProperty<?, ?>> getProperties() {
-        return List.of(world, image, mapSpawn, borderCenter, borderSize, skullLocations, skeletonSpawnLocations);
+        return List.of(world, description, image, mapSpawn, borderCenter, borderSize, skullLocations, skeletonSpawnLocations);
     }
 
     private static final PropertyType<World> CUSTOM_WORLD = new PropertyType<>(World.class) {

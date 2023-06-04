@@ -1,27 +1,27 @@
 package net.aesten.werewolfmc.plugin.data;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
 public enum Role {
-    VILLAGER("Villager", ChatColor.GREEN, Faction.VILLAGER, true, false),
-    WEREWOLF("Werewolf", ChatColor.DARK_RED, Faction.WEREWOLF, true, true),
-    TRAITOR("Traitor", ChatColor.LIGHT_PURPLE, Faction.WEREWOLF, false, false),
-    VAMPIRE("Vampire", ChatColor.AQUA, Faction.OTHER, true, false),
-    SERVANT("Servant", ChatColor.DARK_AQUA, Faction.OTHER, false, true),
-    POSSESSED("Possessed", ChatColor.YELLOW, Faction.VILLAGER, true, false);
+    VILLAGER("Villager", "#55ff55", Faction.VILLAGER, true, false),
+    WEREWOLF("Werewolf", "#aa0000", Faction.WEREWOLF, true, true),
+    TRAITOR("Traitor", "#ff55ff", Faction.WEREWOLF, false, false),
+    VAMPIRE("Vampire", "#55ffff", Faction.OTHER, true, false),
+    SERVANT("Servant", "#00aaaa", Faction.OTHER, false, true),
+    POSSESSED("Possessed", "#ffff55", Faction.VILLAGER, true, false);
 
     private final String roleName;
-    private final ChatColor roleColor;
+    private final String roleColor;
     private final Faction faction;
     private final boolean countInFaction;
     private final Team team;
 
-    Role(String roleName, ChatColor roleColor, Faction faction, boolean countInFaction, boolean canSeeAllies) {
+    Role(String roleName, String roleColor, Faction faction, boolean countInFaction, boolean canSeeAllies) {
         Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard();
         this.roleName = roleName;
         this.roleColor = roleColor;
@@ -39,6 +39,10 @@ public enum Role {
     }
 
     public ChatColor getColor() {
+        return ChatColor.of(roleColor);
+    }
+
+    public String getColorCode() {
         return roleColor;
     }
 

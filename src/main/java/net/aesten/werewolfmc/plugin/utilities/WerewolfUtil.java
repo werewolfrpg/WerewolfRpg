@@ -39,6 +39,10 @@ public class WerewolfUtil {
         sender.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + color + message);
     }
 
+    public static void sendPluginText(CommandSender sender, String message, net.md_5.bungee.api.ChatColor color) {
+        sender.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + color + message);
+    }
+
     public static void sendHelpText(CommandSender sender, String message) {
         sendPluginText(sender, message, ChatColor.YELLOW);
     }

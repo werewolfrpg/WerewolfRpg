@@ -130,6 +130,7 @@ public class WerewolfBackend {
             }
         });
         app.get("/api/maps", gdc::apiGetMaps);
+        app.get("/api/roles", gdc::apiGetRolesFactions);
 
         app.post("/api/admin/player", pdc::apiRegisterPlayer);
         app.put("/api/admin/player", pdc::apiUpdatePlayer);
@@ -141,6 +142,7 @@ public class WerewolfBackend {
         app.post("/api/admin/match", mrc::apiRecordMatch);
         app.put("/api/admin/match/{match_id}", mrc::apiUpdateMatchRecord);
         app.delete("/api/admin/match/{match_id}", mrc::apiDeleteMatch);
+        app.get("/api/match/{match_id}", mrc::apiGetMatchRecord);
 
         app.post("/api/admin/stats", psc::apiSavePlayerStats);
         app.put("/api/admin/stats/{id}", psc::apiUpdateStats);

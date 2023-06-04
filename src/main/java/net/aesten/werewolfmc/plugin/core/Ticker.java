@@ -3,10 +3,7 @@ package net.aesten.werewolfmc.plugin.core;
 import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
-import net.aesten.werewolfmc.plugin.data.Role;
-import net.aesten.werewolfmc.plugin.data.TeamsManager;
-import net.aesten.werewolfmc.plugin.data.WerewolfConfig;
-import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
+import net.aesten.werewolfmc.plugin.data.*;
 import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
 import net.dv8tion.jda.api.entities.Member;
@@ -168,7 +165,7 @@ public class Ticker {
 
     private void tick(WerewolfGame game) {
         TeamsManager teamsManager = WerewolfGame.getTeamsManager();
-        if ((teamsManager.getFactionSize(Role.VILLAGER) == 0 || teamsManager.getFactionSize(Role.WEREWOLF) == 0)) {
+        if ((teamsManager.getFactionSize(Faction.VILLAGER) == 0 || teamsManager.getFactionSize(Faction.WEREWOLF) == 0)) {
             WerewolfGame.endGame();
         }
         else {

@@ -30,7 +30,7 @@ public class MatchRecord {
     @SerializedName("endTime")
     private Timestamp endTime;
 
-    @Column(name = "winner")
+    @Column(name = "winner_faction")
     @SerializedName("winnerFaction")
     private Faction winner;
 

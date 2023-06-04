@@ -88,4 +88,22 @@ public class MatchRecordController {
             }
         }
     }
+
+    public void apiGetMatchRecord(Context ctx) {
+        Session session = null;
+        try {
+            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
+            session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            MatchRecord matchRecord = session.get(MatchRecord.class, matchId);
+            tx.commit();
+            ctx.json(matchRecord);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+    }
 }

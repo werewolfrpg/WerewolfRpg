@@ -274,6 +274,7 @@ public class WerewolfGame {
                     player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
                     player.getInventory().addItem(PlayerItem.MUTER.getItem());
+                    if (role == Role.VAMPIRE) player.getInventory().addItem(PlayerItem.VAMPIRE_FANG.getItem());
 
                     //increment
                     count++;
@@ -290,7 +291,6 @@ public class WerewolfGame {
             player.sendMessage(WerewolfPlugin.COLOR + WerewolfPlugin.CHAT_LOG + ChatColor.RESET +
                     "The werewolves are " + Role.WEREWOLF.getColor() + werewolfPlayers);
         }
-
 
         instance.ticker.start();
         instance.startTime = new Timestamp(System.currentTimeMillis());

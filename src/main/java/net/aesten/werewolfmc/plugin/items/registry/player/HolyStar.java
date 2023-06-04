@@ -48,7 +48,7 @@ public class HolyStar extends ShopWerewolfItem implements EntityDamageItem {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         WerewolfGame game = WerewolfGame.getInstance();
         if ((event.getDamager() instanceof Player damager) && (event.getEntity() instanceof Player target)) {
-        ItemStack item = damager.getInventory().getItemInMainHand();
+            ItemStack item = damager.getInventory().getItemInMainHand();
             game.getMap().getWorld().playSound(damager.getLocation(), Sound.ITEM_SHIELD_BREAK, 1,1);
             item.setAmount(item.getAmount() - 1);
 

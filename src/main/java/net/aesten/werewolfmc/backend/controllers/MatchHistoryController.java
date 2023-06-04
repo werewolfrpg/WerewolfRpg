@@ -154,7 +154,7 @@ public class MatchHistoryController {
         public PlayerMatchHistory(UUID playerId, List<MatchRecord> data, int pageNumber, int entriesPerPage, long totalEntries) {
             this.data = data.stream().map(record -> {
                 PlayerStats stats = WerewolfBackend.getBackend().getPsc().getPlayerStatsOfMatch(playerId, record.getMatchId()).join();
-                return new PlayerMatchRecordDTO(record, stats.getRole());
+                return new PlayerMatchRecordDTO(record, stats.getRole(), stats.getGain());
             }).toList();
             this.metadata = new Metadata(pageNumber, entriesPerPage, totalEntries, data.size());
         }
