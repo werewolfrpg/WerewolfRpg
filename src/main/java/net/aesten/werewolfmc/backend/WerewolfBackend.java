@@ -25,9 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.sql.DataSource;
 import java.io.File;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.sql.Timestamp;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class WerewolfBackend {
     private static final Map<String, String> DIALECT_MAPPING = Map.of(
@@ -44,7 +44,7 @@ public class WerewolfBackend {
     private final PlayerDataController pdc;
     private final MatchRecordController mrc;
     private final PlayerStatsController psc;
-    private UUID token;
+    private final List<UUID> tokens = new ArrayList<>();
 
     private WerewolfBackend() {
         HikariConfig dbConfig = new HikariConfig();
@@ -92,16 +92,15 @@ public class WerewolfBackend {
         psc = new PlayerStatsController(sessionFactory);
         LeaderboardController lbc = new LeaderboardController(sessionFactory);
         MatchHistoryController mhc = new MatchHistoryController(sessionFactory);
+        GameDataController gdc = new GameDataController();
 
         if (config.getBackendCorsEnabled().get() && !config.getBackendCorsAllowedHosts().get().isEmpty()) {
             app = Javalin.create(jConfig -> {
-                jConfig.staticFiles.add(WerewolfPlugin.getPlugin().getDataFolder() + File.separator + "werewolf-maps" + File.separator + "thumbnails");
                 jConfig.plugins.enableCors(cors -> cors.add(it -> config.getBackendCorsAllowedHosts().get().forEach(it::allowHost)));
                 jConfig.jsonMapper(gsonMapper);
             });
         } else {
             app = Javalin.create(jConfig -> {
-                jConfig.staticFiles.add(WerewolfPlugin.getPlugin().getDataFolder() + File.separator + "werewolf-maps" + File.separator + "thumbnails");
                 jConfig.plugins.enableCors(cors -> cors.add(CorsPluginConfig::anyHost));
                 jConfig.jsonMapper(gsonMapper);
             });
@@ -118,6 +117,19 @@ public class WerewolfBackend {
                 ctx.status(403).result("Forbidden");
             }
         });
+
+        app.get("/maps/thumbnails/*", ctx -> {
+            String filePath = ctx.path().substring("/maps/thumbnails/".length());
+            File file = new File(WerewolfPlugin.getPlugin().getDataFolder(), "werewolf-maps/thumbnails/" + filePath);
+            if (file.exists()) {
+                byte[] fileContent = Files.readAllBytes(file.toPath());
+                ctx.contentType("image/png");
+                ctx.result(fileContent);
+            } else {
+                ctx.status(404);
+            }
+        });
+        app.get("/api/maps", gdc::apiGetMaps);
 
         app.post("/api/admin/player", pdc::apiRegisterPlayer);
         app.put("/api/admin/player", pdc::apiUpdatePlayer);
@@ -145,7 +157,7 @@ public class WerewolfBackend {
 
         new Thread(() -> app.start(config.getBackendPort().get())).start();
 
-        regenToken();
+        generateToken(0);
     }
 
     public Javalin getApp() {
@@ -155,6 +167,8 @@ public class WerewolfBackend {
     public static void init() {
         WerewolfPlugin.logConsole("Enabling Javalin backend");
         AzaleaConfigurationApi.load(WerewolfPlugin.getPlugin(), config);
+        File file = new File(WerewolfPlugin.getPlugin().getDataFolder() + File.separator + "werewolf-maps" + File.separator + "thumbnails");
+        if (!file.exists() && !file.mkdir()) throw new RuntimeException("Error creating thumbnails directory");
         try {
             backend = new WerewolfBackend();
             WerewolfPlugin.logConsole("Javalin backend has been enabled");
@@ -178,15 +192,19 @@ public class WerewolfBackend {
         try {
             tokenId = UUID.fromString(token);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return false;
         }
-        return this.token.equals(tokenId);
+        return this.tokens.contains(tokenId);
     }
 
-    private void regenToken() {
-        token = UUID.randomUUID();
-        WerewolfPlugin.logConsole("Admin token: " + token + " (valid " + config.getBackendTokenValidity().get() + " hours)");
-        WerewolfUtil.runDelayedTask(20 * 3600 * config.getBackendTokenValidity().get(), this::regenToken);
+    public void generateToken(Integer timeoutHours) {
+        UUID token = UUID.randomUUID();
+        WerewolfPlugin.logConsole("Generated token: " + token + " (valid " + (timeoutHours <= 0 ? "unlimited" : timeoutHours) + " hours)");
+        if (timeoutHours > 0) WerewolfUtil.runDelayedTask(20 * 3600 * timeoutHours, this::expireToken, token);
+    }
+
+    private void expireToken(UUID token) {
+        tokens.remove(token);
     }
 
     public static WerewolfBackend getBackend() {

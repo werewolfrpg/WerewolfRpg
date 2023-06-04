@@ -105,7 +105,6 @@ public class GlobalStatDTO {
 
         PlayerData playerData = WerewolfBackend.getBackend().getPdc().getPlayerDataOfPlayer(globalStats.playerID).join();
 
-        globalStats.username = playerData.getMcName();
         globalStats.score = playerData.getScore();
         globalStats.ranking = WerewolfBackend.getBackend().getPdc().getPlayerRanking(globalStats.playerID).join();
         globalStats.title = WerewolfGame.getScoreManager().getScoreRank(globalStats.score);

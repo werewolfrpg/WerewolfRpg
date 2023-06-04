@@ -150,15 +150,17 @@ public class PlayerDataController {
     }
 
     public CompletableFuture<Integer> getScoreOfPlayer(UUID minecraftId) {
-        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId).getScore());
+        return CompletableFuture.supplyAsync(() -> {
+            PlayerData data = getPlayerDataByMinecraftId(minecraftId);
+            return data != null ? data.getScore() : 0;
+        });
     }
 
     public CompletableFuture<Long> getDiscordIdOfPlayer(UUID minecraftId) {
-        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId).getDcId());
-    }
-
-    public CompletableFuture<String> getMinecraftUsernameOfPlayer(UUID minecraftId) {
-        return CompletableFuture.supplyAsync(() -> getPlayerDataByMinecraftId(minecraftId).getMcName());
+        return CompletableFuture.supplyAsync(() -> {
+            PlayerData data = getPlayerDataByMinecraftId(minecraftId);
+            return data != null ? data.getDcId() : 0;
+        });
     }
 
     public CompletableFuture<PlayerData> getPlayerDataOfPlayer(UUID minecraftId) {

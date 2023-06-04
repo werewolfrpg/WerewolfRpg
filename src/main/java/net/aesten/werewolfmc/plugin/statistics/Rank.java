@@ -3,24 +3,34 @@ package net.aesten.werewolfmc.plugin.statistics;
 import net.md_5.bungee.api.ChatColor;
 
 public enum Rank {
-    BEGINNER(ChatColor.of("#11b1e7") + "[Beginner] " + ChatColor.RESET),
-    NOVICE(ChatColor.of("#11b1e7") + "[Novice] " + ChatColor.RESET),
-    APPRENTICE(ChatColor.of("#11b1e7") + "[Apprentice] " + ChatColor.RESET),
-    INTERMEDIATE(ChatColor.of("#e28621") + "[Intermediate] " + ChatColor.RESET),
-    SKILLED(ChatColor.of("#e28621") + "[Skilled] " + ChatColor.RESET),
-    EXPERIENCED(ChatColor.of("#e28621") + "[Experienced] " + ChatColor.RESET),
-    VETERAN(ChatColor.of("#e92269") + "[Veteran] " + ChatColor.RESET),
-    EXPERT(ChatColor.of("#e92269") + "[Expert] " + ChatColor.RESET),
-    ELITE(ChatColor.of("#e92269") + "[Elite] " + ChatColor.RESET),
-    LEGENDARY(ChatColor.of("#ffad00") + "[Legendary] " + ChatColor.RESET);
+    BEGINNER("Beginner", "#11b1e7"),
+    NOVICE("Novice", "#11b1e7"),
+    APPRENTICE("Apprentice", "#11b1e7"),
+    INTERMEDIATE("Intermediate", "#e28621"),
+    SKILLED("Skilled", "#e28621"),
+    EXPERIENCED("Experienced", "#e28621"),
+    VETERAN("Veteran", "#e92269"),
+    EXPERT("Expert", "#e92269"),
+    ELITE("Elite", "#e92269"),
+    LEGENDARY("Legendary", "#ffad00");
 
-    private final String prefix;
+    private final String name;
+    private final String colorHex;
 
-    Rank(String prefix) {
-        this.prefix = prefix;
+    Rank(String name, String colorHex) {
+        this.name = name;
+        this.colorHex = colorHex;
     }
 
     public String getPrefix() {
-        return prefix;
+        return ChatColor.of(colorHex) + "[" + name + "] " + ChatColor.RESET;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColorHex() {
+        return colorHex;
     }
 }

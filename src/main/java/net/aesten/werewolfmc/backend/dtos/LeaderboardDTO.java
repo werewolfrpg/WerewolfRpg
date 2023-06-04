@@ -10,8 +10,6 @@ import java.util.UUID;
 public class LeaderboardDTO {
     @SerializedName("minecraftId")
     private UUID mcId;
-    @SerializedName("minecraftUsername")
-    private String mcUsername;
     @SerializedName("score")
     private int score;
     @SerializedName("ranking")
@@ -25,7 +23,6 @@ public class LeaderboardDTO {
 
     public LeaderboardDTO(PlayerData data, long gamesPlayed, long gamesWon, int ranking) {
         this.mcId = data.getMcId();
-        this.mcUsername = data.getMcName();
         this.score = data.getScore();
         this.ranking = ranking;
         this.title = WerewolfGame.getScoreManager().getScoreRank(score);
@@ -39,14 +36,6 @@ public class LeaderboardDTO {
 
     public void setMcId(UUID mcId) {
         this.mcId = mcId;
-    }
-
-    public String getMcUsername() {
-        return mcUsername;
-    }
-
-    public void setMcUsername(String mcUsername) {
-        this.mcUsername = mcUsername;
     }
 
     public int getScore() {

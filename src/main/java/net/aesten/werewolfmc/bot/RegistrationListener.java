@@ -75,7 +75,7 @@ public class RegistrationListener extends ListenerAdapter {
             } else if (backend.getPdc().getAllMinecraftIds().join().contains(uuid)) {
                 event.reply("Your Minecraft ID account is already registered").setEphemeral(true).queue();
             } else {
-                backend.getPdc().registerPlayer(new PlayerData(uuid, mcid, event.getUser().getIdLong(), 0)).join();
+                backend.getPdc().registerPlayer(new PlayerData(uuid, event.getUser().getIdLong(), 0)).join();
                 List<Role> werewolfRole = Objects.requireNonNull(event.getGuild()).getRolesByName("Werewolf Player", true);
                 if (werewolfRole.size() != 0) {
                     Objects.requireNonNull(event.getGuild()).addRoleToMember(event.getUser(), werewolfRole.get(0)).submit();

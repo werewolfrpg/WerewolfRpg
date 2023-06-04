@@ -31,7 +31,7 @@ public class MatchRecord {
     private Timestamp endTime;
 
     @Column(name = "winner")
-    @SerializedName("winner")
+    @SerializedName("winnerFaction")
     private Faction winner;
 
     public MatchRecord(UUID matchId, String mapName, Timestamp startTime, Timestamp endTime, Faction winner) {

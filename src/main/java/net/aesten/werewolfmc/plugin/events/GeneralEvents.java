@@ -47,9 +47,6 @@ public class GeneralEvents implements Listener {
             player.setPlayerListHeader(ChatColor.GOLD + "Werewolf Minigame Server");
 
             if (WerewolfGame.getInstance().isPlaying()) {
-                if (!WerewolfGame.getInstance().isParticipant(player)) {
-                    WerewolfGame.getTeamsManager().registerPlayerRole(player, Role.SPECTATOR);
-                }
                 event.getPlayer().setGameMode(GameMode.SPECTATOR);
             } else {
                 if (WerewolfGame.getInstance().getParticipants().stream().map(Player::getUniqueId).toList().contains(player.getUniqueId())) {
@@ -73,7 +70,9 @@ public class GeneralEvents implements Listener {
                 event.setQuitMessage(null);
                 WerewolfGame.getTeamsManager().playerDied(player);
                 WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
-                WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).setResult(Result.DISCONNECTED);
+                PlayerStats stats = WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId());
+                stats.setDeathCause("disconnection");
+                stats.setKiller(player.getUniqueId());
             }
         }
         else {

@@ -137,15 +137,15 @@ public class WerewolfConfig implements Configurable {
     private final Property<Integer> rank8 = Property.create(PropertyType.INTEGER, "score.rank.elite", () -> 2000).addPolicy(POSITIVE).done();
     private final Property<Integer> rank9 = Property.create(PropertyType.INTEGER, "score.rank.legendary", () -> 3000).addPolicy(POSITIVE).done();
 
-    private final Property<Integer> vampireVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.vampire", () -> 25).done();
+    private final Property<Integer> thirdPartyVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.third_party", () -> 25).done();
     private final Property<Integer> traitorVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.traitor", () -> 20).done();
     private final Property<Integer> baseVictoryScoreGain = Property.create(PropertyType.INTEGER, "score.gain.victory.base", () -> 15).done();
-    private final Property<Integer> vampireDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.vampire", () -> 10).done();
+    private final Property<Integer> thirdPartyDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.third_party", () -> 10).done();
     private final Property<Integer> baseDefeatScoreGain = Property.create(PropertyType.INTEGER, "score.gain.defeat.base", () -> 5).done();
 
     private List<ConfigurableProperty<?, ?>> getScoreProperties() {
         return List.of(rank0, rank1, rank2, rank3, rank4, rank5, rank6, rank7, rank8, rank9,
-                vampireVictoryScoreGain, traitorVictoryScoreGain, baseVictoryScoreGain, vampireDefeatScoreGain, baseDefeatScoreGain);
+                thirdPartyVictoryScoreGain, traitorVictoryScoreGain, baseVictoryScoreGain, thirdPartyDefeatScoreGain, baseDefeatScoreGain);
     }
 
 
@@ -280,8 +280,8 @@ public class WerewolfConfig implements Configurable {
         return rank9;
     }
 
-    public Property<Integer> getVampireVictoryScoreGain() {
-        return vampireVictoryScoreGain;
+    public Property<Integer> getThirdPartyVictoryScoreGain() {
+        return thirdPartyVictoryScoreGain;
     }
 
     public Property<Integer> getTraitorVictoryScoreGain() {
@@ -292,8 +292,8 @@ public class WerewolfConfig implements Configurable {
         return baseVictoryScoreGain;
     }
 
-    public Property<Integer> getVampireDefeatScoreGain() {
-        return vampireDefeatScoreGain;
+    public Property<Integer> getThirdPartyDefeatScoreGain() {
+        return thirdPartyDefeatScoreGain;
     }
 
     public Property<Integer> getBaseDefeatScoreGain() {

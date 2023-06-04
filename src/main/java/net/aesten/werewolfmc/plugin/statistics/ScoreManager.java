@@ -3,6 +3,7 @@ package net.aesten.werewolfmc.plugin.statistics;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
+import net.aesten.werewolfmc.plugin.data.Faction;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.azalealibrary.configuration.property.Property;
 import net.dv8tion.jda.api.entities.Guild;
@@ -59,11 +60,11 @@ public class ScoreManager {
     public int getCalculatedScore(PlayerStats stats) {
         int score = 0;
         if (stats.getResult() == Result.VICTORY) {
-            if (stats.getRole() == Role.VAMPIRE) score += WerewolfGame.getConfig().getVampireVictoryScoreGain().get();
+            if (stats.getRole().getFaction() == Faction.OTHER) score += WerewolfGame.getConfig().getThirdPartyVictoryScoreGain().get();
             else if (stats.getRole() == Role.TRAITOR) score += WerewolfGame.getConfig().getTraitorVictoryScoreGain().get();
             else score += WerewolfGame.getConfig().getBaseVictoryScoreGain().get();
         } else if (stats.getResult() == Result.DEFEAT) {
-            if (stats.getRole() == Role.VAMPIRE) score += WerewolfGame.getConfig().getVampireDefeatScoreGain().get();
+            if (stats.getRole().getFaction() == Faction.OTHER) score += WerewolfGame.getConfig().getThirdPartyDefeatScoreGain().get();
             else score += WerewolfGame.getConfig().getBaseDefeatScoreGain().get();
         }
 
@@ -99,7 +100,7 @@ public class ScoreManager {
     public void assignRole(long dcId, Guild guild, Rank rank) {
         if (roles.size() == 0) getAllDiscordRoles(guild);
 
-        List<net.dv8tion.jda.api.entities.Role> newRoles = guild.getRolesByName(rank.name(), true);
+        List<net.dv8tion.jda.api.entities.Role> newRoles = guild.getRolesByName(rank.getName(), true);
         if (newRoles.size() == 0) return;
         net.dv8tion.jda.api.entities.Role newRole = newRoles.get(0);
 
@@ -122,16 +123,16 @@ public class ScoreManager {
     }
 
     private void getAllDiscordRoles(Guild guild) {
-        List<net.dv8tion.jda.api.entities.Role> beginner = guild.getRolesByName(Rank.BEGINNER.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> novice = guild.getRolesByName(Rank.NOVICE.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> apprentice = guild.getRolesByName(Rank.APPRENTICE.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> intermediate = guild.getRolesByName(Rank.INTERMEDIATE.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> skilled = guild.getRolesByName(Rank.SKILLED.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> experienced = guild.getRolesByName(Rank.EXPERIENCED.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> veteran = guild.getRolesByName(Rank.VETERAN.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> expert = guild.getRolesByName(Rank.EXPERT.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> elite = guild.getRolesByName(Rank.ELITE.name(), true);
-        List<net.dv8tion.jda.api.entities.Role> legendary = guild.getRolesByName(Rank.LEGENDARY.name(), true);
+        List<net.dv8tion.jda.api.entities.Role> beginner = guild.getRolesByName(Rank.BEGINNER.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> novice = guild.getRolesByName(Rank.NOVICE.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> apprentice = guild.getRolesByName(Rank.APPRENTICE.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> intermediate = guild.getRolesByName(Rank.INTERMEDIATE.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> skilled = guild.getRolesByName(Rank.SKILLED.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> experienced = guild.getRolesByName(Rank.EXPERIENCED.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> veteran = guild.getRolesByName(Rank.VETERAN.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> expert = guild.getRolesByName(Rank.EXPERT.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> elite = guild.getRolesByName(Rank.ELITE.getName(), true);
+        List<net.dv8tion.jda.api.entities.Role> legendary = guild.getRolesByName(Rank.LEGENDARY.getName(), true);
 
         if (beginner.size() != 0 && novice.size() != 0 && apprentice.size() != 0 && intermediate.size() != 0 && skilled.size() != 0 &&
                 experienced.size() != 0 && veteran.size() != 0 && expert.size() != 0 && elite.size() != 0 && legendary.size() != 0) {

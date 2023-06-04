@@ -7,8 +7,6 @@ import net.aesten.werewolfmc.backend.models.PlayerStats;
 import net.aesten.werewolfmc.bot.WerewolfBot;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Faction;
-import net.aesten.werewolfmc.plugin.data.Role;
-import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.entity.Player;
@@ -39,17 +37,17 @@ public class Tracker {
 
     public void setResults(Faction winningFaction) {
         playerStats.values().forEach(stats -> {
-                    if (winningFaction == null) {
-                        stats.setResult(Result.CANCELLED);
-                    }
-                    else if (stats.getResult() == null) {
-                        if (stats.getRole().getFaction() == winningFaction) {
-                            stats.setResult(Result.VICTORY);
-                        }
-                        else {
-                            stats.setResult(Result.DEFEAT);
-                        }
-                    }
+            if (winningFaction == null) {
+                stats.setResult(Result.CANCELLED);
+            }
+            else if (stats.getResult() == null) {
+                if (stats.getRole().getFaction() == winningFaction) {
+                    stats.setResult(Result.VICTORY);
+                }
+                else {
+                    stats.setResult(Result.DEFEAT);
+                }
+            }
         });
     }
 

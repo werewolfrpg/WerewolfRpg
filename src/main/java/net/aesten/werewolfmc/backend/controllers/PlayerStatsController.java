@@ -2,7 +2,6 @@ package net.aesten.werewolfmc.backend.controllers;
 
 import io.javalin.http.Context;
 import jakarta.persistence.TypedQuery;
-import net.aesten.werewolfmc.WerewolfPlugin;
 import net.aesten.werewolfmc.backend.dtos.GlobalStatDTO;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import org.hibernate.Session;
@@ -178,5 +177,29 @@ public class PlayerStatsController {
                 session.close();
             }
         }
+    }
+
+    public CompletableFuture<PlayerStats> getPlayerStatsOfMatch(UUID playerId, UUID matchId) {
+        return CompletableFuture.supplyAsync(() -> {
+            Session session = null;
+            PlayerStats result;
+            try {
+                session = sessionFactory.openSession();
+                Transaction tx = session.beginTransaction();
+                TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where matchId = :match_id and playerId = :minecraft_id", PlayerStats.class);
+                query.setParameter("match_id", matchId);
+                query.setParameter("minecraft_id", playerId);
+                result = query.getSingleResult();
+                tx.commit();
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            } finally {
+                if (session != null && session.isOpen()) {
+                    session.close();
+                }
+            }
+        });
     }
 }

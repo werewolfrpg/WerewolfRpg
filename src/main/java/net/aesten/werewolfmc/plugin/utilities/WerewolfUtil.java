@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -110,6 +111,15 @@ public class WerewolfUtil {
         }.runTaskLater(WerewolfPlugin.getPlugin(), delay);
     }
 
+    public static <T> void runDelayedTask(int delay, Consumer<T> consumer, T object) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                consumer.accept(object);
+            }
+        }.runTaskLater(WerewolfPlugin.getPlugin(), delay);
+    }
+
     public static void runRepeatTask(int length, int interval, Runnable runnable) {
         BukkitTask task = new BukkitRunnable() {
             @Override
@@ -118,19 +128,6 @@ public class WerewolfUtil {
             }
         }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, interval);
         runDelayedTask(length, task::cancel);
-    }
-
-//    public static BukkitTask repeatingTask(int interval, Runnable runnable) {
-//        return new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                runnable.run();
-//            }
-//        }.runTaskTimer(WerewolfPlugin.getPlugin(), 0, interval);
-//    }
-
-    public static boolean areSameFaction(Role role1, Role role2) {
-        return role1.factionRole() == role2.factionRole();
     }
 
     public static boolean sameItem(ItemStack item1, ItemStack item2) {

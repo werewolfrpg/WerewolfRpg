@@ -124,12 +124,12 @@ public class ItemManager implements Listener {
                     if (player.getUniqueId() == offlinePlayer.getUniqueId()) {
                         WerewolfUtil.sendErrorText(player, "You cannot use a divination on yourself");
                     } else {
-                        Role role = game.getDataMap().get(offlinePlayer.getUniqueId()).getRole().divinationRole();
+                        Role role = game.getDataMap().get(offlinePlayer.getUniqueId()).getRole().getDivinationRole();
                         String name = offlinePlayer.getName();
                         data.setHasAlreadyUsedDivination(true);
                         data.setRemainingDivinations(data.getRemainingDivinations() - 1);
                         targetData.setHasBeenDivinated(true);
-                        WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.color + role.name, WerewolfPlugin.COLOR);
+                        WerewolfUtil.sendPluginText(player,  name + ChatColor.WHITE + " is a " + role.getColor() + role.getName(), WerewolfPlugin.COLOR);
                         game.getTracker().getPlayerStats(player.getUniqueId()).addDivinationUsed();
                     }
                 } else {

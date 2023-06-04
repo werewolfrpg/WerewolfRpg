@@ -3,8 +3,9 @@ package net.aesten.werewolfmc;
 import com.comphenix.protocol.ProtocolLibrary;
 import net.aesten.werewolfmc.backend.WerewolfBackend;
 import net.aesten.werewolfmc.bot.WerewolfBot;
-import net.aesten.werewolfmc.plugin.packets.SpecInfoPacket;
 import net.aesten.werewolfmc.plugin.commands.WerewolfCommand;
+import net.aesten.werewolfmc.plugin.commands.ConsoleCommand;
+import net.aesten.werewolfmc.plugin.packets.SpecInfoPacket;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.events.GeneralEvents;
 import net.azalealibrary.command.AzaleaCommandApi;
@@ -20,7 +21,7 @@ import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
-@Plugin(name = "Werewolf", version = "2.1")
+@Plugin(name = "Werewolf", version = "2.2")
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional action elements.")
 @Author("Aesten")
 @LogPrefix("Werewolf")
@@ -50,6 +51,7 @@ public final class WerewolfPlugin extends JavaPlugin {
 
         //register commands
         AzaleaCommandApi.register(this, WerewolfCommand.class);
+        AzaleaCommandApi.register(this, ConsoleCommand.class);
 
         //load worlds & maps
         WerewolfGame.initMapManager();
