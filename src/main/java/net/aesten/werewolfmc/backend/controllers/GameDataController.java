@@ -41,11 +41,11 @@ public class GameDataController {
     }
 
     private static final class FactionRoleInfo {
-        @SerializedName("factionName")
+        @SerializedName("name")
         private final String factionName;
-        @SerializedName("factionColor")
+        @SerializedName("color")
         private final String factionColor;
-        @SerializedName("factionRoles")
+        @SerializedName("roles")
         private final Map<Role, RoleInfo> roles;
 
         public FactionRoleInfo(Faction faction) {
@@ -56,9 +56,9 @@ public class GameDataController {
     }
 
     private static final class RoleInfo {
-        @SerializedName("roleName")
+        @SerializedName("name")
         private final String roleName;
-        @SerializedName("roleColor")
+        @SerializedName("color")
         private final String roleColor;
 
         public RoleInfo(Role role) {
