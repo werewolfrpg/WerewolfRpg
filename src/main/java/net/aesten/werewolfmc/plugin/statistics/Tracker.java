@@ -12,7 +12,6 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.entity.Player;
 
 import java.awt.Color;
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -118,10 +117,11 @@ public class Tracker {
             }
         });
 
-        if (WerewolfBackend.getBackend() != null) {
-            if (!game.getMap().getImage().equals("")) {
-                embed.setImage(WerewolfBackend.getConfig().getBackendUrl().get() + File.separator + game.getMap().getImage());
-            }
+        try {
+            embed.setImage(WerewolfBackend.getConfig().getBackendUrl().get() + "/maps/thumbnails/" + game.getMap().getImage());
+        } catch (Exception e) {
+            WerewolfPlugin.logConsole("Could not find map image");
+            e.printStackTrace();
         }
 
         bot.getLc().sendMessage("").setEmbeds(embed.build()).queue();

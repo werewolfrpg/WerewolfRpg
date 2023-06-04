@@ -397,10 +397,12 @@ public class WerewolfGame {
                         .append("\n");
                 playerDataList.forEach(playerData -> builder.append(ChatColor.RESET)
                         .append("> ")
+                        .append(ChatColor.GOLD)
                         .append(playerData.getName())
                         .append(" (")
                         .append(playerData.getRole().getColor())
                         .append(playerData.getRole().getName())
+                        .append(ChatColor.GOLD)
                         .append(")")
                         .append("\n"));
             }

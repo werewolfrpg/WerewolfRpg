@@ -28,6 +28,7 @@ public class SpecInfoPacket extends PacketAdapter {
             PlayerInfoAction action = e.getPacket().getPlayerInfoAction().read(0);
             if (action != PlayerInfoAction.ADD_PLAYER && action != PlayerInfoAction.UPDATE_GAME_MODE) return;
 
+            String playerName = e.getPlayer().getName();
             PacketContainer packet = e.getPacket().shallowClone();
 
             List<PlayerInfoData> dataList = packet.getPlayerInfoDataLists().read(0);
@@ -36,7 +37,7 @@ public class SpecInfoPacket extends PacketAdapter {
                 PlayerInfoData data = dataListIt.next();
                 WrappedGameProfile profile = data.getProfile();
                 NativeGameMode gameMode = data.getGameMode();
-                if (gameMode != NativeGameMode.SPECTATOR) continue;
+                if (gameMode != NativeGameMode.SPECTATOR  || profile.getName().equals(playerName)) continue;
                 PlayerInfoData newData = new PlayerInfoData(profile, data.getLatency(),
                         NativeGameMode.ADVENTURE, data.getDisplayName());
                 dataListIt.set(newData);

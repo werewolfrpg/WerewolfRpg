@@ -22,19 +22,22 @@ public class GameDataController {
         private final String description;
         @SerializedName("image")
         private final String image;
+        @SerializedName("tags")
+        private final List<String> tags;
 
         public MapInfo(WerewolfMap map) {
             this.mapName = map.getName();
             this.description = map.getDescription();
             this.image = map.getImage();
+            this.tags = map.getTags();
         }
     }
 
     public void apiGetRolesFactions(Context ctx) {
-        Map<String, FactionRoleInfo> infoMap = new HashMap<>();
-        Arrays.stream(Faction.values()).forEach(faction -> infoMap.put(faction.getName(), new FactionRoleInfo(faction)));
-        Arrays.stream(Role.values()).forEach(role -> infoMap.get(role.getFaction().getName()).roles.add(new RoleInfo(role)));
-        ctx.json(infoMap.values());
+        Map<Faction, FactionRoleInfo> infoMap = new HashMap<>();
+        Arrays.stream(Faction.values()).forEach(faction -> infoMap.put(faction, new FactionRoleInfo(faction)));
+        Arrays.stream(Role.values()).forEach(role -> infoMap.get(role.getFaction()).roles.add(new RoleInfo(role)));
+        ctx.json(infoMap);
     }
 
     private static final class FactionRoleInfo {

@@ -126,7 +126,14 @@ public class WerewolfBackend {
                 ctx.contentType("image/png");
                 ctx.result(fileContent);
             } else {
-                ctx.status(404);
+                File file2 = new File(WerewolfPlugin.getPlugin().getDataFolder(), "werewolf-maps/thumbnails/" + "image.png");
+                if (file2.exists()) {
+                    byte[] fileContent = Files.readAllBytes(file2.toPath());
+                    ctx.contentType("image/png");
+                    ctx.result(fileContent);
+                } else {
+                    ctx.status(404);
+                }
             }
         });
         app.get("/api/maps", gdc::apiGetMaps);
