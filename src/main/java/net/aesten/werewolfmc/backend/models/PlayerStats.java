@@ -126,7 +126,7 @@ public class PlayerStats {
         swiftnessStat.getStats().put("used", 0);
         stats.add(swiftnessStat);
 
-        ItemStats revelationStat = new ItemStats("Revelation");
+        ItemStats revelationStat = new ItemStats("Light of Revelation");
         revelationStat.getStats().put("used", 0);
         stats.add(revelationStat);
 
