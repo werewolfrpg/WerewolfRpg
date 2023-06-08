@@ -136,8 +136,10 @@ public class WerewolfBackend {
                 }
             }
         });
+
         app.get("/api/maps", gdc::apiGetMaps);
         app.get("/api/roles", gdc::apiGetRolesFactions);
+        app.get("/api/ranks", gdc::apiGetRanks);
 
         app.post("/api/admin/player", pdc::apiRegisterPlayer);
         app.put("/api/admin/player", pdc::apiUpdatePlayer);
@@ -153,16 +155,16 @@ public class WerewolfBackend {
 
         app.post("/api/admin/stats", psc::apiSavePlayerStats);
         app.put("/api/admin/stats/{id}", psc::apiUpdateStats);
-        app.delete("/api/admin/stats/{match_id}", psc::apiDeleteStatsByMatchId);
-        app.delete("/api/admin/stats/{minecraft_id}", psc::apiDeleteStatsByPlayerId);
-        app.delete("/api/admin/stats/{id}", psc::apiDeleteStatsByPlayerIdAndMatchId);
+        app.delete("/api/admin/stats/match_id/{match_id}", psc::apiDeleteStatsByMatchId);
+        app.delete("/api/admin/stats/minecraft_id/{minecraft_id}", psc::apiDeleteStatsByPlayerId);
+        app.delete("/api/admin/stats/{id}", psc::apiDeleteStats);
         app.get("/api/stats/match/{match_id}", psc::apiGetAllPlayerStatsOfMatch);
         app.get("/api/stats/{minecraft_id}", psc::apiGetGlobalStatsOfPlayer);
 
-        app.get("/api/leaderboard", lbc::apiGetPlayerIds); //has query parameters for pagination
+        app.get("/api/leaderboard", lbc::apiGetPlayerIds); //has pagination
 
-        app.get("/api/matches", mhc::apiGetMatchHistory); //has query parameters for pagination
-        app.get("/api/match/player/{minecraft_id}", mhc::apiGetMatchHistoryOfPlayer); //has query parameters for pagination
+        app.get("/api/matches", mhc::apiGetMatchHistory); //has pagination
+        app.get("/api/match/player/{minecraft_id}", mhc::apiGetMatchHistoryOfPlayer); //has pagination
 
         new Thread(() -> app.start(config.getBackendPort().get())).start();
 

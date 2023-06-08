@@ -6,6 +6,7 @@ import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.data.Faction;
 import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.map.WerewolfMap;
+import net.aesten.werewolfmc.plugin.statistics.Rank;
 
 import java.util.*;
 
@@ -64,6 +65,25 @@ public class GameDataController {
         public RoleInfo(Role role) {
             this.roleName = role.getName();
             this.roleColor = role.getColorCode();
+        }
+    }
+
+    public void apiGetRanks(Context ctx) {
+        ctx.json(Arrays.stream(Rank.values()).map(RankInfo::new).toList());
+    }
+
+    private static final class RankInfo {
+        @SerializedName("rank")
+        private final Rank rank;
+        @SerializedName("color")
+        private final String color;
+        @SerializedName("threshold")
+        private final int threshold;
+
+        public RankInfo(Rank rank) {
+            this.rank = rank;
+            this.color = rank.getColorHex();
+            this.threshold = WerewolfGame.getScoreManager().getScoreThresholdOfRank(rank);
         }
     }
 }

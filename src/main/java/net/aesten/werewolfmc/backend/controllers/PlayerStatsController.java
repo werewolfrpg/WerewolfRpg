@@ -111,18 +111,14 @@ public class PlayerStatsController {
         }
     }
 
-    public void apiDeleteStatsByPlayerIdAndMatchId(Context ctx) {
+    public void apiDeleteStats(Context ctx) {
         Session session = null;
         try {
-            UUID matchId = UUID.fromString(ctx.pathParam("match_id"));
-            UUID minecraftId = UUID.fromString(ctx.pathParam("minecraft_id"));
+            int id = Integer.parseInt(ctx.pathParam("id"));
             session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
-            TypedQuery<PlayerStats> query = session.createQuery("from PlayerStats where playerId = :player_id and matchId = :match_id", PlayerStats.class);
-            query.setParameter("player_id", minecraftId);
-            query.setParameter("match_id", matchId);
-            List<PlayerStats> objectsToDelete = query.getResultList();
-            objectsToDelete.forEach(session::remove);
+            PlayerStats stats = session.get(PlayerStats.class, id);
+            session.remove(stats);
             tx.commit();
             ctx.status(204);
         } catch (Exception e) {

@@ -50,8 +50,8 @@ public final class WerewolfPlugin extends JavaPlugin {
         AzaleaConfigurationApi.load(this, config);
 
         //register commands
-        AzaleaCommandApi.register(this, WerewolfCommand.class);
-        AzaleaCommandApi.register(this, ConsoleCommand.class);
+        AzaleaCommandApi.register(this, new WerewolfCommand());
+        AzaleaCommandApi.register(this, new ConsoleCommand());
 
         //load worlds & maps
         WerewolfGame.initMapManager();

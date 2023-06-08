@@ -407,7 +407,7 @@ public class WerewolfGame {
                         .append("\n"));
             }
         });
-        builder.append(ChatColor.AQUA).append("===============================");
+        builder.append(ChatColor.AQUA).append("=============================");
         return builder.toString();
     }
 }
