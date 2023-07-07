@@ -24,7 +24,7 @@ public class TeamsManager {
     private void init() {
         factions.put(Faction.VILLAGER, new ArrayList<>());
         factions.put(Faction.WEREWOLF, new ArrayList<>());
-        factions.put(Faction.OTHER, new ArrayList<>());
+        factions.put(Faction.OUTSIDER, new ArrayList<>());
     }
 
     public void registerPlayerRole(Player player, Role role) {
@@ -63,7 +63,7 @@ public class TeamsManager {
         Map<Faction, List<PlayerData>> map = new LinkedHashMap<>();
         map.put(Faction.VILLAGER, new ArrayList<>());
         map.put(Faction.WEREWOLF, new ArrayList<>());
-        map.put(Faction.OTHER, new ArrayList<>());
+        map.put(Faction.OUTSIDER, new ArrayList<>());
         playerData.forEach(data -> map.get(data.getRole().getFaction()).add(data));
         return map;
     }

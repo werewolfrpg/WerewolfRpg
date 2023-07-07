@@ -372,8 +372,8 @@ public class WerewolfGame {
     }
 
     public static void endGame() {
-        if (teamsManager.getFactionSize(Faction.OTHER) != 0) {
-            stop(Faction.OTHER);
+        if (teamsManager.getFactionSize(Faction.OUTSIDER) != 0) {
+            stop(Faction.OUTSIDER);
         }
         else if (teamsManager.getFactionSize(Faction.VILLAGER) == 0) {
             stop(Faction.WEREWOLF);

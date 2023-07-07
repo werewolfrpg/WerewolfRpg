@@ -60,11 +60,11 @@ public class ScoreManager {
     public int getCalculatedScore(PlayerStats stats) {
         int score = 0;
         if (stats.getResult() == Result.VICTORY) {
-            if (stats.getRole().getFaction() == Faction.OTHER) score += WerewolfGame.getConfig().getThirdPartyVictoryScoreGain().get();
+            if (stats.getRole().getFaction() == Faction.OUTSIDER) score += WerewolfGame.getConfig().getThirdPartyVictoryScoreGain().get();
             else if (stats.getRole() == Role.TRAITOR) score += WerewolfGame.getConfig().getTraitorVictoryScoreGain().get();
             else score += WerewolfGame.getConfig().getBaseVictoryScoreGain().get();
         } else if (stats.getResult() == Result.DEFEAT) {
-            if (stats.getRole().getFaction() == Faction.OTHER) score += WerewolfGame.getConfig().getThirdPartyDefeatScoreGain().get();
+            if (stats.getRole().getFaction() == Faction.OUTSIDER) score += WerewolfGame.getConfig().getThirdPartyDefeatScoreGain().get();
             else score += WerewolfGame.getConfig().getBaseDefeatScoreGain().get();
         }
 
