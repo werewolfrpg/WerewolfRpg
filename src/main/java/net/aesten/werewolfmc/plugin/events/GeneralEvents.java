@@ -10,6 +10,7 @@ import net.aesten.werewolfmc.plugin.items.base.EntityInteractItem;
 import net.aesten.werewolfmc.plugin.items.base.InteractItem;
 import net.aesten.werewolfmc.plugin.items.base.WerewolfItem;
 import net.aesten.werewolfmc.plugin.items.registry.AdminItem;
+import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.map.WerewolfMap;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
@@ -70,7 +71,7 @@ public class GeneralEvents implements Listener {
                 WerewolfGame.getTeamsManager().playerDied(player);
                 WerewolfGame.getInstance().getDataMap().get(player.getUniqueId()).setAlive(false);
                 PlayerStats stats = WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId());
-                stats.setDeathCause("disconnection");
+                stats.setDeathCause("Disconnection");
                 stats.setKiller(player.getUniqueId());
             }
         }
@@ -127,6 +128,13 @@ public class GeneralEvents implements Listener {
         }
     }
 
+    //prevent item drops before outside match & skeleton slicer drop
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event) {
+        if (event.getPlayer().isOp()) return;
+        if (!WerewolfGame.getInstance().isPlaying() || WerewolfUtil.sameItem(event.getItemDrop().getItemStack(), PlayerItem.SKELETON_SLICER.getItem())) event.setCancelled(true);
+    }
+
     //admin item events
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -153,32 +161,39 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-             if (WerewolfGame.getInstance().isPlaying() && WerewolfGame.getInstance().isParticipant(player)) {
+            WerewolfGame game = WerewolfGame.getInstance();
+             if (game.isPlaying() && game.isParticipant(player)) {
                  UUID id = player.getUniqueId();
-                 WerewolfGame.getInstance().getDataMap().get(id).setAlive(false);
+                 game.getDataMap().get(id).setAlive(false);
                  WerewolfGame.getTeamsManager().playerDied(player);
                  player.setGameMode(GameMode.SPECTATOR);
                  player.getInventory().clear();
                  player.getActivePotionEffects().clear();
 
                  //handle vampire-servant
-                 if (WerewolfGame.getInstance().getDataMap().get(id).getRole() == Role.VAMPIRE) {
-                     for (Player participant : WerewolfGame.getInstance().getParticipants()) {
-                         if (WerewolfGame.getInstance().getDataMap().get(participant.getUniqueId()).getRole() == Role.SERVANT) {
-                             participant.setHealth(0);
-                             PlayerStats stats = WerewolfGame.getInstance().getTracker().getPlayerStats(participant.getUniqueId());
-                             stats.setKiller(participant.getUniqueId());
-                             stats.setDeathCause("vampire_death");
+                 if (game.getDataMap().get(id).getRole() == Role.VAMPIRE) {
+                     long vampiresLeft = game.getParticipants().stream().filter(p -> {
+                         WerewolfPlayerData data = game.getDataMap().get(p.getUniqueId());
+                         return data.getRole() == Role.VAMPIRE && data.isAlive();
+                     }).count();
+                     if (vampiresLeft == 0) {
+                         for (Player participant : game.getParticipants()) {
+                             if (game.getDataMap().get(participant.getUniqueId()).getRole() == Role.SERVANT) {
+                                 participant.setHealth(0);
+                                 PlayerStats stats = game.getTracker().getPlayerStats(participant.getUniqueId());
+                                 stats.setKiller(participant.getUniqueId());
+                                 stats.setDeathCause("Vampire Death");
+                             }
                          }
                      }
                  }
 
                  //stats
-                 AbstractMap.SimpleEntry<String, UUID> deathData = WerewolfGame.getInstance().getTracker().getSpecificDeathCauses().get(id);
-                 PlayerStats stats = WerewolfGame.getInstance().getTracker().getPlayerStats(id);
+                 AbstractMap.SimpleEntry<String, UUID> deathData = game.getTracker().getSpecificDeathCauses().get(id);
+                 PlayerStats stats = game.getTracker().getPlayerStats(id);
                  String deathCause;
                  if (deathData == null) {
-                     deathCause = Objects.requireNonNull(event.getEntity().getLastDamageCause()).getCause().name();
+                     deathCause = "Unfortunate Accident";
                  } else {
                      deathCause = deathData.getKey();
                      stats.setKiller(deathData.getValue());
@@ -192,7 +207,7 @@ public class GeneralEvents implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         WerewolfMap map = WerewolfGame.getInstance().getMap();
         if (map == null) {
-            event.setRespawnLocation(WerewolfGame.getMapManager().getMapFromName("lobby").getMapSpawn());
+            event.setRespawnLocation(event.getPlayer().getWorld().getSpawnLocation());
         } else {
             event.setRespawnLocation(map.getMapSpawn());
         }

@@ -80,7 +80,7 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                         target.setHealth(0);
                         game.getTracker().getPlayerStats(damager.getUniqueId()).addCurseSpearMeleeUsed(false, true);
                         game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
-                        game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("curse_spear_melee", damager.getUniqueId()));
+                        game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("Curse Spear Stab", damager.getUniqueId()));
                     }
                 }
                 else {
@@ -117,7 +117,7 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                     player.setHealth(0);
                     game.getTracker().getPlayerStats(shooter.getUniqueId()).addCurseSpearThrowHits(false, true);
                     game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
-                    game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("curse_spear_throw", shooter.getUniqueId()));
+                    game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("Curse Spear Thrown", shooter.getUniqueId()));
                 }
             }
             else {

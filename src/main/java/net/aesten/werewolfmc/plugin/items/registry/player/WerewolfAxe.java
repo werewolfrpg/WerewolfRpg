@@ -73,7 +73,7 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
                 target.setHealth(0);
                 game.getTracker().getPlayerStats(damager.getUniqueId()).addWerewolfAxeUsed(true);
                 game.getTracker().getPlayerStats(damager.getUniqueId()).addKills();
-                game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("werewolf_axe_hit", damager.getUniqueId()));
+                game.getTracker().getSpecificDeathCauses().put(target.getUniqueId(), new AbstractMap.SimpleEntry<>("Werewolf Axe", damager.getUniqueId()));
             }
         }
     }

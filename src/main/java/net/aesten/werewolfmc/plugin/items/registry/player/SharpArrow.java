@@ -69,7 +69,7 @@ public class SharpArrow extends ShopWerewolfItem implements ProjectileItem {
                 player.setHealth(0);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addArrowHits(true);
                 game.getTracker().getPlayerStats(shooter.getUniqueId()).addKills();
-                game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("arrow_hit", shooter.getUniqueId()));
+                game.getTracker().getSpecificDeathCauses().put(player.getUniqueId(), new AbstractMap.SimpleEntry<>("Arrow", shooter.getUniqueId()));
             }
         }
         projectile.remove();

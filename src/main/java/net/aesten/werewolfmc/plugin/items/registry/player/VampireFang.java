@@ -6,18 +6,22 @@ import net.aesten.werewolfmc.plugin.data.Role;
 import net.aesten.werewolfmc.plugin.data.WerewolfPlayerData;
 import net.aesten.werewolfmc.plugin.items.base.EntityDamageItem;
 import net.aesten.werewolfmc.plugin.items.base.ItemStackBuilder;
+import net.aesten.werewolfmc.plugin.items.base.ShopWerewolfItem;
 import net.aesten.werewolfmc.plugin.items.base.WerewolfItem;
+import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.AbstractMap;
+import java.util.List;
 
 public class VampireFang extends WerewolfItem implements EntityDamageItem {
     @Override
@@ -46,6 +50,7 @@ public class VampireFang extends WerewolfItem implements EntityDamageItem {
             if (data.getRole() != Role.VAMPIRE && data.getRole() != Role.SERVANT) {
                 ItemStack item = damager.getInventory().getItemInMainHand();
                 item.setAmount(item.getAmount() - 1);
+                scanInventory(target);
                 WerewolfGame.getTeamsManager().switchRole(target, Role.SERVANT);
                 target.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 100, 1, true, true));
                 WerewolfUtil.sendPluginText(damager, target.getName() + " was converted into a Servant", ChatColor.DARK_PURPLE);
@@ -55,5 +60,34 @@ public class VampireFang extends WerewolfItem implements EntityDamageItem {
                 WerewolfUtil.sendErrorText(damager, "Target is already in your faction");
             }
         }
+    }
+
+    private void scanInventory(Player player) {
+        Inventory inventory = player.getInventory();
+
+        for (int i = inventory.getSize() - 1; i >= 0; i--) {
+            ItemStack item = inventory.getItem(i);
+
+            if (item != null) {
+                int stackSize = item.getAmount();
+                WerewolfItem werewolfItem = getCorrespondingWerewolfItem(item);
+
+                if (werewolfItem != null) {
+                    if (werewolfItem instanceof ShopWerewolfItem shopWerewolfItem) {
+                        inventory.setItem(i, new ItemStack(Material.EMERALD, stackSize * shopWerewolfItem.getCost().get()));
+                    } else {
+                        inventory.setItem(i, null);
+                    }
+                }
+            }
+        }
+    }
+
+    private WerewolfItem getCorrespondingWerewolfItem(ItemStack itemStack) {
+        List<WerewolfItem> items = List.of(PlayerItem.WEREWOLF_AXE.werewolfItem, PlayerItem.WEREWOLF_TRAP.werewolfItem, PlayerItem.WEREWOLF_DASH.werewolfItem, PlayerItem.TRAITORS_GUIDE.werewolfItem);
+        for (WerewolfItem item : items) {
+            if (WerewolfUtil.sameItem(itemStack, item.getItem())) return item;
+        }
+        return null;
     }
 }
