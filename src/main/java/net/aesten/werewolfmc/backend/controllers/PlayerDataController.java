@@ -200,7 +200,7 @@ public class PlayerDataController {
                 tx.commit();
                 return result != null ? result.getMcId() : null;
             } catch (Exception e) {
-                e.printStackTrace();
+                WerewolfPlugin.logConsole("Tried to fetch Minecraft ID from not registered Discord ID (expected behavior)");
                 return null;
             } finally {
                 if (session != null && session.isOpen()) {
