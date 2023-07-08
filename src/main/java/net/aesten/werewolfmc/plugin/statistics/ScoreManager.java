@@ -71,7 +71,7 @@ public class ScoreManager {
         score += stats.getByItemName("Traitor's Guide").getStats().get("used") * 2;
         score += stats.getByItemName("Divination").getStats().get("used") * 2;
         score += stats.getByItemName("Ash of the Dead").getStats().get("used");
-        score += stats.getByItemName("Revelation").getStats().get("used");
+        score += stats.getByItemName("Light of Revelation").getStats().get("used");
         score += stats.getByItemName("Invisibility Potion").getStats().get("used");
         score += stats.getByItemName("Protection").getStats().get("triggered") * 3;
         score += stats.getByItemName("Sneak Notice").getStats().get("triggered") * 3;

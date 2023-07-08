@@ -1,8 +1,6 @@
 package net.aesten.werewolfmc.backend.controllers;
 
-import net.aesten.werewolfmc.backend.models.MatchRecord;
 import net.aesten.werewolfmc.backend.models.PlayerData;
-import net.aesten.werewolfmc.backend.models.PlayerStats;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -25,9 +23,9 @@ public class DatabaseController {
                 session = sessionFactory.openSession();
                 Transaction tx = session.beginTransaction();
                 String deleteQuery = "DELETE FROM MatchRecord";
-                session.createQuery(deleteQuery, MatchRecord.class).executeUpdate();
+                session.createQuery(deleteQuery).executeUpdate();
                 deleteQuery = "DELETE FROM PlayerStats";
-                session.createQuery(deleteQuery, PlayerStats.class).executeUpdate();
+                session.createQuery(deleteQuery).executeUpdate();
                 List<PlayerData> entities = session.createQuery("FROM PlayerData ", PlayerData.class).list();
                 for (PlayerData data : entities) {
                     data.setScore(0);
