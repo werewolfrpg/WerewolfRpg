@@ -274,7 +274,7 @@ public class WerewolfGame {
                     player.getInventory().addItem(PlayerItem.SKELETON_PUNISHER.getItem());
                     player.getInventory().addItem(PlayerItem.EXQUISITE_MEAT.getItem());
                     player.getInventory().addItem(PlayerItem.MUTER.getItem());
-                    if (role == Role.VAMPIRE) player.getInventory().addItem(PlayerItem.VAMPIRE_FANG.getItem());
+                    if (config.getEnableServant().get() && role == Role.VAMPIRE) player.getInventory().addItem(PlayerItem.VAMPIRE_FANG.getItem());
 
                     //increment
                     count++;

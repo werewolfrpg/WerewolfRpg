@@ -158,9 +158,10 @@ public class WerewolfConfig implements Configurable {
     private final Property<Boolean> enableWerewolfNight = Property.create(PropertyType.BOOLEAN, "gameplay.werewolf_night.enable", () -> true).done();
     private final Property<Integer> firstWerewolfNight = Property.create(PropertyType.INTEGER, "gameplay.werewolf_night.first_night", () -> 3).done();
     private final Property<Double> chanceWerewolfNight = Property.create(PropertyType.DOUBLE, "gameplay.werewolf_night.chance", () -> 0.4).done();
+    private final Property<Boolean> enableServant = Property.create(PropertyType.BOOLEAN, "gameplay.servant.enable", () -> false).done();
 
     private List<ConfigurableProperty<?, ?>> getGameplayProperties() {
-        return List.of(enableWerewolfNight, firstWerewolfNight, chanceWerewolfNight);
+        return List.of(enableWerewolfNight, firstWerewolfNight, chanceWerewolfNight, enableServant);
     }
 
     //config methods
@@ -310,5 +311,9 @@ public class WerewolfConfig implements Configurable {
 
     public Property<Double> getChanceWerewolfNight() {
         return chanceWerewolfNight;
+    }
+
+    public Property<Boolean> getEnableServant() {
+        return enableServant;
     }
 }
