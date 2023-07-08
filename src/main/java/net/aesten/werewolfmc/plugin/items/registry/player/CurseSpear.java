@@ -61,6 +61,8 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
             if (damager.getInventory().getItemInMainHand().getType().equals(Material.TRIDENT)) {
                 World world = game.getMap().getWorld();
                 WerewolfPlayerData data = game.getDataMap().get(target.getUniqueId());
+                ItemStack item = damager.getInventory().getItemInMainHand();
+                item.setAmount(item.getAmount() - 1);
 
                 if (data.isCursed()) {
                     if (game.isNight() && data.getRole() == Role.VAMPIRE) {

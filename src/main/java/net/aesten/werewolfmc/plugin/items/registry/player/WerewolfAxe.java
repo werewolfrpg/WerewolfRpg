@@ -56,6 +56,8 @@ public class WerewolfAxe extends ShopWerewolfItem implements EntityDamageItem {
         if ((event.getDamager() instanceof Player damager) && (event.getEntity() instanceof Player target)) {
             game.getMap().getWorld().playSound(damager.getLocation(), Sound.ITEM_TOTEM_USE, 0.6f, 1);
             WerewolfPlayerData data = game.getDataMap().get(target.getUniqueId());
+            ItemStack item = damager.getInventory().getItemInMainHand();
+            item.setAmount(item.getAmount() - 1);
 
             if (game.isNight() && data.getRole() == Role.VAMPIRE) {
                 event.setCancelled(true);

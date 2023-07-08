@@ -14,6 +14,7 @@ import net.aesten.werewolfmc.plugin.items.registry.PlayerItem;
 import net.aesten.werewolfmc.plugin.map.WerewolfMap;
 import net.aesten.werewolfmc.backend.models.PlayerStats;
 import net.aesten.werewolfmc.plugin.utilities.WerewolfUtil;
+import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
@@ -169,6 +170,13 @@ public class GeneralEvents implements Listener {
                  player.setGameMode(GameMode.SPECTATOR);
                  player.getInventory().clear();
                  player.getActivePotionEffects().clear();
+
+                 WerewolfBot bot = WerewolfBot.getBot();
+                 if (bot != null && bot.isConfigured()) {
+                     long dcId = WerewolfBackend.getBackend().getPdc().getDiscordIdOfPlayer(player.getUniqueId()).join();
+                     Optional<Member> dcMember = bot.getVc().getMembers().stream().filter(member -> member.getIdLong() == dcId).findAny();
+                     dcMember.ifPresent(member -> member.mute(true).submit().thenAccept(r -> WerewolfUtil.sendPluginText(player, "You have been muted", ChatColor.GREEN)));
+                 }
 
                  //handle vampire-servant
                  if (game.getDataMap().get(id).getRole() == Role.VAMPIRE) {
