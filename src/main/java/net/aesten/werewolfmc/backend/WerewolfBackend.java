@@ -44,6 +44,7 @@ public class WerewolfBackend {
     private final PlayerDataController pdc;
     private final MatchRecordController mrc;
     private final PlayerStatsController psc;
+    private final DatabaseController dbc;
     private final List<UUID> tokens = new ArrayList<>();
 
     private WerewolfBackend() {
@@ -90,6 +91,7 @@ public class WerewolfBackend {
         pdc = new PlayerDataController(sessionFactory);
         mrc = new MatchRecordController(sessionFactory);
         psc = new PlayerStatsController(sessionFactory);
+        dbc = new DatabaseController(sessionFactory);
         LeaderboardController lbc = new LeaderboardController(sessionFactory);
         MatchHistoryController mhc = new MatchHistoryController(sessionFactory);
         GameDataController gdc = new GameDataController();
@@ -236,5 +238,9 @@ public class WerewolfBackend {
 
     public PlayerStatsController getPsc() {
         return psc;
+    }
+
+    public DatabaseController getDbc() {
+        return dbc;
     }
 }

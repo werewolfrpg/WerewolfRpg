@@ -21,7 +21,7 @@ import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
-@Plugin(name = "Werewolf", version = "2.2")
+@Plugin(name = "Werewolf", version = "2.3")
 @Description("This mini-game is an adaptation of the \"Werewolf\" designed to be played on Minecraft with some additional action elements.")
 @Author("Aesten")
 @LogPrefix("Werewolf")
