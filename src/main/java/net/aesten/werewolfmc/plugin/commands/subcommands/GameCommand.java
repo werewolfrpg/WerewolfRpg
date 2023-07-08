@@ -155,7 +155,8 @@ public class GameCommand extends CommandNode {
                     new Add(),
                     new AddAll(),
                     new Remove(),
-                    new RemoveAll()
+                    new RemoveAll(),
+                    new Filter()
             );
         }
 
@@ -168,6 +169,7 @@ public class GameCommand extends CommandNode {
                 WerewolfUtil.sendHelpText(player, "/ww game players add-all -> add all online players");
                 WerewolfUtil.sendHelpText(player, "/ww game players remove <player> -> remove a player");
                 WerewolfUtil.sendHelpText(player, "/ww game players remove-all -> remove all online players");
+                WerewolfUtil.sendHelpText(player, "/ww game players filter -> remove all offline players");
             }
         }
 
@@ -332,6 +334,22 @@ public class GameCommand extends CommandNode {
             public void execute(CommandSender sender, Arguments arguments) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (WerewolfGame.getInstance().getParticipants().contains(player)) {
+                        WerewolfGame.getInstance().getParticipants().remove(player);
+                        WerewolfUtil.sendPluginText(sender, "Removed " + ChatColor.LIGHT_PURPLE + player.getName());
+                    }
+                }
+            }
+        }
+
+        private static final class Filter extends CommandNode {
+            public Filter() {
+                super("filter");
+            }
+
+            @Override
+            public void execute(CommandSender sender, Arguments arguments) {
+                for (Player player : WerewolfGame.getInstance().getParticipants()) {
+                    if (!player.isOnline()) {
                         WerewolfGame.getInstance().getParticipants().remove(player);
                         WerewolfUtil.sendPluginText(sender, "Removed " + ChatColor.LIGHT_PURPLE + player.getName());
                     }
