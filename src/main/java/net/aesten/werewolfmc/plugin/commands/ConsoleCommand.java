@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class ConsoleCommand extends CommandNode {
     public ConsoleCommand() {
-        super("token",
+        super("cs",
                 new Token(),
                 new Wipe());
     }
