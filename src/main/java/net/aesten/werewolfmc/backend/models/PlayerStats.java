@@ -263,7 +263,7 @@ public class PlayerStats {
     }
     
     public void addRevelationUsed() {
-        incrementValue("Revelation", "used");
+        incrementValue("Light of Revelation", "used");
     }
     
     public void addTraitorsGuideUsed() {

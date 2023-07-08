@@ -156,7 +156,7 @@ public class GlobalStatDTO {
         globalStats.items.add(createItemStatsFor(stats, "Divination"));
         globalStats.items.add(createItemStatsFor(stats, "Invisibility Potion"));
         globalStats.items.add(createItemStatsFor(stats, "Swiftness Potion"));
-        globalStats.items.add(createItemStatsFor(stats, "Revelation"));
+        globalStats.items.add(createItemStatsFor(stats, "Light of Revelation"));
         globalStats.items.add(createItemStatsFor(stats, "Traitor's Guide"));
         globalStats.items.add(createItemStatsFor(stats, "Curse Spear (Melee)"));
         globalStats.items.add(createItemStatsFor(stats, "Curse Spear (Thrown)"));
