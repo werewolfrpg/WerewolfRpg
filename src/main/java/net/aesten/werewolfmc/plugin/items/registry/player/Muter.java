@@ -37,7 +37,7 @@ public class Muter extends WerewolfItem implements InteractItem {
                 .addName(ChatColor.GOLD + "Muter")
                 .addLore(ChatColor.GREEN + "Right click to use")
                 .addLore(ChatColor.BLUE + "Switch mute/unmute on discord")
-                .addLore(ChatColor.GRAY + "The bot has to be active for the item to activate")
+                .addLore(ChatColor.GRAY + "The bot has to be active for the item to function")
                 .addLore(ChatColor.GRAY + "You need to be in the correct voice channel")
                 .addLore(ChatColor.GRAY + "You cannot unmute yourself during night time")
                 .build();

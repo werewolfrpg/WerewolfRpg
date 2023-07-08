@@ -36,7 +36,6 @@ public class CurseSpear extends ShopWerewolfItem implements EntityDamageItem, Pr
                 .addLore(ChatColor.GRAY + "Protection and Vampire can negate second hit")
                 .addLore(ChatColor.GRAY + "Breaks on usage")
                 .addEnchantment(Enchantment.LOYALTY, 0)
-                .addDamage(250)
                 .build();
     }
 
