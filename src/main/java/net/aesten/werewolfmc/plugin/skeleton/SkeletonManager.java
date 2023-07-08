@@ -3,7 +3,6 @@ package net.aesten.werewolfmc.plugin.skeleton;
 import net.aesten.werewolfmc.plugin.core.WerewolfGame;
 import net.aesten.werewolfmc.plugin.items.base.ShopWerewolfItem;
 import net.aesten.werewolfmc.plugin.map.WerewolfMap;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -89,10 +88,12 @@ public class SkeletonManager implements Listener {
         if (entity.getType() == EntityType.SKELETON) {
             if (entity.getKiller() != null) {
                 Player player = entity.getKiller();
-                if (entity.getScoreboardTags().contains("basic_skeleton") && rnd.nextDouble() < WerewolfGame.getConfig().getBasicSkeletonEmeraldDropRate().get()) {
-                    player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                if (entity.getScoreboardTags().contains("basic_skeleton")) {
                     WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addKilledBasicSkeletons();
-                    WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addBasicSkeletonEmeraldDrops();
+                    if (rnd.nextDouble() < WerewolfGame.getConfig().getBasicSkeletonEmeraldDropRate().get()) {
+                        player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        WerewolfGame.getInstance().getTracker().getPlayerStats(player.getUniqueId()).addBasicSkeletonEmeraldDrops();
+                    }
                 }
                 else if (entity.getScoreboardTags().contains("lucky_skeleton")) {
                     player.getInventory().addItem(new ItemStack(Material.EMERALD, WerewolfGame.getConfig().getLuckySkeletonEmeraldDropNumber().get()));
